@@ -1,4 +1,4 @@
-package main.java.client;
+package client;
 
 /**
  * Created by Денис on 06.03.2018.
