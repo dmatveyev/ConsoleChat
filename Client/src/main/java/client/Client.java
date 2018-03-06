@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 
-/**
+/**Реализация клиента
  * Created by Денис on 06.03.2018.
  */
 public class Client {
