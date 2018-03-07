@@ -65,7 +65,7 @@ public class ClientHandler implements Runnable {
         out.println(message);
     }
 
-    public void authorize(Scanner reader, PrintWriter writer) {
+    public void authorize(Scanner reader, PrintWriter writer) throws IOException {
         writer.println("Hello, please enter login:");
         String login = "";
         String pass= "";
@@ -73,9 +73,14 @@ public class ClientHandler implements Runnable {
         if (reader.hasNextLine()){
              login = reader.nextLine();
         }
+
         String userId = usersManager.isRegistered(login);
         if (userId != null){
             User registeredUser = usersManager.getRegisteredUser(userId);
+            if(registeredUser.getSession()!= null) {
+                out.println("You allredy loggined, connection has been closed");
+                throw new IOException("User allredy loggined");
+            }
             writer.println("Hello, please enter password:");
             if (reader.hasNextLine()){
                 pass = reader.nextLine();
