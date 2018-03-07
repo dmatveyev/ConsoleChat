@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -20,7 +21,7 @@ public class ClientHandler implements Runnable {
     private Socket clientSocket;
     private int clientId;
     private PrintWriter out;
-    private List<User> users;
+    private Map<String,User> users;
     private User user;
 
 
@@ -69,15 +70,21 @@ public class ClientHandler implements Runnable {
         if (reader.hasNextLine()){
             pass = reader.nextLine();
         }
-        for (User u: users) {
-           if (!(u.getLogin().equals(login)&&u.getPassword().equals(pass))) {
+        for (Map.Entry<String, User> u: users.entrySet()) {
+           if (!(u.getValue().getLogin().equals(login)&&u.getValue().getPassword().equals(pass))) {
                user.setLogin(login);
                user.setPassword(pass);
-
+           }else {
+               out.println("You are already connected");
+               try {
+                   clientSocket.close();
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
            }
         }
         if (user.getLogin() != null) {
-            users.add(user);
+            users.put(String.valueOf(clientId), user);
         }
         writer.println("Hello " + user.getLogin());
 

@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Денис on 06.03.2018.
@@ -16,16 +18,16 @@ public class Server {
 
     private ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
 
-    public ArrayList<User> getUsers() {
+    public  Map<String,User> getUsers() {
         return users;
     }
 
-    private ArrayList<User> users = new ArrayList<>();
+    private Map<String,User> users = new ConcurrentHashMap<>();
 
     private int clientId;
 
     public Server(int port) {
-        users.add(createAdmin());
+        users.put("0",createAdmin());
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             while (true) {
