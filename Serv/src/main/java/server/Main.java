@@ -1,4 +1,4 @@
-package main.java.server;
+package server;
 
 /**
  * Created by Денис on 06.03.2018.

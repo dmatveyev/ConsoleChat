@@ -24,7 +24,7 @@
                         <addMavenDescriptor>false</addMavenDescriptor>
                         <compress>true</compress>
                         <manifest>
-                            <mainClass>main.java.server.Main</mainClass>
+                            <mainClass>server.Main</mainClass>
                         </manifest>
                     </archive>
 

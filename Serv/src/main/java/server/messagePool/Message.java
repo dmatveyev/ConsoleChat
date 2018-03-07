@@ -1,4 +1,4 @@
-package main.java.server.messagePool;
+package server.messagePool;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

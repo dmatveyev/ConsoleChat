@@ -1,11 +1,15 @@
-package main.java.server;
+package server;
 
-import main.java.server.messagePool.Message;
+
+
+import server.clientData.User;
+import server.messagePool.Message;
 
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -16,12 +20,14 @@ public class ClientHandler implements Runnable {
     private Socket clientSocket;
     private int clientId;
     private PrintWriter out;
+    private List<User> users;
 
 
     public ClientHandler(Server server, Socket clientSoket, int clientId) {
         this.clientId = clientId;
         this.clientSocket = clientSoket;
         this.server = server;
+        this.users = server.getUsers();
         try {
             this.out = new PrintWriter(new OutputStreamWriter(clientSoket.getOutputStream(), "UTF-8"), true);
         } catch (IOException e) {
@@ -33,7 +39,7 @@ public class ClientHandler implements Runnable {
         try(InputStream inputStream = clientSocket.getInputStream()
             ) {
             Scanner in = new Scanner(inputStream, "UTF-8");
-            out.println("Hello " + clientId + "!!!");
+            authorize(in, out);
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 Message message = new Message(line, clientId, LocalDate.now(), LocalTime.now());
@@ -48,5 +54,31 @@ public class ClientHandler implements Runnable {
 
     public void printMessage(String message) {
         out.println(message);
+    }
+
+    public void authorize(Scanner reader, PrintWriter writer) {
+        writer.println("Hello, please enter login:");
+        String login = "";
+        String pass= "";
+        User newUser = new User();
+        if (reader.hasNextLine()){
+             login = reader.nextLine();
+        }
+        writer.println("Hello, please enter password:");
+        if (reader.hasNextLine()){
+            pass = reader.nextLine();
+        }
+        for (User u: users) {
+           if (!(u.getLogin().equals(login)&&u.getPassword().equals(pass))) {
+               newUser.setLogin(login);
+               newUser.setPassword(pass);
+
+           }
+        }
+        if (newUser.getLogin() != null) {
+            users.add(newUser);
+        }
+        writer.println("Hello " + newUser.getLogin());
+
     }
 }

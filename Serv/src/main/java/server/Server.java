@@ -1,4 +1,7 @@
-package main.java.server;
+package server;
+
+import server.clientData.AbstractUser;
+import server.clientData.User;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,9 +14,17 @@ import java.util.ArrayList;
 public class Server {
 
     private ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
+
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    private ArrayList<User> users = new ArrayList<>();
+
     private int clientId;
 
     public Server(int port) {
+        users.add(createAdmin());
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             while (true) {
@@ -29,6 +40,13 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private User createAdmin() {
+        User admin = new User();
+        admin.setLogin("admin");
+        admin.setPassword("password");
+        return admin;
     }
 
     public void sendMessageToAll(String message) {
