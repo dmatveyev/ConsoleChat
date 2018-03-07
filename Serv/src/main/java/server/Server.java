@@ -3,6 +3,7 @@ package server;
 
 
 import server.clientData.User;
+import server.clientData.UsersManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,18 +17,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Server {
 
-    private ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
+    private ArrayList<ClientHandler> clients = new ArrayList<>();
 
-    public  Map<String,User> getUsers() {
-        return users;
-    }
 
-    private Map<String,User> users = new ConcurrentHashMap<>();
 
     private int clientId;
 
     public Server(int port) {
-        users.put("0",createAdmin());
+        UsersManager usersManager = UsersManager.getInstance();
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             while (true) {
@@ -45,12 +42,7 @@ public class Server {
         }
     }
 
-    private User createAdmin() {
-        User admin = new User();
-        admin.setLogin("admin");
-        admin.setPassword("password");
-        return admin;
-    }
+
 
     public void sendMessageToAll(String message) {
         for(ClientHandler c: clients){

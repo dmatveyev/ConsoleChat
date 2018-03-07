@@ -3,13 +3,13 @@ package server;
 
 
 import server.clientData.User;
+import server.clientData.UsersManager;
 import server.messagePool.Message;
 
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -21,15 +21,15 @@ public class ClientHandler implements Runnable {
     private Socket clientSocket;
     private int clientId;
     private PrintWriter out;
-    private Map<String,User> users;
-    private User user;
+    private UsersManager usersManager;
+
 
 
     public ClientHandler(Server server, Socket clientSoket, int clientId) {
         this.clientId = clientId;
         this.clientSocket = clientSoket;
         this.server = server;
-        this.users = server.getUsers();
+        this.usersManager = UsersManager.getInstance();
         try {
             this.out = new PrintWriter(new OutputStreamWriter(clientSoket.getOutputStream(), "UTF-8"), true);
         } catch (IOException e) {
@@ -44,7 +44,7 @@ public class ClientHandler implements Runnable {
             authorize(in, out);
             while (in.hasNextLine()) {
                 String line = in.nextLine();
-                Message message = new Message(line, user.getLogin(), LocalDate.now(), LocalTime.now());
+                Message message = new Message(line, usersManager.getRegisteredUser(String.valueOf(clientId)), LocalDate.now(), LocalTime.now());
                 server.sendMessageToAll(message.toString());
                 System.out.println(line);
             }
@@ -62,31 +62,37 @@ public class ClientHandler implements Runnable {
         writer.println("Hello, please enter login:");
         String login = "";
         String pass= "";
-        user = new User();
+
         if (reader.hasNextLine()){
              login = reader.nextLine();
         }
-        writer.println("Hello, please enter password:");
-        if (reader.hasNextLine()){
-            pass = reader.nextLine();
+        String userId = usersManager.isRegistered(login);
+        if (userId != null){
+            User registeredUser = usersManager.getRegisteredUser(userId);
+            writer.println("Hello, please enter password:");
+            if (reader.hasNextLine()){
+                pass = reader.nextLine();
+                while (!registeredUser.getPassword().equals(pass)){
+                    out.println("Wrong password");
+                    writer.println("Hello, please enter password:");
+                    pass = reader.nextLine();
+                }
+                    out.printf("Hello %s !!!", login);
+                    out.println();
+                    usersManager.createUserSession(registeredUser);
+                    usersManager.addActiveUser(registeredUser);
+                    clientId = Integer.parseInt(registeredUser.getUserId());
+            }
+        }else{
+            writer.println("Hello, please enter password:");
+            if (reader.hasNextLine()) {
+                pass = reader.nextLine();
+            }
+            User newuser = usersManager.createUser(String.valueOf(clientId),login,pass);
+            usersManager.createUserSession(newuser);
+            usersManager.addActiveUser(newuser);
+            out.printf("Hello %s !!!", login);
+            out.println();
         }
-        for (Map.Entry<String, User> u: users.entrySet()) {
-           if (!(u.getValue().getLogin().equals(login)&&u.getValue().getPassword().equals(pass))) {
-               user.setLogin(login);
-               user.setPassword(pass);
-           }else {
-               out.println("You are already connected");
-               try {
-                   clientSocket.close();
-               } catch (IOException e) {
-                   e.printStackTrace();
-               }
-           }
-        }
-        if (user.getLogin() != null) {
-            users.put(String.valueOf(clientId), user);
-        }
-        writer.println("Hello " + user.getLogin());
-
     }
 }

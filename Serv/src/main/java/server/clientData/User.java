@@ -6,6 +6,25 @@ import java.util.Objects;
  * Created by Денис on 07.03.2018.
  */
 public class User  {
+    private String userId;
+    private String session;
+    private String login;
+    private String password;
+
+    public User() {
+        this.userId = null;
+        this.login = null;
+        this.password = null;
+        this.session = null;
+    }
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(final String userId) {
+        this.userId = userId;
+    }
+
     public String getLogin() {
         return login;
     }
@@ -14,8 +33,17 @@ public class User  {
         return password;
     }
 
-    private String login;
-    private String password;
+
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(final String session) {
+        this.session = session;
+    }
+
+
 
     public void setLogin(String login) {
         this.login = login;

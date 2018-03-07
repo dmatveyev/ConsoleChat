@@ -1,5 +1,7 @@
 package server.messagePool;
 
+import server.clientData.User;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -8,7 +10,7 @@ import java.time.LocalTime;
  */
 public class Message {
     private String text;
-    private String login;
+    User user;
     private LocalDate date;
     private LocalTime time;
 
@@ -16,9 +18,9 @@ public class Message {
         return time;
     }
 
-    public Message (String text, String login, LocalDate date, LocalTime time) {
+    public Message (String text, User user, LocalDate date, LocalTime time) {
         this.text = text;
-        this.login = login;
+        this.user = user;
         this.date = date;
         this.time = time;
 
@@ -31,13 +33,9 @@ public class Message {
         return date;
     }
 
-    public String getLogin(){
-        return  login;
-    }
-
     @Override
     public String toString() {
         return getDate().toString() +"T"+ getTime()
-                + " "+ getLogin()+": " + getText() ;
+                + " "+ user.getLogin()+": " + getText() ;
     }
 }
