@@ -31,15 +31,15 @@ public class ClientHandler implements Runnable {
         this.server = server;
         this.usersManager = UsersManager.getInstance();
         try {
-            this.out = new PrintWriter(new OutputStreamWriter(clientSoket.getOutputStream(), "UTF-8"), true);
+            this.out  = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public void run() {
-        try(InputStream inputStream = clientSocket.getInputStream()
-            ) {
+        try(InputStream inputStream = clientSocket.getInputStream()) {
             Scanner in = new Scanner(inputStream, "UTF-8");
             authorize(in, out);
             while (in.hasNextLine()) {
@@ -49,6 +49,7 @@ public class ClientHandler implements Runnable {
                     if (removed != null)
                          usersManager.removeActiveUser(usersManager.removeUserSession(removed));
                     clientSocket.close();
+                    out.close();
                 } else {
                     Message message = new Message(line, usersManager.getRegisteredUser(String.valueOf(clientId)), LocalDate.now(), LocalTime.now());
                     server.sendMessageToAll(message.toString());
@@ -78,19 +79,19 @@ public class ClientHandler implements Runnable {
         if (userId != null){
             User registeredUser = usersManager.getRegisteredUser(userId);
             if(registeredUser.getSession()!= null) {
-                out.println("You allredy loggined, connection has been closed");
+                writer.println("You allredy loggined, connection has been closed");
                 throw new IOException("User allredy loggined");
             }
             writer.println("Hello, please enter password:");
             if (reader.hasNextLine()){
                 pass = reader.nextLine();
                 while (!registeredUser.getPassword().equals(pass)){
-                    out.println("Wrong password");
+                    writer.println("Wrong password");
                     writer.println("Hello, please enter password:");
                     pass = reader.nextLine();
                 }
-                    out.printf("Hello %s !!!", login);
-                    out.println();
+                    writer.printf("Hello %s !!!", login);
+                    writer.println();
                     usersManager.createUserSession(registeredUser);
                     usersManager.addActiveUser(registeredUser);
                     clientId = Integer.parseInt(registeredUser.getUserId());
@@ -103,8 +104,8 @@ public class ClientHandler implements Runnable {
             User newuser = usersManager.createUser(String.valueOf(clientId),login,pass);
             usersManager.createUserSession(newuser);
             usersManager.addActiveUser(newuser);
-            out.printf("Hello %s !!!", login);
-            out.println();
+            writer.printf("Hello %s !!!", login);
+            writer.println();
         }
     }
 }
