@@ -21,6 +21,7 @@ public class ClientHandler implements Runnable {
     private int clientId;
     private PrintWriter out;
     private List<User> users;
+    private User user;
 
 
     public ClientHandler(Server server, Socket clientSoket, int clientId) {
@@ -42,7 +43,7 @@ public class ClientHandler implements Runnable {
             authorize(in, out);
             while (in.hasNextLine()) {
                 String line = in.nextLine();
-                Message message = new Message(line, clientId, LocalDate.now(), LocalTime.now());
+                Message message = new Message(line, user.getLogin(), LocalDate.now(), LocalTime.now());
                 server.sendMessageToAll(message.toString());
                 System.out.println(line);
             }
@@ -60,7 +61,7 @@ public class ClientHandler implements Runnable {
         writer.println("Hello, please enter login:");
         String login = "";
         String pass= "";
-        User newUser = new User();
+        user = new User();
         if (reader.hasNextLine()){
              login = reader.nextLine();
         }
@@ -70,15 +71,15 @@ public class ClientHandler implements Runnable {
         }
         for (User u: users) {
            if (!(u.getLogin().equals(login)&&u.getPassword().equals(pass))) {
-               newUser.setLogin(login);
-               newUser.setPassword(pass);
+               user.setLogin(login);
+               user.setPassword(pass);
 
            }
         }
-        if (newUser.getLogin() != null) {
-            users.add(newUser);
+        if (user.getLogin() != null) {
+            users.add(user);
         }
-        writer.println("Hello " + newUser.getLogin());
+        writer.println("Hello " + user.getLogin());
 
     }
 }

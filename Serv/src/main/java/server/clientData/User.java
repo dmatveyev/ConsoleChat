@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Created by Денис on 07.03.2018.
  */
-public class User extends AbstractUser {
+public class User  {
     public String getLogin() {
         return login;
     }

@@ -8,7 +8,7 @@ import java.time.LocalTime;
  */
 public class Message {
     private String text;
-    private int userId;
+    private String login;
     private LocalDate date;
     private LocalTime time;
 
@@ -16,9 +16,9 @@ public class Message {
         return time;
     }
 
-    public Message (String text, int userId, LocalDate date, LocalTime time) {
+    public Message (String text, String login, LocalDate date, LocalTime time) {
         this.text = text;
-        this.userId = userId;
+        this.login = login;
         this.date = date;
         this.time = time;
 
@@ -26,15 +26,18 @@ public class Message {
     public String getText() {
         return  text;
     }
-    public int getUserId() {
-        return userId;
-    }
+
     public LocalDate getDate() {
         return date;
     }
 
+    public String getLogin(){
+        return  login;
+    }
+
     @Override
     public String toString() {
-        return getDate().toString() +"T"+ getTime() + " "+ getUserId()+": " + getText() ;
+        return getDate().toString() +"T"+ getTime()
+                + " "+ getLogin()+": " + getText() ;
     }
 }

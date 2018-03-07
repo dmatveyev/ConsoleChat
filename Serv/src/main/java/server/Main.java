@@ -5,6 +5,6 @@ package server;
  */
 public class Main {
     public static void main(String... args) {
-        Server srv = new Server(8189);
+        Server srv = new Server(8190);
     }
 }
