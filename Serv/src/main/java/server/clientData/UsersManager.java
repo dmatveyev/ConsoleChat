@@ -45,16 +45,19 @@ public class UsersManager {
         return user;
     }
     public void createUserSession(User user) {
-        ;
+
         if (user != null) {
             String session =user.getLogin().concat(user.getPassword());
             user.setSession(session);
         }
     }
-    public void removeUserSession (User user) {
+    public String removeUserSession (User user) {
         if(user!=null) {
+            String session = user.getSession();
             user.setSession(null);
+            return session;
         }
+        return null;
     }
 
     public boolean addActiveUser (User user) {
@@ -63,18 +66,18 @@ public class UsersManager {
             return true;
         } else return  false;
     }
-    public boolean removeActiveUser (User user) {
-        if(user != null){
-            if(isActive(user)) {
-                activeUsers.remove(user.getSession());
+    public boolean removeActiveUser (String session) {
+        if(session != null){
+            if(isActive(session)) {
+                activeUsers.remove(session);
                 return true;
             }
         } return false;
     }
-    public boolean isActive(User user) {
-        if (user!= null) {
+    public boolean isActive(String session) {
+        if (session!= null) {
             for(Map.Entry<String, User> entry: activeUsers.entrySet()) {
-                if (entry.getKey().equals(user.getSession()))
+                if (entry.getKey().equals(session))
                     return true;
                 else return false;
             }
@@ -91,6 +94,14 @@ public class UsersManager {
     }
     public User getRegisteredUser(String id) {
        return users.get(id);
+    }
+
+    public User getActiveUser(String id) {
+        for (Map.Entry<String, User> entry: activeUsers.entrySet()) {
+            if (entry.getValue().getUserId().equals(id)) {
+                return entry.getValue();
+            }
+        } return null;
     }
 
 }

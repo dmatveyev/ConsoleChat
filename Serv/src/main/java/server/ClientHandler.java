@@ -44,9 +44,16 @@ public class ClientHandler implements Runnable {
             authorize(in, out);
             while (in.hasNextLine()) {
                 String line = in.nextLine();
-                Message message = new Message(line, usersManager.getRegisteredUser(String.valueOf(clientId)), LocalDate.now(), LocalTime.now());
-                server.sendMessageToAll(message.toString());
-                System.out.println(line);
+                if (line.equals("exit")) {
+                    User removed = usersManager.getActiveUser(String.valueOf(clientId));
+                    if (removed != null)
+                         usersManager.removeActiveUser(usersManager.removeUserSession(removed));
+                    clientSocket.close();
+                } else {
+                    Message message = new Message(line, usersManager.getRegisteredUser(String.valueOf(clientId)), LocalDate.now(), LocalTime.now());
+                    server.sendMessageToAll(message.toString());
+                    System.out.println(line);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
