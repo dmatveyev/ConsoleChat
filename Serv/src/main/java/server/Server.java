@@ -2,16 +2,10 @@ package server;
 
 
 
-import server.clientData.User;
-import server.clientData.UserSessionManager;
-import server.clientData.UsersManager;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Денис on 06.03.2018.
@@ -19,15 +13,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Server {
 
     private ArrayList<ClientHandler> clients = new ArrayList<>();
+
+    private ServerSocket serverSocket;
+    private Socket clientSocket;
     private int clientId;
 
     public Server(int port) {
         try {
-            ServerSocket serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(port);
             while (true) {
-                Socket clientSocket = serverSocket.accept();
+                clientSocket = serverSocket.accept();
                 System.out.println("Spawing " + ++clientId);
-                ClientHandler clientHandler = new ClientHandler(this,clientSocket, clientId);
+                ClientHandler clientHandler = new ClientHandler(this, clientSocket);
                 clients.add(clientHandler);
                 Thread t = new Thread(clientHandler);
                 t.start();
