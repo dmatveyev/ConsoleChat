@@ -1,7 +1,5 @@
 package server;
 
-
-
 import server.clientData.User;
 import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
@@ -23,13 +21,14 @@ public class ClientHandler implements Runnable {
     private UsersManager usersManager;
     private UserSessionManager userSessionManager;
 
-    public ClientHandler(Server server, Socket clientSoket) {
-        this.clientSocket = clientSoket;
+    public ClientHandler(Server server, Socket clientSocket) {
+        this.clientSocket = clientSocket;
         this.server = server;
         this.usersManager = UsersManager.getInstance();
         this.userSessionManager = UserSessionManager.getInstance();
         try {
-            this.out  = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"), true);
+            this.out  = new PrintWriter(new OutputStreamWriter(this.clientSocket.getOutputStream(),
+                    "UTF-8"), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
