@@ -38,6 +38,7 @@ public class UsersManager {
     /**
      * Проверяет совпадение пользователя в списке зарегистрированных
      * @param login логин пользователя
+     * @param password пароль пользователя
      * @return Id пользователя, если такой пользователь был найден
      */
     public String isRegistered(String login, String password) {

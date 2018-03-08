@@ -86,7 +86,7 @@ public class ClientHandler implements Runnable {
      * @param login
      * @param password
      * @return Зарегистрированный или новый пользователь
-     * @throws IOException
+     * @throws IOException Пробоасывается в случае, если есть активная сессия пользователя.
      */
     public User authorize(String login, String password) throws IOException {
         User user;
