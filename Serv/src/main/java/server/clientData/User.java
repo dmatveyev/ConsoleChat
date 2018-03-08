@@ -7,7 +7,6 @@ import java.util.Objects;
  */
 public class User  {
     private String userId;
-    private String session;
     private String login;
     private String password;
 
@@ -15,7 +14,6 @@ public class User  {
         this.userId = null;
         this.login = null;
         this.password = null;
-        this.session = null;
     }
     public String getUserId() {
         return userId;
@@ -32,17 +30,6 @@ public class User  {
     public String getPassword() {
         return password;
     }
-
-
-
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(final String session) {
-        this.session = session;
-    }
-
 
 
     public void setLogin(String login) {

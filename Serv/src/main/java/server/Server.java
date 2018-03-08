@@ -3,6 +3,7 @@ package server;
 
 
 import server.clientData.User;
+import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
 
 import java.io.IOException;
@@ -18,13 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Server {
 
     private ArrayList<ClientHandler> clients = new ArrayList<>();
-
-
-
     private int clientId;
 
     public Server(int port) {
-        UsersManager usersManager = UsersManager.getInstance();
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             while (true) {
@@ -34,16 +31,11 @@ public class Server {
                 clients.add(clientHandler);
                 Thread t = new Thread(clientHandler);
                 t.start();
-
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-
     public void sendMessageToAll(String message) {
         for(ClientHandler c: clients){
             c.printMessage(message);

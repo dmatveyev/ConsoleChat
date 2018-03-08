@@ -19,14 +19,14 @@ public class UsersManager {
         users = new ConcurrentHashMap<>();
         users.put("0",admin);
         activeUsers = new ConcurrentHashMap<>();
-        addActiveUser(admin);
+
     }
 
     private User createAdmin() {
         User admin = new User();
         admin.setLogin("admin");
         admin.setPassword("password");
-        admin.setSession("adminsession");
+
         return admin;
     }
 
@@ -44,28 +44,7 @@ public class UsersManager {
         users.put(id,user);
         return user;
     }
-    public void createUserSession(User user) {
 
-        if (user != null) {
-            String session =user.getLogin().concat(user.getPassword());
-            user.setSession(session);
-        }
-    }
-    public String removeUserSession (User user) {
-        if(user!=null) {
-            String session = user.getSession();
-            user.setSession(null);
-            return session;
-        }
-        return null;
-    }
-
-    public boolean addActiveUser (User user) {
-        if(user != null && user.getSession()!= null) {
-            activeUsers.put(user.getSession(), user);
-            return true;
-        } else return  false;
-    }
     public boolean removeActiveUser (String session) {
         if(session != null){
             if(isActive(session)) {

@@ -3,6 +3,7 @@ package server;
 
 
 import server.clientData.User;
+import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
 import server.messagePool.Message;
 
@@ -22,6 +23,8 @@ public class ClientHandler implements Runnable {
     private int clientId;
     private PrintWriter out;
     private UsersManager usersManager;
+    private UserSessionManager userSessionManager;
+
 
 
 
@@ -30,12 +33,12 @@ public class ClientHandler implements Runnable {
         this.clientSocket = clientSoket;
         this.server = server;
         this.usersManager = UsersManager.getInstance();
+        this.userSessionManager = UserSessionManager.getInstance();
         try {
             this.out  = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), "UTF-8"), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void run() {
@@ -45,9 +48,8 @@ public class ClientHandler implements Runnable {
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 if (line.equals("exit")) {
-                    User removed = usersManager.getActiveUser(String.valueOf(clientId));
-                    if (removed != null)
-                         usersManager.removeActiveUser(usersManager.removeUserSession(removed));
+                    String session = userSessionManager.isActive(String.valueOf(clientId));
+                    userSessionManager.doUnactive(session);
                     clientSocket.close();
                     out.close();
                 } else {
@@ -78,7 +80,7 @@ public class ClientHandler implements Runnable {
         String userId = usersManager.isRegistered(login);
         if (userId != null){
             User registeredUser = usersManager.getRegisteredUser(userId);
-            if(registeredUser.getSession()!= null) {
+            if(userSessionManager.isActive(userId) != null) {
                 writer.println("You allredy loggined, connection has been closed");
                 throw new IOException("User allredy loggined");
             }
@@ -92,8 +94,8 @@ public class ClientHandler implements Runnable {
                 }
                     writer.printf("Hello %s !!!", login);
                     writer.println();
-                    usersManager.createUserSession(registeredUser);
-                    usersManager.addActiveUser(registeredUser);
+                    String userSession = userSessionManager.createUserSession(registeredUser);
+                    userSessionManager.doActive(userSession, userId);
                     clientId = Integer.parseInt(registeredUser.getUserId());
             }
         }else{
@@ -102,8 +104,8 @@ public class ClientHandler implements Runnable {
                 pass = reader.nextLine();
             }
             User newuser = usersManager.createUser(String.valueOf(clientId),login,pass);
-            usersManager.createUserSession(newuser);
-            usersManager.addActiveUser(newuser);
+            String userSession = userSessionManager.createUserSession(newuser);
+            userSessionManager.doActive(userSession, String.valueOf(clientId));
             writer.printf("Hello %s !!!", login);
             writer.println();
         }
