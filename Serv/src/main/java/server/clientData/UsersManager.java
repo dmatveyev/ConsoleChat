@@ -12,14 +12,12 @@ public class UsersManager {
     private static UsersManager usersManager;
 
     private Map<String,User> users;
-    private Map<String,User> activeUsers;
+
 
     private UsersManager () {
         User admin = createAdmin();
         users = new ConcurrentHashMap<>();
         users.put("0",admin);
-        activeUsers = new ConcurrentHashMap<>();
-
     }
 
     private User createAdmin() {
@@ -36,36 +34,16 @@ public class UsersManager {
         }
         return usersManager;
     }
-    public User createUser(String id, String login, String password) {
-        User user = new User();
-        user.setLogin(login);
-        user.setPassword(password);
-        user.setUserId(id);
-        users.put(id,user);
-        return user;
-    }
 
-    public boolean removeActiveUser (String session) {
-        if(session != null){
-            if(isActive(session)) {
-                activeUsers.remove(session);
-                return true;
-            }
-        } return false;
-    }
-    public boolean isActive(String session) {
-        if (session!= null) {
-            for(Map.Entry<String, User> entry: activeUsers.entrySet()) {
-                if (entry.getKey().equals(session))
-                    return true;
-                else return false;
-            }
-        }
-        return false;
-    }
-    public String isRegistered(String login) {
+    /**
+     * Проверяет совпадение пользователя в списке зарегистрированных
+     * @param login логин пользователя
+     * @return Id пользователя, если такой пользователь был найден
+     */
+    public String isRegistered(String login, String password) {
         for(Map.Entry<String, User> entry: users.entrySet()) {
-            if (entry.getValue().getLogin().equals(login)) {
+            if (entry.getValue().getLogin().equals(login)
+                    && entry.getValue().getPassword().equals(password)) {
                 return entry.getValue().getUserId();
             }
         }
@@ -75,12 +53,6 @@ public class UsersManager {
        return users.get(id);
     }
 
-    public User getActiveUser(String id) {
-        for (Map.Entry<String, User> entry: activeUsers.entrySet()) {
-            if (entry.getValue().getUserId().equals(id)) {
-                return entry.getValue();
-            }
-        } return null;
-    }
+
 
 }

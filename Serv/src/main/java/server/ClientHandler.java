@@ -22,11 +22,9 @@ public class ClientHandler implements Runnable {
     private Socket clientSocket;
     private int clientId;
     private PrintWriter out;
+    private User user;
     private UsersManager usersManager;
     private UserSessionManager userSessionManager;
-
-
-
 
     public ClientHandler(Server server, Socket clientSoket, int clientId) {
         this.clientId = clientId;
@@ -44,70 +42,72 @@ public class ClientHandler implements Runnable {
     public void run() {
         try(InputStream inputStream = clientSocket.getInputStream()) {
             Scanner in = new Scanner(inputStream, "UTF-8");
-            authorize(in, out);
+            String login = "";
+            String pass= "";
+            user = null;
+            while (user == null) {
+                out.println("Hello, please enter login:");
+                if (in.hasNextLine()) {
+                    login = in.nextLine();
+                }
+                out.println("Please enter password");
+                if (in.hasNextLine()) {
+                    pass = in.nextLine();
+                }
+                user = authorize(login, pass);
+            }
+            out.printf("Hello, %s!!!", user.getLogin());
+            out.println();
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 if (line.equals("exit")) {
-                    String session = userSessionManager.isActive(String.valueOf(clientId));
-                    userSessionManager.doUnactive(session);
+                    userSessionManager.doUnactive(user.getUserId());
                     clientSocket.close();
                     out.close();
                 } else {
-                    Message message = new Message(line, usersManager.getRegisteredUser(String.valueOf(clientId)), LocalDate.now(), LocalTime.now());
+                    Message message = new Message(line, user, LocalDate.now(), LocalTime.now());
                     server.sendMessageToAll(message.toString());
                     System.out.println(line);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+            if(user != null)
+                userSessionManager.doUnactive(user.getUserId());
         }
-
     }
 
     public void printMessage(String message) {
         out.println(message);
     }
 
-    public void authorize(Scanner reader, PrintWriter writer) throws IOException {
-        writer.println("Hello, please enter login:");
-        String login = "";
-        String pass= "";
-
-        if (reader.hasNextLine()){
-             login = reader.nextLine();
-        }
-
-        String userId = usersManager.isRegistered(login);
-        if (userId != null){
-            User registeredUser = usersManager.getRegisteredUser(userId);
-            if(userSessionManager.isActive(userId) != null) {
-                writer.println("You allredy loggined, connection has been closed");
-                throw new IOException("User allredy loggined");
+    /**
+     * Проверяет введенные данные и авторизует пользователя.
+     * @param login
+     * @param password
+     * @return Зарегистрированный или новый пользователь
+     * @throws IOException
+     */
+    public User authorize(String login, String password) throws IOException {
+        User user;
+        String userId = usersManager.isRegistered(login, password);
+        if (userId!= null) {
+            user = usersManager.getRegisteredUser(userId);
+            if (userSessionManager.isActive(user) == null) {
+                userSessionManager.doActive(userId,
+                        userSessionManager.createUserSession(user));
+                return user;
+            } else {
+                throw new IOException("User allredy authorized");
             }
-            writer.println("Hello, please enter password:");
-            if (reader.hasNextLine()){
-                pass = reader.nextLine();
-                while (!registeredUser.getPassword().equals(pass)){
-                    writer.println("Wrong password");
-                    writer.println("Hello, please enter password:");
-                    pass = reader.nextLine();
-                }
-                    writer.printf("Hello %s !!!", login);
-                    writer.println();
-                    String userSession = userSessionManager.createUserSession(registeredUser);
-                    userSessionManager.doActive(userSession, userId);
-                    clientId = Integer.parseInt(registeredUser.getUserId());
-            }
-        }else{
-            writer.println("Hello, please enter password:");
-            if (reader.hasNextLine()) {
-                pass = reader.nextLine();
-            }
-            User newuser = usersManager.createUser(String.valueOf(clientId),login,pass);
-            String userSession = userSessionManager.createUserSession(newuser);
-            userSessionManager.doActive(userSession, String.valueOf(clientId));
-            writer.printf("Hello %s !!!", login);
-            writer.println();
+        }else {
+            user = new User ();
+            user.setLogin(login);
+            user.setPassword(password);
+            user.setUserId(String.valueOf(Math.random()));
+            userSessionManager.doActive(user.getUserId(),
+                    userSessionManager.createUserSession(user));
+            return user;
         }
     }
 }

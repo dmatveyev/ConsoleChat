@@ -23,21 +23,27 @@ public class UserSessionManager {
     public String createUserSession (User user) {
         return user.getUserId().concat(user.getLogin()).concat(user.getPassword());
     }
-    public String isActive(String id) {
+
+    /**
+     * Проверяет есть ли активный пользователь под этой сессией
+     * @param user пользователь для проверки
+     * @return String сессия пользователя, если есть активный пользователь. Null, если нет активного пользователя.
+     */
+    public String isActive(User user) {
         for(Map.Entry<String, String> entry: userSession.entrySet()) {
-            if ( entry.getValue().equals(id))
-                return  entry.getKey();
+            if ( entry.getKey().equals(user))
+                return  entry.getValue();
         }
         return null;
     }
 
-    public boolean doActive(String session, String id) {
-        userSession.put(session, id );
+    public boolean doActive(String userId, String session) {
+        userSession.put(userId, session );
         return true;
     }
 
-    public boolean doUnactive(String session) {
-        userSession.remove(session);
+    public boolean doUnactive(String userId) {
+        userSession.put(userId, "");
         return true;
     }
 
