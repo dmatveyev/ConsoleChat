@@ -21,6 +21,8 @@ public class Server {
     public Server(int port) {
         try {
             serverSocket = new ServerSocket(port);
+            System.out.printf("Server started on port %s", port);
+            System.out.println();
             while (true) {
                 clientSocket = serverSocket.accept();
                 System.out.println("Spawing " + ++clientId);

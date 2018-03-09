@@ -64,6 +64,7 @@
                     <target>${jdk.version}</target>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
     <dependencies>
