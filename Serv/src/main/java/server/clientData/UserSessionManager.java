@@ -31,10 +31,10 @@ public class UserSessionManager {
      */
     public String isActive(User user) {
         for(Map.Entry<String, String> entry: userSession.entrySet()) {
-            if ( entry.getKey().equals(user))
-                return  entry.getValue();
+            if ( entry.getKey().equals(user.getUserId()))
+                return entry.getValue();
         }
-        return null;
+        return "";
     }
 
     public boolean doActive(String userId, String session) {

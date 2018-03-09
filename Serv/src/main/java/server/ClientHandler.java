@@ -66,7 +66,9 @@ public class ClientHandler implements Runnable {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.printf ("Server error message: %s", e.getMessage());
+
+        } finally {
             if(user != null)
                 userSessionManager.doUnactive(user.getUserId());
         }

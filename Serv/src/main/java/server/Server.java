@@ -30,7 +30,7 @@ public class Server {
                 t.start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
     }
     public void sendMessageToAll(String message) {

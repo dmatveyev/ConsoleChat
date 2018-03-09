@@ -14,7 +14,6 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-
     <build>
         <finalName>Client</finalName>
         <plugins>

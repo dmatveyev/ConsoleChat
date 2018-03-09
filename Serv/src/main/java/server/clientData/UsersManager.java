@@ -72,17 +72,17 @@ public class UsersManager {
      * @return Зарегистрированный или новый пользователь
      * @throws IOException Пробоасывается в случае, если есть активная сессия пользователя.
      */
-    public User authorize(String login, String password) throws IOException {
+    public synchronized User authorize(String login, String password) throws IOException {
         User user;
         String userId = usersManager.isRegistered(login, password);
         if (userId!= null) {
             user = usersManager.getRegisteredUser(userId);
-            if (userSessionManager.isActive(user) == null) {
+            if (userSessionManager.isActive(user) == "") {
                 userSessionManager.doActive(userId,
                         userSessionManager.createUserSession(user));
                 return user;
             } else {
-                throw new IOException("User allredy authorized");
+                throw new IOException("User " +user.getLogin()  + " already authorized");
             }
         }else {
             user = new User ();
@@ -91,7 +91,7 @@ public class UsersManager {
             String userid = String.valueOf(Math.random());
             user.setUserId(userid);
             registerUser(user);
-            users.put(userid, user);
+
             userSessionManager.doActive(user.getUserId(),
                     userSessionManager.createUserSession(user));
             return user;
