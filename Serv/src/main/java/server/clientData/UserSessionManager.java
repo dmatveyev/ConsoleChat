@@ -55,10 +55,11 @@ public class UserSessionManager {
 
     public boolean doActive(String userId, String session) {
         try (Connection conn = connectDB.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("insert into user_session (id, session)" +
-                    " values (?,?)");
-            st.setString(1,userId);
-            st.setString(2, session);
+            PreparedStatement st = conn.prepareStatement("update user_session" +
+                    " set session = ?" +
+                    " where id = ?");
+            st.setString(2,userId);
+            st.setString(1, session);
             st.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -55,7 +55,11 @@ public class UsersManager {
         statement.setString(2, user.getLogin());
         statement.setString(3, user.getPassword());
         statement.executeUpdate();
-        users.put(id, user);
+        PreparedStatement session = conn.prepareStatement("insert into user_session" +
+                " (id, session) values (?,?)");
+        session.setString(1, id);
+        session.setString(2, null);
+        session.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -142,3 +146,4 @@ public class UsersManager {
         }
     }
 }
+
