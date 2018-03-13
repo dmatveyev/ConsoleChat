@@ -45,8 +45,8 @@ public class UserSessionManager {
                     " where id = ?");
             st.setString(1, user.getUserId());
             ResultSet result = st.executeQuery();
-            result.next();
-            session= result.getString(1);
+            if (result.next())
+                session= result.getString(1);
         } catch (SQLException e) {
             e.printStackTrace();
         }

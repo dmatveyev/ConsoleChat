@@ -76,7 +76,7 @@ public class UsersManager {
     Этот метод должен считывать данные из базы.
      */
     public String isRegistered(String login, String password) {
-        String userId = "";
+        String userId = null;
         try (Connection conn = connectDB.getConnection()) {
             PreparedStatement st = conn.prepareStatement("select * from users where login = ? and password = ?");
             st.setString(1,login);
@@ -100,17 +100,28 @@ public class UsersManager {
         st.setString(1, id);
             ResultSet res = st.executeQuery();
             res.next();
-            user.setUserId(res.getString(1));
-            user.setLogin(res.getString(2));
-            user.setPassword(res.getString(3));
+                user.setUserId(res.getString(1));
+                user.setLogin(res.getString(2));
+                user.setPassword(res.getString(3));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return user;
     }
 
-    public User deleteUser(String id) {
-        return users.remove(id);
+    public void deleteUser(String id) {
+        try (Connection conn = connectDB.getConnection()) {
+            PreparedStatement st = conn.prepareStatement("delete from user_session where id = ?");
+            st.setString(1, id);
+            PreparedStatement st2 = conn.prepareStatement("delete from users where id = ?");
+            st.setString(1, id);
+            st.executeUpdate();
+            st2.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -123,7 +134,7 @@ public class UsersManager {
     public synchronized User authorize(String login, String password) throws IOException {
         User user;
         String userId = usersManager.isRegistered(login, password);
-        if (userId!= "") {
+        if (userId!= null) {
             user = usersManager.getRegisteredUser(userId);
             if (userSessionManager.isActive(user) == ""|| userSessionManager.isActive(user) == null) {
                 userSessionManager.doActive(userId,

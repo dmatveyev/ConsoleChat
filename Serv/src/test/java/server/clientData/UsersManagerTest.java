@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.regex.Matcher;
+
 import static org.junit.Assert.*;
 
 /**
@@ -18,14 +20,14 @@ public class UsersManagerTest {
         test = new User();
         test.setLogin("test");
         test.setPassword("test");
-        test.setUserId("00");
+        test.setUserId(String.valueOf(Math.random()));
         usersManager = UsersManager.getInstance();
 
     }
 
     @After
     public void tearDown() throws Exception {
-        usersManager.deleteUser(test.getUserId());
+       // usersManager.deleteUser(test.getUserId());
     }
 
     @Test
@@ -47,6 +49,7 @@ public class UsersManagerTest {
     public void getRegisteredUser() throws Exception {
         usersManager.registerUser(test);
         assertEquals(test, usersManager.getRegisteredUser(test.getUserId()));
+
     }
 
     @Test

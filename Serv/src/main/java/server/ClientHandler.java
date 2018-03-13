@@ -37,10 +37,10 @@ public class ClientHandler implements Runnable {
     public void run() {
         try(InputStream inputStream = clientSocket.getInputStream()) {
             Scanner in = new Scanner(inputStream, "UTF-8");
-            String login = "";
-            String pass= "";
             user = null;
             while (user == null) {
+                String login = "";
+                String pass= "";
                 out.println("Hello, please enter login:");
                 if (in.hasNextLine()) {
                     login = in.nextLine();

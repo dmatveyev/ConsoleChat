@@ -94,10 +94,10 @@ public class ClientHandlerTest {
         String s2 = client.read();
         assertNotEquals("Hello, failedDuplicateLogin!!!",s2);
     }
-    @Test
+   /* @Test
     public void ignoreBackspaseInLogin (){
 
-    }
+    }*/
 }
 class Client {
     Socket socket;
