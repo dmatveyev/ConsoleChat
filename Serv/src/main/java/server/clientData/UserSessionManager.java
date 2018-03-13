@@ -1,5 +1,11 @@
 package server.clientData;
 
+import server.databaseConnect.ConnectDB;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -7,10 +13,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Денис on 08.03.2018.
  */
 public class UserSessionManager {
+    private ConnectDB connectDB;
     private static UserSessionManager instance;
     private Map<String, String> userSession;
 
     private UserSessionManager() {
+        connectDB = new ConnectDB();
         userSession = new ConcurrentHashMap<>();
     }
 
@@ -21,7 +29,8 @@ public class UserSessionManager {
     }
 
     public String createUserSession (User user) {
-        return user.getUserId().concat(user.getLogin()).concat(user.getPassword());
+        String session = user.getUserId().concat(user.getLogin()).concat(user.getPassword());
+        return session;
     }
 
     /**
@@ -30,20 +39,43 @@ public class UserSessionManager {
      * @return String сессия пользователя, если есть активный пользователь. Null, если нет активного пользователя.
      */
     public String isActive(User user) {
-        for(Map.Entry<String, String> entry: userSession.entrySet()) {
-            if ( entry.getKey().equals(user.getUserId()))
-                return entry.getValue();
+        String session = "";
+        try (Connection conn = connectDB.getConnection()) {
+            PreparedStatement st = conn.prepareStatement("select session from user_session" +
+                    " where id = ?");
+            st.setString(1, user.getUserId());
+            ResultSet result = st.executeQuery();
+            result.next();
+            session= result.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return "";
+        return session;
     }
 
     public boolean doActive(String userId, String session) {
-        userSession.put(userId, session );
+        try (Connection conn = connectDB.getConnection()) {
+            PreparedStatement st = conn.prepareStatement("insert into user_session (id, session)" +
+                    " values (?,?)");
+            st.setString(1,userId);
+            st.setString(2, session);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
     public boolean doUnactive(String userId) {
-        userSession.put(userId, "");
+        try (Connection conn = connectDB.getConnection()) {
+            PreparedStatement st = conn.prepareStatement("update user_session" +
+                    " set session = null" +
+                    " where id = ?");
+            st.setString(1,userId);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 

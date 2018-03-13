@@ -1,6 +1,12 @@
 package server.clientData;
 
+import server.databaseConnect.ConnectDB;
+
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,12 +16,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UsersManager {
 
     private static UsersManager usersManager;
+    private ConnectDB connectDB;
 
     private Map<String,User> users;
     private UserSessionManager userSessionManager;
 
 
     private UsersManager () {
+        connectDB = new ConnectDB();
         userSessionManager = UserSessionManager.getInstance();
         User admin = createAdmin();
         users = new ConcurrentHashMap<>();
@@ -36,9 +44,21 @@ public class UsersManager {
         }
         return usersManager;
     }
-    public String registerUser(User user) {
+    /*
+    В этом методе добавить вставку пользователя в базу данных
+     */
+    public String registerUser(User user)  {
         String id = user.getUserId();
+        try(Connection conn = connectDB.getConnection()) {
+        PreparedStatement statement = conn.prepareStatement("insert into users (id,login, password) values (?,?,?)");
+        statement.setString(1, id);
+        statement.setString(2, user.getLogin());
+        statement.setString(3, user.getPassword());
+        statement.executeUpdate();
         users.put(id, user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return id;
     }
 
@@ -48,17 +68,41 @@ public class UsersManager {
      * @param password пароль пользователя
      * @return Id пользователя, если такой пользователь был найден
      */
+    /*
+    Этот метод должен считывать данные из базы.
+     */
     public String isRegistered(String login, String password) {
-        for(Map.Entry<String, User> entry: users.entrySet()) {
-            if (entry.getValue().getLogin().equals(login)
-                    && entry.getValue().getPassword().equals(password)) {
-                return entry.getValue().getUserId();
+        String userId = "";
+        try (Connection conn = connectDB.getConnection()) {
+            PreparedStatement st = conn.prepareStatement("select * from users where login = ? and password = ?");
+            st.setString(1,login);
+            st.setString(2, password);
+            ResultSet res = st.executeQuery();
+            if (res.next()) {
+                userId = res.getString(1);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return null;
+        return userId;
     }
+    /*
+    Этот метод должен обращаться к базе.
+     */
     public User getRegisteredUser(String id) {
-       return users.get(id);
+        User user = new User();
+        try (Connection conn = connectDB.getConnection()) {
+        PreparedStatement st = conn.prepareStatement("select * from users where id = ?");
+        st.setString(1, id);
+            ResultSet res = st.executeQuery();
+            res.next();
+            user.setUserId(res.getString(1));
+            user.setLogin(res.getString(2));
+            user.setPassword(res.getString(3));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public User deleteUser(String id) {
@@ -75,9 +119,9 @@ public class UsersManager {
     public synchronized User authorize(String login, String password) throws IOException {
         User user;
         String userId = usersManager.isRegistered(login, password);
-        if (userId!= null) {
+        if (userId!= "") {
             user = usersManager.getRegisteredUser(userId);
-            if (userSessionManager.isActive(user) == "") {
+            if (userSessionManager.isActive(user) == ""|| userSessionManager.isActive(user) == null) {
                 userSessionManager.doActive(userId,
                         userSessionManager.createUserSession(user));
                 return user;
