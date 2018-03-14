@@ -27,7 +27,7 @@ public class UsersManagerTest {
 
     @After
     public void tearDown() throws Exception {
-       // usersManager.deleteUser(test.getUserId());
+       usersManager.deleteUser(test.getUserId());
     }
 
     @Test
@@ -55,6 +55,16 @@ public class UsersManagerTest {
     @Test
     public void authorizeNewUser() throws Exception {
         assertEquals(test, usersManager.authorize("test", "test"));
+    }
+
+    @Test
+    public void authorizeOldUser() throws Exception {
+        User oldUser = new User();
+        oldUser.setUserId(String.valueOf(Math.random()));
+        oldUser.setLogin("OldUser");
+        oldUser.setPassword("OldUser");
+        usersManager.registerUser(oldUser);
+        assertEquals(oldUser, usersManager.authorize("OldUser", "OldUser"));
     }
 
 }

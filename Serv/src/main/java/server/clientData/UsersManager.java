@@ -1,6 +1,7 @@
 package server.clientData;
 
 import server.databaseConnect.ConnectDB;
+import server.databaseConnect.UserDAO;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -16,26 +17,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UsersManager {
 
     private static UsersManager usersManager;
-    private ConnectDB connectDB;
-
-    private Map<String,User> users;
+    private UserDAO userDAO;
     private UserSessionManager userSessionManager;
 
 
     private UsersManager () {
-        connectDB = new ConnectDB();
+        userDAO = new UserDAO();
         userSessionManager = UserSessionManager.getInstance();
-        User admin = createAdmin();
-        users = new ConcurrentHashMap<>();
-        users.put("0",admin);
+        //createAdmin();
     }
 
-    private User createAdmin() {
+    private void createAdmin() {
         User admin = new User();
+        admin.setUserId("999");
         admin.setLogin("admin");
         admin.setPassword("password");
-
-        return admin;
+        userDAO.insert(admin);
     }
 
     public static UsersManager getInstance() {
@@ -44,84 +41,29 @@ public class UsersManager {
         }
         return usersManager;
     }
-    /*
-    В этом методе добавить вставку пользователя в базу данных
-     */
+
     public String registerUser(User user)  {
-        String id = user.getUserId();
-        try(Connection conn = connectDB.getConnection()) {
-        PreparedStatement statement = conn.prepareStatement("insert into users (id,login, password) values (?,?,?)");
-        statement.setString(1, id);
-        statement.setString(2, user.getLogin());
-        statement.setString(3, user.getPassword());
-        statement.executeUpdate();
-        PreparedStatement session = conn.prepareStatement("insert into user_session" +
-                " (id, session) values (?,?)");
-        session.setString(1, id);
-        session.setString(2, null);
-        session.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return id;
+         userDAO.insert(user);
+        return user.getUserId();
     }
 
     /**
      * Проверяет совпадение пользователя в списке зарегистрированных
      * @param login логин пользователя
      * @param password пароль пользователя
-     * @return Id пользователя, если такой пользователь был найден
-     */
-    /*
-    Этот метод должен считывать данные из базы.
+     * @return Id пользователя, если такой пользователь был найден,
+     * null если пользователь не найден
      */
     public String isRegistered(String login, String password) {
-        String userId = null;
-        try (Connection conn = connectDB.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("select * from users where login = ? and password = ?");
-            st.setString(1,login);
-            st.setString(2, password);
-            ResultSet res = st.executeQuery();
-            if (res.next()) {
-                userId = res.getString(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return userId;
+        return userDAO.getUserId(login, password);
     }
-    /*
-    Этот метод должен обращаться к базе.
-     */
-    public User getRegisteredUser(String id) {
-        User user = new User();
-        try (Connection conn = connectDB.getConnection()) {
-        PreparedStatement st = conn.prepareStatement("select * from users where id = ?");
-        st.setString(1, id);
-            ResultSet res = st.executeQuery();
-            res.next();
-                user.setUserId(res.getString(1));
-                user.setLogin(res.getString(2));
-                user.setPassword(res.getString(3));
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return user;
+    public User getRegisteredUser(String id) {
+        return userDAO.get(id);
     }
 
     public void deleteUser(String id) {
-        try (Connection conn = connectDB.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("delete from user_session where id = ?");
-            st.setString(1, id);
-            PreparedStatement st2 = conn.prepareStatement("delete from users where id = ?");
-            st.setString(1, id);
-            st.executeUpdate();
-            st2.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+       userDAO.delete(id);
     }
 
     /**
@@ -136,9 +78,10 @@ public class UsersManager {
         String userId = usersManager.isRegistered(login, password);
         if (userId!= null) {
             user = usersManager.getRegisteredUser(userId);
-            if (userSessionManager.isActive(user) == ""|| userSessionManager.isActive(user) == null) {
-                userSessionManager.doActive(userId,
-                        userSessionManager.createUserSession(user));
+            Session ss = userSessionManager.isActive(user);
+            if (ss.getName() == null) {
+                ss = userSessionManager.createUserSession(user);
+                userSessionManager.doActive(ss);
                 return user;
             } else {
                 throw new IOException("User " +user.getLogin()  + " already authorized");
@@ -150,9 +93,7 @@ public class UsersManager {
             String userid = String.valueOf(Math.random());
             user.setUserId(userid);
             registerUser(user);
-
-            userSessionManager.doActive(user.getUserId(),
-                    userSessionManager.createUserSession(user));
+            userSessionManager.doActive(userSessionManager.createUserSession(user));
             return user;
         }
     }

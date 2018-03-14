@@ -1,5 +1,6 @@
 package server;
 
+import server.clientData.Session;
 import server.clientData.User;
 import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
@@ -56,7 +57,9 @@ public class ClientHandler implements Runnable {
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 if (line.equals("exit")) {
-                    userSessionManager.doUnactive(user.getUserId());
+                    Session ss =  userSessionManager.isActive(user);
+                    ss.setName(null);
+                    userSessionManager.doUnactive(ss);
                     clientSocket.close();
                     out.close();
                 } else {
@@ -69,8 +72,11 @@ public class ClientHandler implements Runnable {
             System.err.printf ("Server error message: %s", e.getMessage());
 
         } finally {
-            if(user != null)
-                userSessionManager.doUnactive(user.getUserId());
+            if(user != null) {
+                Session ss = userSessionManager.isActive(user);
+                ss.setName(null);
+                userSessionManager.doUnactive(ss);
+            }
         }
     }
 
