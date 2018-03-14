@@ -1,12 +1,13 @@
 package client;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-/**
+/**Отвечает за серриализацию и отправку объекта UserMessage
  * Created by Денис on 06.03.2018.
  */
 public class SocketWriter implements Runnable {
@@ -18,11 +19,11 @@ public class SocketWriter implements Runnable {
     @Override
     public void run() {
         try (Scanner in = new Scanner(System.in);
-             PrintWriter out = new PrintWriter(
-                     new OutputStreamWriter(clientS.getOutputStream())
-                     , true)) {
+             ObjectOutputStream out = new ObjectOutputStream(clientS.getOutputStream())){
+            String text= "";
             while(in.hasNextLine()){
-                out.println(in.nextLine());
+               text =in.nextLine();
+
             }
         } catch (IOException e) {
             e.printStackTrace();
