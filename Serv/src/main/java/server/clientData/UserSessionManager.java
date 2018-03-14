@@ -1,14 +1,6 @@
 package server.clientData;
 
-import server.databaseConnect.ConnectDB;
 import server.databaseConnect.SessionDAO;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Денис on 08.03.2018.

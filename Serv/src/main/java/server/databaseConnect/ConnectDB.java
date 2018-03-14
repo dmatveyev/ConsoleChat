@@ -2,16 +2,7 @@ package server.databaseConnect;
 
 import com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-import com.microsoft.sqlserver.jdbc.SQLServerPooledConnection;
-
-import javax.sql.DataSource;
-import javax.sql.PooledConnection;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
-
 import java.sql.SQLException;
 import java.util.Properties;
 
