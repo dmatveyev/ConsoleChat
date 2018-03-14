@@ -1,7 +1,5 @@
 package client;
 
-import client.message.MessageHandler;
-
 import java.io.IOException;
 
 import java.net.Socket;
@@ -16,8 +14,6 @@ public class Client {
     public Client(int port) {
         try {
             Socket clientS = new Socket("localhost", port);
-            MessageHandler handler = new MessageHandler(clientS);
-            handler.authorize();
             Thread read = new Thread (new SocketReader(clientS));
             Thread write = new Thread (new SocketWriter(clientS));
             read.start();
