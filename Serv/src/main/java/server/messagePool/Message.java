@@ -2,13 +2,14 @@ package server.messagePool;
 
 import server.clientData.User;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
  * Created by Денис on 06.03.2018.
  */
-public class Message {
+public class Message implements Serializable {
     private String text;
     User user;
     private LocalDate date;
