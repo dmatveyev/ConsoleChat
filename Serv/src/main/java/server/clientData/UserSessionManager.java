@@ -1,5 +1,12 @@
 package server.clientData;
 
+import server.databaseConnect.ConnectDB;
+import server.databaseConnect.SessionDAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -7,11 +14,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Денис on 08.03.2018.
  */
 public class UserSessionManager {
+    private SessionDAO sessionDAO;
     private static UserSessionManager instance;
-    private Map<String, String> userSession;
+
 
     private UserSessionManager() {
-        userSession = new ConcurrentHashMap<>();
+        sessionDAO = new SessionDAO();
     }
 
     public static UserSessionManager getInstance(){
@@ -20,30 +28,28 @@ public class UserSessionManager {
         return instance;
     }
 
-    public String createUserSession (User user) {
-        return user.getUserId().concat(user.getLogin()).concat(user.getPassword());
+    public Session createUserSession (User user) {
+        String session = user.getUserId().concat(user.getLogin()).concat(user.getPassword());
+        return new Session(user.getUserId(), session);
     }
 
     /**
      * Проверяет есть ли активный пользователь под этой сессией
      * @param user пользователь для проверки
-     * @return String сессия пользователя, если есть активный пользователь. Null, если нет активного пользователя.
+     * @return Объект сессии пользователя, если есть активный пользователь. Null, если нет активного пользователя.
      */
-    public String isActive(User user) {
-        for(Map.Entry<String, String> entry: userSession.entrySet()) {
-            if ( entry.getKey().equals(user.getUserId()))
-                return entry.getValue();
-        }
-        return "";
+    public Session isActive(User user) {
+        return sessionDAO.get(user.getUserId());
+
     }
 
-    public boolean doActive(String userId, String session) {
-        userSession.put(userId, session );
+    public boolean doActive(Session session) {
+        sessionDAO.update(session);
         return true;
     }
 
-    public boolean doUnactive(String userId) {
-        userSession.put(userId, "");
+    public boolean doUnactive(Session session) {
+        sessionDAO.update(session);
         return true;
     }
 

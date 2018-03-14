@@ -1,6 +1,13 @@
 package server.clientData;
 
+import server.databaseConnect.ConnectDB;
+import server.databaseConnect.UserDAO;
+
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,24 +17,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UsersManager {
 
     private static UsersManager usersManager;
-
-    private Map<String,User> users;
+    private UserDAO userDAO;
     private UserSessionManager userSessionManager;
 
 
     private UsersManager () {
+        userDAO = new UserDAO();
         userSessionManager = UserSessionManager.getInstance();
-        User admin = createAdmin();
-        users = new ConcurrentHashMap<>();
-        users.put("0",admin);
+        //createAdmin();
     }
 
-    private User createAdmin() {
+    private void createAdmin() {
         User admin = new User();
+        admin.setUserId("999");
         admin.setLogin("admin");
         admin.setPassword("password");
-
-        return admin;
+        userDAO.insert(admin);
     }
 
     public static UsersManager getInstance() {
@@ -36,33 +41,29 @@ public class UsersManager {
         }
         return usersManager;
     }
-    public String registerUser(User user) {
-        String id = user.getUserId();
-        users.put(id, user);
-        return id;
+
+    public String registerUser(User user)  {
+         userDAO.insert(user);
+        return user.getUserId();
     }
 
     /**
      * Проверяет совпадение пользователя в списке зарегистрированных
      * @param login логин пользователя
      * @param password пароль пользователя
-     * @return Id пользователя, если такой пользователь был найден
+     * @return Id пользователя, если такой пользователь был найден,
+     * null если пользователь не найден
      */
     public String isRegistered(String login, String password) {
-        for(Map.Entry<String, User> entry: users.entrySet()) {
-            if (entry.getValue().getLogin().equals(login)
-                    && entry.getValue().getPassword().equals(password)) {
-                return entry.getValue().getUserId();
-            }
-        }
-        return null;
-    }
-    public User getRegisteredUser(String id) {
-       return users.get(id);
+        return userDAO.getUserId(login, password);
     }
 
-    public User deleteUser(String id) {
-        return users.remove(id);
+    public User getRegisteredUser(String id) {
+        return userDAO.get(id);
+    }
+
+    public void deleteUser(String id) {
+       userDAO.delete(id);
     }
 
     /**
@@ -77,9 +78,10 @@ public class UsersManager {
         String userId = usersManager.isRegistered(login, password);
         if (userId!= null) {
             user = usersManager.getRegisteredUser(userId);
-            if (userSessionManager.isActive(user) == "") {
-                userSessionManager.doActive(userId,
-                        userSessionManager.createUserSession(user));
+            Session ss = userSessionManager.isActive(user);
+            if (ss.getName() == null) {
+                ss = userSessionManager.createUserSession(user);
+                userSessionManager.doActive(ss);
                 return user;
             } else {
                 throw new IOException("User " +user.getLogin()  + " already authorized");
@@ -91,10 +93,9 @@ public class UsersManager {
             String userid = String.valueOf(Math.random());
             user.setUserId(userid);
             registerUser(user);
-
-            userSessionManager.doActive(user.getUserId(),
-                    userSessionManager.createUserSession(user));
+            userSessionManager.doActive(userSessionManager.createUserSession(user));
             return user;
         }
     }
 }
+
