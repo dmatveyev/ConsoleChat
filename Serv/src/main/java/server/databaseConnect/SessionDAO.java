@@ -50,8 +50,6 @@ public class SessionDAO implements DAO<Session> {
         }
 
     }
-
-
     @Override
     public void delete(final String userId) {
     }

@@ -50,7 +50,9 @@ public class ClientHandler implements Runnable {
                 if (in.hasNextLine()) {
                     pass = in.nextLine();
                 }
-                user = usersManager.authorize(login, pass);
+                if (login != "" && pass != "") {
+                    user = usersManager.authorize(login, pass);
+                } else throw new IOException("The client broke the connection");
             }
             out.printf("Hello, %s!!!", user.getLogin());
             out.println();
@@ -70,7 +72,6 @@ public class ClientHandler implements Runnable {
             }
         } catch (IOException e) {
             System.err.printf ("Server error message: %s", e.getMessage());
-
         } finally {
             if(user != null) {
                 Session ss = userSessionManager.isActive(user);
