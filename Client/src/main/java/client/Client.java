@@ -14,8 +14,8 @@ public class Client {
     public Client(int port) {
         try {
             Socket clientS = new Socket("localhost", port);
-            Thread read = new Thread (new SocketReader(clientS));
-            Thread write = new Thread (new SocketWriter(clientS));
+            Thread read = new Thread (new SocketReader(clientS.getInputStream()));
+            Thread write = new Thread (new SocketWriter(clientS.getOutputStream()));
             read.start();
             write.start();
         } catch (UnknownHostException e) {

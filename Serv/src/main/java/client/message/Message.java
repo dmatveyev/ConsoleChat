@@ -1,4 +1,4 @@
-package server.messagePool;
+package client.message;
 
 import server.clientData.User;
 
@@ -11,7 +11,7 @@ import java.time.LocalTime;
  */
 public class Message implements Serializable {
     private String text;
-    User user;
+    private String userId;
     private LocalDate date;
     private LocalTime time;
 
@@ -19,9 +19,9 @@ public class Message implements Serializable {
         return time;
     }
 
-    public Message (String text, User user, LocalDate date, LocalTime time) {
+    public Message (String text, String userId, LocalDate date, LocalTime time) {
         this.text = text;
-        this.user = user;
+        this.userId = userId;
         this.date = date;
         this.time = time;
 
@@ -37,6 +37,6 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return getDate().toString() +"T"+ getTime()
-                + " "+ user.getLogin()+": " + getText() ;
+                + " "+ userId+": " + getText() ;
     }
 }

@@ -1,9 +1,11 @@
 package client.message;
 
+import java.io.Serializable;
+
 /**
  * Created by Денис on 14.03.2018.
  */
-public class User {
+public class User implements Serializable{
 
         private String userId;
         private String login;

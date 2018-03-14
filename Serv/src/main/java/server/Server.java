@@ -2,6 +2,8 @@ package server;
 
 
 
+import client.message.Message;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -35,7 +37,7 @@ public class Server {
             e.getMessage();
         }
     }
-    public void sendMessageToAll(String message) {
+    public void sendMessageToAll(Message message) {
         for(ClientHandler c: clients){
             c.printMessage(message);
         }

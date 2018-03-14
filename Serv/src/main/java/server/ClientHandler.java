@@ -1,15 +1,11 @@
 package server;
 
-import server.clientData.Session;
 import server.clientData.User;
 import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
-import server.messagePool.Message;
+import client.message.Message;
 import java.io.*;
 import java.net.Socket;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Scanner;
 
 /**
  * Created by Денис on 06.03.2018.
@@ -17,7 +13,7 @@ import java.util.Scanner;
 public class ClientHandler implements Runnable {
     private Server server;
     private Socket clientSocket;
-    private PrintWriter out;
+    private ObjectOutputStream out;
     private User user;
     private UsersManager usersManager;
     private UserSessionManager userSessionManager;
@@ -28,8 +24,7 @@ public class ClientHandler implements Runnable {
         this.usersManager = UsersManager.getInstance();
         this.userSessionManager = UserSessionManager.getInstance();
         try {
-            this.out  = new PrintWriter(new OutputStreamWriter(this.clientSocket.getOutputStream(),
-                    "UTF-8"), true);
+            this.out  = new ObjectOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,51 +32,26 @@ public class ClientHandler implements Runnable {
 
     public void run() {
         try(InputStream inputStream = clientSocket.getInputStream()) {
-            Scanner in = new Scanner(inputStream, "UTF-8");
-            user = null;
-            while (user == null) {
-                String login = "";
-                String pass= "";
-                out.println("Hello, please enter login:");
-                if (in.hasNextLine()) {
-                    login = in.nextLine();
-                }
-                out.println("Please enter password");
-                if (in.hasNextLine()) {
-                    pass = in.nextLine();
-                }
-                if (login != "" && pass != "") {
-                    user = usersManager.authorize(login, pass);
-                } else throw new IOException("The client broke the connection");
-            }
-            out.printf("Hello, %s!!!", user.getLogin());
-            out.println();
-            while (in.hasNextLine()) {
-                String line = in.nextLine();
-                if (line.equals("exit")) {
-                    Session ss =  userSessionManager.isActive(user);
-                    ss.setName(null);
-                    userSessionManager.doUnactive(ss);
-                    clientSocket.close();
-                    out.close();
-                } else {
-                    Message message = new Message(line, user, LocalDate.now(), LocalTime.now());
-                    server.sendMessageToAll(message.toString());
-                    System.out.println(line);
-                }
+            ObjectInputStream oin = new ObjectInputStream(inputStream);
+            while (!clientSocket.isClosed()) {
+                Message clientMessage = (Message) oin.readObject();
+                server.sendMessageToAll(clientMessage);
             }
         } catch (IOException e) {
             System.err.printf ("Server error message: %s", e.getMessage());
-        } finally {
-            if(user != null) {
-                Session ss = userSessionManager.isActive(user);
-                ss.setName(null);
-                userSessionManager.doUnactive(ss);
-            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    public void printMessage(String message) {
-        out.println(message);
+    public void printMessage(Message message) {
+        try {
+            System.out.println ("sending message");
+            out.writeObject(message);
+            out.flush();
+            System.out.println ("message sent");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

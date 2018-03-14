@@ -1,11 +1,14 @@
 package server.clientData;
 
+import org.omg.PortableServer.ServantRetentionPolicy;
+
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Created by Денис on 07.03.2018.
  */
-public class User  {
+public class User implements Serializable {
     private String userId;
     private String login;
     private String password;

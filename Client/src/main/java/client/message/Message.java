@@ -7,9 +7,9 @@ import java.time.LocalTime;
 /**
  * Created by Денис on 14.03.2018.
  */
-public class UserMessage implements Serializable {
+public class Message implements Serializable {
     private String text;
-    User user;
+    private String userId;
     private LocalDate date;
     private LocalTime time;
 
@@ -17,9 +17,9 @@ public class UserMessage implements Serializable {
         return time;
     }
 
-    public UserMessage(String text, User user, LocalDate date, LocalTime time) {
+    public Message(String text, String userId, LocalDate date, LocalTime time) {
         this.text = text;
-        this.user = user;
+        this.userId = userId;
         this.date = date;
         this.time = time;
 
@@ -35,6 +35,6 @@ public class UserMessage implements Serializable {
     @Override
     public String toString() {
         return getDate().toString() +"T"+ getTime()
-                + " "+ user.getLogin()+": " + getText() ;
+                + " "+ userId+": " + getText() ;
     }
 }
