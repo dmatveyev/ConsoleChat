@@ -18,7 +18,6 @@ public class SocketWriter implements Observer {
         try {
             outputStream.writeObject(message);
             outputStream.flush();
-            System.out.println ("message sent");
         } catch (IOException e) {
             e.printStackTrace();
         }

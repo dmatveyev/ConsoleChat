@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UserMessageReader implements ClientSubject {
+    private final User user;
     private Message userMessage;
     private ArrayList<ClientObserver> observers;
     private Scanner in;
 
-    public UserMessageReader () {
+    public UserMessageReader (User user) {
+        this.user = user;
         observers = new ArrayList<>();
          in = new Scanner(System.in);
     }
@@ -38,9 +40,23 @@ public class UserMessageReader implements ClientSubject {
 
     public void read() {
         System.out.println ("Enter Login");
-        User user = new User(String.valueOf(Math.random()),"default", "default");
+
+        String login = "";
+        String password = "";
+        if (in.hasNextLine())
+            login=in.nextLine();
+        System.out.println ("Enter password");
+        if (in.hasNextLine())
+            password =in.nextLine();
+        user.setLogin(login);
+        user.setPassword(password);
+        userMessage = new Message(login.concat(":").concat(password),login,
+                LocalDate.now(), LocalTime.now());
+        userMessage.setMessageType("auth");
+        notifyObservers();
+        //переключаемся на чтение обычных сообщений
         while (in.hasNextLine()){
-            userMessage = new Message(in.nextLine(), user.getUserId(),
+            userMessage = new Message(in.nextLine(), user.getLogin(),
                     LocalDate.now(), LocalTime.now());
             userMessage.setMessageType("broadcast");
             notifyObservers();

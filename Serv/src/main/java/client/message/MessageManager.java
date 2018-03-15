@@ -42,7 +42,7 @@ public class MessageManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Message authMessage = new Message(user.getUserId(),user.getUserId(),
+            Message authMessage = new Message(user.getUserId(),user.getLogin(),
                     LocalDate.now(), LocalTime.now());
             authMessage.setMessageType("auth");
             handlers.get(handlerId).printMessage(authMessage);

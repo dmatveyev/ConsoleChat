@@ -1,23 +1,35 @@
 package client;
 
 import client.message.Message;
+import client.message.User;
 
 import java.util.ArrayList;
 
 public class MessageManager implements Observer, Subject, ClientObserver {
+    private final User user;
     private Message message;
-    private Message userMessage;
+
     private ArrayList<Observer> observers;
 
-    public MessageManager() {
+    public MessageManager(User user) {
+        this.user = user;
         observers = new ArrayList<>();
     }
 
 
+    public void doMessage() {
+        String msgType = message.getMessageType();
+        if (msgType.equals("broadcast"))
+            display();
+        if (msgType.equals("auth")){
+            user.setUserId(message.getText());
+            System.out.printf("Hello, %s!!!\n", user.getLogin());
+        }
+    }
     @Override
     public void update(Message message) {
         this.message = message;
-        display();
+        doMessage();
     }
     public void display() {
         System.out.println(message);
@@ -42,7 +54,7 @@ public class MessageManager implements Observer, Subject, ClientObserver {
 
     @Override
     public void updateClient(final Message userMessage) {
-            this.userMessage = userMessage;
+
             for (Observer observer: observers) {
                 observer.update(userMessage);
             }
