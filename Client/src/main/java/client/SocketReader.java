@@ -12,10 +12,10 @@ import java.util.ArrayList;
  * Created by Денис on 06.03.2018.
  */
 public class SocketReader implements Runnable, Subject {
-    private InputStream in;
+    private ObjectInputStream in;
     private ArrayList<Observer> observers;
     private Message message;
-    public SocketReader(InputStream in) {
+    public SocketReader(ObjectInputStream in) {
         this.in = in;
         observers = new ArrayList<>();
     }
@@ -23,13 +23,12 @@ public class SocketReader implements Runnable, Subject {
 
     @Override
     public void run() {
-        try(ObjectInputStream oin = new ObjectInputStream(in)) {
+        try {
             //Не уверен в условии чтения.
             while (true) {
-                message = (Message) oin.readObject();
+                message = (Message) in.readObject();
                 notifyObservers();
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

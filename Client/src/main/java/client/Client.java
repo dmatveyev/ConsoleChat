@@ -4,6 +4,8 @@ import client.message.Message;
 
 import java.io.IOException;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -16,14 +18,19 @@ public class Client {
     public Client(int port) {
         try {
             Socket clientS = new Socket("localhost", port);
+            ObjectInputStream in = new ObjectInputStream(clientS.getInputStream());
+            ObjectOutputStream out = new ObjectOutputStream(clientS.getOutputStream());
             MessageManager manager = new MessageManager();
-            SocketReader reader =  new SocketReader(clientS.getInputStream());
-            SocketWriter writer =  new SocketWriter(clientS.getOutputStream());
+            SocketReader reader =  new SocketReader(in);
+            SocketWriter writer =  new SocketWriter(out);
+            UserMessageReader userMessageReader = new UserMessageReader();
+            manager.registerObserver(writer);
+            userMessageReader.registerObserver(manager);
             reader.registerObserver(manager);
             Thread read = new Thread (reader);
-            Thread write = new Thread (writer);
             read.start();
-            write.start();
+            userMessageReader.read();
+
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
