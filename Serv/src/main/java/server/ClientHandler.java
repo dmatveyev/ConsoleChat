@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
 
-/**
+/**        asdf
  * Created by Денис on 06.03.2018.
  */
 public class ClientHandler implements Runnable {
