@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 /**Принимает входящее сообщение  дессериализует
@@ -29,7 +30,10 @@ public class SocketReader implements Runnable, Subject {
                 message = (Message) in.readObject();
                 notifyObservers();
             }
-        } catch (IOException e) {
+        }
+        catch ( SocketException e) {
+            System.err.println(e.getMessage());
+        }catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
