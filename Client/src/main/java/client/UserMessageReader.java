@@ -37,11 +37,12 @@ public class UserMessageReader implements ClientSubject {
     }
 
     public void read() {
-        System.out.println ("");
+        System.out.println ("Enter Login");
         User user = new User(String.valueOf(Math.random()),"default", "default");
         while (in.hasNextLine()){
             userMessage = new Message(in.nextLine(), user.getUserId(),
                     LocalDate.now(), LocalTime.now());
+            userMessage.setMessageType("broadcast");
             notifyObservers();
         }
 

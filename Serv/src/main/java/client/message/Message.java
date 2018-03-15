@@ -14,6 +14,7 @@ public class Message implements Serializable {
     private String userId;
     private LocalDate date;
     private LocalTime time;
+    private String messageType;
 
     public LocalTime getTime() {
         return time;
@@ -38,5 +39,13 @@ public class Message implements Serializable {
     public String toString() {
         return getDate().toString() +"T"+ getTime()
                 + " "+ userId+": " + getText() ;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
     }
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class Server {
 
-    private ArrayList<ClientHandler> clients = new ArrayList<>();
+
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private int clientId;

@@ -1,7 +1,13 @@
 package client.message;
 
 import server.ClientHandler;
+import server.clientData.User;
+import server.clientData.UserSessionManager;
+import server.clientData.UsersManager;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +28,25 @@ public class MessageManager {
      * и включает дальнеющую логику обработки в зависимости от типа сообщения
      */
     private void DoMessage() {
-        sendMessageToAll();
+        int handlerId = message.getHandlerId();
+        Message msg = message.getMessage();
+        String msgType  = msg.getMessageType();
+        if (msgType.equals("broadcast"))
+            sendMessageToAll();
+        if(msgType.equals("auth")){
+            UsersManager usersManager = UsersManager.getInstance();
+            String[] creds = msg.getText().split(":");
+            User user = null;
+            try {
+                user = usersManager.authorize(creds[0], creds[1]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Message authMessage = new Message(user.getUserId(),user.getUserId(),
+                    LocalDate.now(), LocalTime.now());
+            authMessage.setMessageType("auth");
+            handlers.get(handlerId).printMessage(authMessage);
+        }
     }
 
     public void update(MessagePair message) {
