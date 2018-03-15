@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class Server {
 
     private ArrayList<ClientHandler> clients = new ArrayList<>();
-
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private int clientId;
@@ -32,21 +31,14 @@ public class Server {
             messagePool.registerManager(messageManager);
             while (true) {
                 clientSocket = serverSocket.accept();
-
                 System.out.println("Spawing " + ++clientId);
-                ClientHandler clientHandler = new ClientHandler(this, clientSocket);
-                clients.add(clientHandler);
-                messageManager.addHandler(clientHandler);
+                ClientHandler clientHandler = new ClientHandler(clientId, clientSocket);
+                messageManager.addHandler(clientId,clientHandler);
                 Thread t = new Thread(clientHandler);
                 t.start();
             }
         } catch (IOException e) {
             e.getMessage();
-        }
-    }
-    public void sendMessageToAll(Message message) {
-        for(ClientHandler c: clients){
-            c.printMessage(message);
         }
     }
 }

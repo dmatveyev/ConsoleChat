@@ -1,5 +1,6 @@
 package server;
 
+import client.message.MessagePair;
 import client.message.MessagePool;
 import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
@@ -11,37 +12,28 @@ import java.net.Socket;
  * Created by Денис on 06.03.2018.
  */
 public class ClientHandler implements Runnable {
-    private Server server;
+    private int handlerId;
     private Socket clientSocket;
     private ObjectOutputStream out;
-
-    private UsersManager usersManager;
-    private UserSessionManager userSessionManager;
-
-    public ClientHandler(Server server, Socket clientSocket) {
+    public ClientHandler(int handlerId, Socket clientSocket) {
         this.clientSocket = clientSocket;
-        this.server = server;
-        this.usersManager = UsersManager.getInstance();
-        this.userSessionManager = UserSessionManager.getInstance();
+        this.handlerId = handlerId;
         try {
             this.out  = new ObjectOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public void run() {
         try(InputStream inputStream = clientSocket.getInputStream()) {
             ObjectInputStream oin = new ObjectInputStream(inputStream);
             while (!clientSocket.isClosed()) {
                 Message clientMessage = (Message) oin.readObject();
-
                 {
+                    MessagePair pair = new MessagePair(handlerId,clientMessage);
                     MessagePool messagePool = MessagePool.getInstance();
-                    messagePool.addMessage(clientMessage);
+                    messagePool.addMessage(pair);
                 }
-
-                //server.sendMessageToAll(clientMessage);
             }
         } catch (IOException e) {
             System.err.printf ("Server error message: %s", e.getMessage());
@@ -51,7 +43,6 @@ public class ClientHandler implements Runnable {
 
         }
     }
-
     public void printMessage(Message message) {
         try {
             System.out.println ("sending message");

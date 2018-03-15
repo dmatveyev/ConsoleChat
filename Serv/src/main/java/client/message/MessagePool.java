@@ -11,7 +11,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class MessagePool {
     private static MessagePool instance;
     private ArrayList<MessageManager> messageManagers;
-    private ArrayBlockingQueue<Message> queue;
+    private ArrayBlockingQueue<MessagePair> queue;
 
     private MessagePool() {
         queue = new ArrayBlockingQueue<>(100);
@@ -24,7 +24,7 @@ public class MessagePool {
         return instance;
     }
 
-    public void addMessage (Message message){
+    public void addMessage (MessagePair message){
         try {
             queue.put(message);
             notifyManagers();
@@ -33,7 +33,7 @@ public class MessagePool {
         }
     }
 
-    public Message getMessage ()  {
+    public MessagePair getMessage ()  {
         try {
             return  queue.take();
         } catch (InterruptedException e) {

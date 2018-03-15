@@ -2,33 +2,43 @@ package client.message;
 
 import server.ClientHandler;
 
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Денис on 15.03.2018.
  */
 public class MessageManager {
-    private Message message;
-    private ArrayList<ClientHandler> handlers;
+    private MessagePair message;
+    private ConcurrentHashMap<Integer, ClientHandler> handlers;
+
 
     public MessageManager() {
-        handlers = new ArrayList<>();
+        handlers = new ConcurrentHashMap<>();
     }
 
-    public void update(Message message) {
-        this.message = message;
+    /**
+     * Обрабатывает сообщение, определяет его тип,
+     * и включает дальнеющую логику обработки в зависимости от типа сообщения
+     */
+    private void DoMessage() {
         sendMessageToAll();
     }
 
+    public void update(MessagePair message) {
+        this.message = message;
+        DoMessage();
+    }
+
     public void sendMessageToAll() {
-        for (ClientHandler handler:handlers) {
-            handler.printMessage(message);
+        for (Map.Entry<Integer, ClientHandler> handler: handlers.entrySet()) {
+            handler.getValue().printMessage(message.getMessage());
         }
     }
-    public void addHandler(ClientHandler clientHandler) {
-        handlers.add(clientHandler);
+    public void addHandler(int id, ClientHandler clientHandler) {
+        handlers.put(id,clientHandler);
     }
-    public void removeHandler(ClientHandler clientHandler){
-        handlers.remove(handlers);
+    public void removeHandler(int id){
+        handlers.remove(id);
     }
 }
