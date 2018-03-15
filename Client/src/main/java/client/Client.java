@@ -1,5 +1,7 @@
 package client;
 
+import client.message.Message;
+
 import java.io.IOException;
 
 import java.net.Socket;
@@ -14,8 +16,12 @@ public class Client {
     public Client(int port) {
         try {
             Socket clientS = new Socket("localhost", port);
-            Thread read = new Thread (new SocketReader(clientS.getInputStream()));
-            Thread write = new Thread (new SocketWriter(clientS.getOutputStream()));
+            MessageManager manager = new MessageManager();
+            SocketReader reader =  new SocketReader(clientS.getInputStream());
+            SocketWriter writer =  new SocketWriter(clientS.getOutputStream());
+            reader.registerObserver(manager);
+            Thread read = new Thread (reader);
+            Thread write = new Thread (writer);
             read.start();
             write.start();
         } catch (UnknownHostException e) {
