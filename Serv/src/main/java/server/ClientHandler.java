@@ -7,7 +7,7 @@ import client.message.Message;
 import java.io.*;
 import java.net.Socket;
 
-/**
+/**        asdf
  * Created by Денис on 06.03.2018.
  */
 public class ClientHandler implements Runnable {
