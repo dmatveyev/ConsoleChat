@@ -1,6 +1,6 @@
 package server;
 
-import server.clientData.User;
+import client.message.MessagePool;
 import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
 import client.message.Message;
@@ -14,7 +14,7 @@ public class ClientHandler implements Runnable {
     private Server server;
     private Socket clientSocket;
     private ObjectOutputStream out;
-    private User user;
+
     private UsersManager usersManager;
     private UserSessionManager userSessionManager;
 
@@ -35,12 +35,20 @@ public class ClientHandler implements Runnable {
             ObjectInputStream oin = new ObjectInputStream(inputStream);
             while (!clientSocket.isClosed()) {
                 Message clientMessage = (Message) oin.readObject();
-                server.sendMessageToAll(clientMessage);
+
+                {
+                    MessagePool messagePool = MessagePool.getInstance();
+                    messagePool.addMessage(clientMessage);
+                }
+
+                //server.sendMessageToAll(clientMessage);
             }
         } catch (IOException e) {
             System.err.printf ("Server error message: %s", e.getMessage());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }finally {
+
         }
     }
 

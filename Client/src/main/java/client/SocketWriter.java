@@ -1,13 +1,9 @@
 package client;
 
-import client.message.User;
 import client.message.Message;
 
 import java.io.*;
-import java.net.Socket;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Scanner;
+
 
 /**Отвечает за серриализацию и отправку объекта client.message.Message
  * Created by Денис on 06.03.2018.
