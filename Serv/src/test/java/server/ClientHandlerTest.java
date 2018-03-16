@@ -80,22 +80,23 @@ public class ClientHandlerTest {
         client.write("repeatedLoginAfterUserExit");
         String s = client.read();
         assertEquals("Hello, repeatedLoginAfterUserExit!!!",s);
-    }
+    } */
     @Test
     public void failedDuplicateLogin () throws IOException {
-        client.read();
-        client.write("failedDuplicateLogin");
-        client.read();
-        client.write("failedDuplicateLogin");
-        client.read();
-        client = new Client(8190);
-        client.read();
-        client.write("failedDuplicateLogin");
-        client.read();
-        client.write("failedDuplicateLogin");
-        String s2 = client.read();
-        assertNotEquals("Hello, failedDuplicateLogin!!!",s2);
-    }*/
+        Message msg = new Message(
+                "failedDuplicateLogin:failedDuplicateLogin",
+                "system",
+                LocalDate.now(),
+                LocalTime.now());
+        msg.setMessageType("auth");
+        client.write(msg);
+        Message srv1 = client.read();
+        System.out.println(srv1);
+        Client cl2 = new Client(8190);
+        cl2.write(msg);
+        Message answ = cl2.read();
+        assertEquals("User allready loggined",answ.getText());
+    }
    /* @Test
     public void ignoreBackspaseInLogin (){
 

@@ -1,5 +1,6 @@
 package client.message;
 
+import javafx.util.Pair;
 import server.ClientHandler;
 import server.clientData.Session;
 import server.clientData.User;
@@ -46,17 +47,30 @@ public class MessageManager {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Message authMessage = new Message(user.getUserId(),user.getLogin(),
-                        LocalDate.now(), LocalTime.now());
-                authMessage.setMessageType("auth");
-                handlers.get(handlerId).setUser(user);
-                handlers.get(handlerId).printMessage(authMessage);
+                if (user != null) {
+                    Message authMessage = new Message(user.getUserId(), user.getLogin(),
+                            LocalDate.now(), LocalTime.now());
+                    authMessage.setMessageType("auth");
+                    handlers.get(handlerId).setUser(user);
+                    handlers.get(handlerId).printMessage(authMessage);
+                }else {
+                    Message failedAuth = new Message(
+                            "User allready loggined",
+                            "system",
+                            LocalDate.now(),
+                            LocalTime.now()
+                    );
+                    msg.setMessageType("auth");
+                    handlers.get(handlerId).printMessage(failedAuth);
+                }
             } break;
             case "clearSession": {
                 User user = handlers.get(handlerId).getUser();
-                Session ss  = sessionManager.isActive(user);
-                ss.setName(null);
-                sessionManager.doUnactive(ss);
+                if (user != null) {
+                    Session ss = sessionManager.isActive(user);
+                    ss.setName(null);
+                    sessionManager.doUnactive(ss);
+                }
             }break;
 
         }

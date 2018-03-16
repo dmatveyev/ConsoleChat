@@ -1,8 +1,12 @@
 package server.clientData;
 
 
+import client.message.Message;
+import client.message.MessagePool;
 import server.databaseConnect.UserDAO;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * Синглтон
@@ -77,7 +81,8 @@ public class UsersManager {
                 userSessionManager.doActive(ss);
                 return user;
             } else {
-                throw new IOException("User " +user.getLogin()  + " already authorized");
+               return null;
+                //throw new IOException("User " +user.getLogin()  + " already authorized");
             }
         }else {
             user = new User ();
