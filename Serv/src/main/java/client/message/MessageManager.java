@@ -1,6 +1,7 @@
 package client.message;
 
 import server.ClientHandler;
+import server.clientData.Session;
 import server.clientData.User;
 import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
@@ -17,10 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageManager {
     private MessagePair message;
     private ConcurrentHashMap<Integer, ClientHandler> handlers;
-
+    private UsersManager usersManager;
+    private UserSessionManager sessionManager;
 
     public MessageManager() {
         handlers = new ConcurrentHashMap<>();
+        usersManager = UsersManager.getInstance();
+        sessionManager = UserSessionManager.getInstance();
     }
 
     /**
@@ -31,21 +35,30 @@ public class MessageManager {
         int handlerId = message.getHandlerId();
         Message msg = message.getMessage();
         String msgType  = msg.getMessageType();
-        if (msgType.equals("broadcast"))
-            sendMessageToAll();
-        if(msgType.equals("auth")){
-            UsersManager usersManager = UsersManager.getInstance();
-            String[] creds = msg.getText().split(":");
-            User user = null;
-            try {
-                user = usersManager.authorize(creds[0], creds[1]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Message authMessage = new Message(user.getUserId(),user.getLogin(),
-                    LocalDate.now(), LocalTime.now());
-            authMessage.setMessageType("auth");
-            handlers.get(handlerId).printMessage(authMessage);
+        switch (msgType) {
+            case "broadcast":sendMessageToAll();
+            break;
+            case "auth": {
+                String[] creds = msg.getText().split(":");
+                User user = null;
+                try {
+                    user = usersManager.authorize(creds[0], creds[1]);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Message authMessage = new Message(user.getUserId(),user.getLogin(),
+                        LocalDate.now(), LocalTime.now());
+                authMessage.setMessageType("auth");
+                handlers.get(handlerId).setUser(user);
+                handlers.get(handlerId).printMessage(authMessage);
+            } break;
+            case "clearSession": {
+                User user = handlers.get(handlerId).getUser();
+                Session ss  = sessionManager.isActive(user);
+                ss.setName(null);
+                sessionManager.doUnactive(ss);
+            }break;
+
         }
     }
 

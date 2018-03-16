@@ -61,6 +61,5 @@ public class UserMessageReader implements ClientSubject {
             userMessage.setMessageType("broadcast");
             notifyObservers();
         }
-
     }
 }

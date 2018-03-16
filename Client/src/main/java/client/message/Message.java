@@ -39,6 +39,10 @@ public class Message implements Serializable {
                 + " "+ userName +": " + getText() ;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
     public String getMessageType() {
         return messageType;
     }

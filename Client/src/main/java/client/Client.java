@@ -13,11 +13,11 @@ import java.net.UnknownHostException;
  * Created by Денис on 06.03.2018.
  */
 public class Client {
-
+    Socket clientS;
     public Client(int port) {
         try {
             User user = new User();
-            Socket clientS = new Socket("localhost", port);
+            clientS = new Socket("localhost", port);
             ObjectInputStream in = new ObjectInputStream(clientS.getInputStream());
             ObjectOutputStream out = new ObjectOutputStream(clientS.getOutputStream());
             MessageManager manager = new MessageManager(user);
@@ -37,7 +37,13 @@ public class Client {
             if (e.getMessage().contains("refused"))
                 System.err.println("Connetcion Refused");
             else e.printStackTrace();
-
+        }
+        finally {
+            try {
+                clientS.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
