@@ -1,5 +1,6 @@
 package server;
 
+import messageSystem.AuthMessage;
 import messageSystem.Message;
 import org.junit.*;
 import server.clientData.UsersManager;
@@ -48,7 +49,7 @@ public class ClientHandlerTest {
 
     @Test
     public void registration() throws Exception {
-        Message msg = new Message("aaa:aaa", "system",
+        Message msg = new AuthMessage("aaa:aaa", "system",
                 LocalDate.now(), LocalTime.now());
         msg.setMessageType("auth");
         client.write(msg);
@@ -57,7 +58,7 @@ public class ClientHandlerTest {
     }
     @Test
     public void repeatedLoginAfterBreakConnection() throws IOException {
-       Message msg = new Message(
+       Message msg = new AuthMessage(
                 "repeatedLoginAfterBreakConnection:repeatedLoginAfterBreakConnection",
                 "system",
                 LocalDate.now(),
@@ -75,7 +76,7 @@ public class ClientHandlerTest {
     }
     @Test
     public void failedDuplicateLogin () throws IOException {
-        Message msg = new Message(
+        Message msg = new AuthMessage(
                 "failedDuplicateLogin:failedDuplicateLogin",
                 "system",
                 LocalDate.now(),

@@ -7,8 +7,6 @@ import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,11 +34,10 @@ public class MessageManager {
     private void DoMessage() {
         int handlerId = message.getHandlerId();
         Message msg = message.getMessage();
-        String msgType  = msg.getMessageType();
-        switch (msgType) {
-            case "broadcast":sendMessageToAll();
-            break;
-            case "auth": {
+          if (msg instanceof BroadcastMessage) {
+              sendMessageToAll();
+          }
+           if (msg instanceof AuthMessage) {
                 String[] creds = msg.getText().split(":");
                 User user = null;
                 try {
@@ -62,17 +59,17 @@ public class MessageManager {
                             "system");
                     handlers.get(handlerId).printMessage(failedAuth);
                 }
-            } break;
-            case "clearSession": {
+            }
+           if (msg instanceof SystemMessage){
                 User user = handlers.get(handlerId).getUser();
                 if (user != null) {
                     Session ss = sessionManager.isActive(user);
                     ss.setName(null);
                     sessionManager.doUnactive(ss);
                 }
-            }break;
+            }
 
-        }
+
     }
 
     public void update(MessagePair message) {

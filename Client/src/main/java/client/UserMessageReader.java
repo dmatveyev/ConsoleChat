@@ -1,6 +1,7 @@
 package client;
 
 import messageSystem.Message;
+import messageSystem.MessageFactory;
 import messageSystem.User;
 
 import java.time.LocalDate;
@@ -13,9 +14,11 @@ public class UserMessageReader implements ClientSubject {
     private Message userMessage;
     private ArrayList<ClientObserver> observers;
     private Scanner in;
+    private MessageFactory messageFactory;
 
-    public UserMessageReader (User user) {
+    public UserMessageReader (User user, MessageFactory messageFactory) {
         this.user = user;
+        this.messageFactory = messageFactory;
         observers = new ArrayList<>();
          in = new Scanner(System.in);
     }
@@ -49,15 +52,15 @@ public class UserMessageReader implements ClientSubject {
             password =in.nextLine();
         user.setLogin(login);
         user.setPassword(password);
-        userMessage = new Message(login.concat(":").concat(password),login,
-                LocalDate.now(), LocalTime.now());
-        userMessage.setMessageType("auth");
+        userMessage = messageFactory.createMessage("auth",
+                login.concat(":").concat(password),
+                login);
         notifyObservers();
         //переключаемся на чтение обычных сообщений
         while (in.hasNextLine()){
-            userMessage = new Message(in.nextLine(), user.getLogin(),
-                    LocalDate.now(), LocalTime.now());
-            userMessage.setMessageType("broadcast");
+            userMessage = messageFactory.createMessage("broadcast",
+                    in.nextLine(),
+                    user.getLogin());
             notifyObservers();
         }
     }

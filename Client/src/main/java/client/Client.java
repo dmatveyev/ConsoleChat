@@ -1,6 +1,7 @@
 package client;
 
 
+import messageSystem.MessageFactory;
 import messageSystem.User;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,13 +18,14 @@ public class Client {
     public Client(int port) {
         try {
             User user = new User();
+            MessageFactory messageFactory = new MessageFactory();
             clientS = new Socket("localhost", port);
             ObjectInputStream in = new ObjectInputStream(clientS.getInputStream());
             ObjectOutputStream out = new ObjectOutputStream(clientS.getOutputStream());
             MessageManager manager = new MessageManager(user);
             SocketReader reader =  new SocketReader(in);
             SocketWriter writer =  new SocketWriter(out);
-            UserMessageReader userMessageReader = new UserMessageReader(user);
+            UserMessageReader userMessageReader = new UserMessageReader(user, messageFactory);
             manager.registerObserver(writer);
             userMessageReader.registerObserver(manager);
             reader.registerObserver(manager);

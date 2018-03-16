@@ -1,5 +1,7 @@
 package client;
 
+import messageSystem.AuthMessage;
+import messageSystem.BroadcastMessage;
 import messageSystem.Message;
 import messageSystem.User;
 
@@ -18,10 +20,9 @@ public class MessageManager implements Observer, Subject, ClientObserver {
 
 
     public void doMessage() {
-        String msgType = message.getMessageType();
-        if (msgType.equals("broadcast"))
+        if (message instanceof BroadcastMessage)
             display();
-        if (msgType.equals("auth")){
+        if (message instanceof AuthMessage){
             user.setUserId(message.getText());
             System.out.printf("Hello, %s!!!\n", user.getLogin());
         }
