@@ -2,6 +2,7 @@ package server;
 
 import client.message.Message;
 import org.junit.*;
+import server.clientData.UsersManager;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,24 +20,31 @@ public class ClientHandlerTest {
     Client client;
     String message;
     Thread serverThread;
-   @BeforeClass
+    @BeforeClass
     public static void runServer () {
        Thread serverThread = new Thread(() -> new Server(8190));
        serverThread.start();
-   }
-
+    }
     @Before
     public void setUp() throws Exception {
         client = new Client(8190);
         message = "testMessage";
     }
-
     @After
     public void tearDown() throws Exception {
         serverThread = null;
         client.socket.close();
         client=null;
         message = null;
+    }
+    @AfterClass
+    public  static void deletingTestData() {
+        UsersManager manager = UsersManager.getInstance();
+        manager.deleteUser(manager.isRegistered("aaa","aaa"));
+        manager.deleteUser(manager.isRegistered("repeatedLoginAfterBreakConnection",
+                "repeatedLoginAfterBreakConnection"));
+        manager.deleteUser(manager.isRegistered("failedDuplicateLogin",
+                "failedDuplicateLogin"));
     }
 
     @Test
@@ -64,23 +72,8 @@ public class ClientHandlerTest {
         client.write(msg);
         Message srv = client.read();
         assertEquals("repeatedLoginAfterBreakConnection",srv.getUserName());
+
     }
-    /*@Test
-    public void repeatedLoginAfterUserExit() throws IOException {
-        client.read();
-        client.write("repeatedLoginAfterUserExit");
-        client.read();
-        client.write("repeatedLoginAfterUserExit");
-        client.read();
-        client.write("exit");
-        client = new Client(8190);
-        client.read();
-        client.write("repeatedLoginAfterUserExit");
-        client.read();
-        client.write("repeatedLoginAfterUserExit");
-        String s = client.read();
-        assertEquals("Hello, repeatedLoginAfterUserExit!!!",s);
-    } */
     @Test
     public void failedDuplicateLogin () throws IOException {
         Message msg = new Message(
@@ -97,10 +90,6 @@ public class ClientHandlerTest {
         Message answ = cl2.read();
         assertEquals("User allready loggined",answ.getText());
     }
-   /* @Test
-    public void ignoreBackspaseInLogin (){
-
-    }*/
 }
 class Client {
     Socket socket;
