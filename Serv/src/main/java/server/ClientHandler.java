@@ -1,87 +1,78 @@
 package server;
 
-import server.clientData.Session;
+import client.message.MessagePair;
+import client.message.MessagePool;
 import server.clientData.User;
 import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
-import server.messagePool.Message;
+import client.message.Message;
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Scanner;
 
 /**        asdf
  * Created by Денис on 06.03.2018.
  */
 public class ClientHandler implements Runnable {
-    private Server server;
+    private int handlerId;
     private Socket clientSocket;
-    private PrintWriter out;
+    private ObjectOutputStream out;
+    private MessagePool messagePool;
     private User user;
-    private UsersManager usersManager;
-    private UserSessionManager userSessionManager;
-
-    public ClientHandler(Server server, Socket clientSocket) {
+    public ClientHandler(int handlerId, Socket clientSocket) {
         this.clientSocket = clientSocket;
-        this.server = server;
-        this.usersManager = UsersManager.getInstance();
-        this.userSessionManager = UserSessionManager.getInstance();
+        this.handlerId = handlerId;
+        messagePool = MessagePool.getInstance();
         try {
-            this.out  = new PrintWriter(new OutputStreamWriter(this.clientSocket.getOutputStream(),
-                    "UTF-8"), true);
+            this.out  = new ObjectOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public void run() {
         try(InputStream inputStream = clientSocket.getInputStream()) {
-            Scanner in = new Scanner(inputStream, "UTF-8");
-            user = null;
-            while (user == null) {
-                String login = "";
-                String pass= "";
-                out.println("Hello, please enter login:");
-                if (in.hasNextLine()) {
-                    login = in.nextLine();
-                }
-                out.println("Please enter password");
-                if (in.hasNextLine()) {
-                    pass = in.nextLine();
-                }
-                if (login != "" && pass != "") {
-                    user = usersManager.authorize(login, pass);
-                } else throw new IOException("The client broke the connection");
-            }
-            out.printf("Hello, %s!!!", user.getLogin());
-            out.println();
-            while (in.hasNextLine()) {
-                String line = in.nextLine();
-                if (line.equals("exit")) {
-                    Session ss =  userSessionManager.isActive(user);
-                    ss.setName(null);
-                    userSessionManager.doUnactive(ss);
-                    clientSocket.close();
-                    out.close();
-                } else {
-                    Message message = new Message(line, user, LocalDate.now(), LocalTime.now());
-                    server.sendMessageToAll(message.toString());
-                    System.out.println(line);
+            ObjectInputStream oin = new ObjectInputStream(inputStream);
+            while (!clientSocket.isClosed()) {
+                Message clientMessage = (Message) oin.readObject();
+                {
+                    MessagePair pair = new MessagePair(handlerId,clientMessage);
+                    messagePool.addMessage(pair);
                 }
             }
-        } catch (IOException e) {
-            System.err.printf ("Server error message: %s", e.getMessage());
-        } finally {
-            if(user != null) {
-                Session ss = userSessionManager.isActive(user);
-                ss.setName(null);
-                userSessionManager.doUnactive(ss);
-            }
+        } catch (EOFException e) {
+    
+        }
+        catch (IOException e) {
+            //System.err.printf ("Server error message: %s", e.getMessage());
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            Message clearUserSession = new Message(
+                    String.valueOf("clearSession"),
+                    "system",
+                    LocalDate.now(),
+                    LocalTime.now());
+            clearUserSession.setMessageType("clearSession");
+            messagePool.addMessage(new MessagePair(handlerId,clearUserSession));
         }
     }
+    public void printMessage(Message message) {
+        try {
+            System.out.println ("sending message");
+            out.writeObject(message);
+            out.flush();
+            System.out.println ("message sent");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void setUser(final User user) {
+        this.user = user;
+    }
 
-    public void printMessage(String message) {
-        out.println(message);
+    public User getUser() {
+        return user;
     }
 }

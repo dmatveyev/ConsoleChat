@@ -1,11 +1,13 @@
 package server;
 
+import client.message.Message;
 import org.junit.*;
+import server.clientData.UsersManager;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 import static org.junit.Assert.*;
@@ -18,18 +20,16 @@ public class ClientHandlerTest {
     Client client;
     String message;
     Thread serverThread;
-   @BeforeClass
+    @BeforeClass
     public static void runServer () {
        Thread serverThread = new Thread(() -> new Server(8190));
        serverThread.start();
-   }
-
+    }
     @Before
     public void setUp() throws Exception {
         client = new Client(8190);
         message = "testMessage";
     }
-
     @After
     public void tearDown() throws Exception {
         serverThread = null;
@@ -37,94 +37,84 @@ public class ClientHandlerTest {
         client=null;
         message = null;
     }
+    @AfterClass
+    public  static void deletingTestData() {
+        UsersManager manager = UsersManager.getInstance();
+        manager.deleteUser(manager.isRegistered("aaa","aaa"));
+        manager.deleteUser(manager.isRegistered("repeatedLoginAfterBreakConnection",
+                "repeatedLoginAfterBreakConnection"));
+        manager.deleteUser(manager.isRegistered("failedDuplicateLogin",
+                "failedDuplicateLogin"));
+    }
 
     @Test
     public void registration() throws Exception {
-        client.read();
-        client.write("aaa");
-        client.read();
-        client.write("aaa");
-        String s = client.read();
-        assertEquals("Hello, aaa!!!",s);
+        Message msg = new Message("aaa:aaa", "system",
+                LocalDate.now(), LocalTime.now());
+        msg.setMessageType("auth");
+        client.write(msg);
+        Message srv = client.read();
+        assertEquals("aaa",srv.getUserName());
     }
     @Test
     public void repeatedLoginAfterBreakConnection() throws IOException {
-        client.read();
-        client.write("repeatedLoginAfterBreakConnection");
-        client.read();
-        client.write("repeatedLoginAfterBreakConnection");
-        client.read();
+       Message msg = new Message(
+                "repeatedLoginAfterBreakConnection:repeatedLoginAfterBreakConnection",
+                "system",
+                LocalDate.now(),
+                LocalTime.now());
+        msg.setMessageType("auth");
+        client.write(msg);
+        Message srv1 = client.read();
+        System.out.println(srv1);
         client.socket.close();
         client = new Client(8190);
-        client.read();
-        client.write("repeatedLoginAfterBreakConnection");
-        client.read();
-        client.write("repeatedLoginAfterBreakConnection");
-        String s = client.read();
-        assertEquals("Hello, repeatedLoginAfterBreakConnection!!!",s);
-    }
-    @Test
-    public void repeatedLoginAfterUserExit() throws IOException {
-        client.read();
-        client.write("repeatedLoginAfterUserExit");
-        client.read();
-        client.write("repeatedLoginAfterUserExit");
-        client.read();
-        client.write("exit");
-        client = new Client(8190);
-        client.read();
-        client.write("repeatedLoginAfterUserExit");
-        client.read();
-        client.write("repeatedLoginAfterUserExit");
-        String s = client.read();
-        assertEquals("Hello, repeatedLoginAfterUserExit!!!",s);
+        client.write(msg);
+        Message srv = client.read();
+        assertEquals("repeatedLoginAfterBreakConnection",srv.getUserName());
+
     }
     @Test
     public void failedDuplicateLogin () throws IOException {
-        client.read();
-        client.write("failedDuplicateLogin");
-        client.read();
-        client.write("failedDuplicateLogin");
-        client.read();
-        client = new Client(8190);
-        client.read();
-        client.write("failedDuplicateLogin");
-        client.read();
-        client.write("failedDuplicateLogin");
-        String s2 = client.read();
-        assertNotEquals("Hello, failedDuplicateLogin!!!",s2);
+        Message msg = new Message(
+                "failedDuplicateLogin:failedDuplicateLogin",
+                "system",
+                LocalDate.now(),
+                LocalTime.now());
+        msg.setMessageType("auth");
+        client.write(msg);
+        Message srv1 = client.read();
+        System.out.println(srv1);
+        Client cl2 = new Client(8190);
+        cl2.write(msg);
+        Message answ = cl2.read();
+        assertEquals("User allready loggined",answ.getText());
     }
-   /* @Test
-    public void ignoreBackspaseInLogin (){
-
-    }*/
 }
 class Client {
     Socket socket;
-    Scanner in;
-    PrintWriter out;
+    ObjectInputStream in;
+    ObjectOutputStream out;
     public Client (int port) throws IOException {
         socket = new Socket("localhost", port);
-        in = new Scanner(socket.getInputStream());
-        out = new PrintWriter(
-                new OutputStreamWriter(socket.getOutputStream())
-                , true);
+        in = new ObjectInputStream(socket.getInputStream());
+        out = new ObjectOutputStream(socket.getOutputStream());
     }
-    public String read (){
-        String str="";
+    public Message read (){
         try {
-            if (in.hasNextLine())
-                str = in.nextLine();
-        } catch (Exception e) {
-        e.printStackTrace();
-    }
-        return str;
+            return (Message) in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null ;
     }
 
-    public void write (String str) {
-        try  {
-            out.println(str);
-        } catch (Exception e) {
+    public void write (Message msg) {
+        try {
+            out.writeObject(msg);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

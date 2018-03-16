@@ -1,31 +1,30 @@
 package client;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.Scanner;
+import client.message.Message;
 
-/**
+import java.io.*;
+
+
+/**Отвечает за серриализацию и отправку объекта client.message.Message
  * Created by Денис on 06.03.2018.
  */
-public class SocketWriter implements Runnable {
-    Socket clientS;
-    public SocketWriter(Socket clientS) {
-        this.clientS = clientS;
+public class SocketWriter implements Observer {
+    private ObjectOutputStream outputStream;
+    private Message message;
+    public SocketWriter(ObjectOutputStream outputStream) {
+        this.outputStream = outputStream;
     }
-
-    @Override
-    public void run() {
-        try (Scanner in = new Scanner(System.in);
-             PrintWriter out = new PrintWriter(
-                     new OutputStreamWriter(clientS.getOutputStream())
-                     , true)) {
-            while(in.hasNextLine()){
-                out.println(in.nextLine());
-            }
+    public void write() {
+        try {
+            outputStream.writeObject(message);
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void update(final Message message) {
+        this.message = message;
+        write();
     }
 }
