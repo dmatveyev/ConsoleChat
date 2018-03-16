@@ -1,6 +1,5 @@
-package client.message;
+package messageSystem;
 
-import javafx.util.Pair;
 import server.ClientHandler;
 import server.clientData.Session;
 import server.clientData.User;

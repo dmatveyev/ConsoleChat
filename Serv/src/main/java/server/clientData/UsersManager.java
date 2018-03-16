@@ -1,12 +1,8 @@
 package server.clientData;
 
 
-import client.message.Message;
-import client.message.MessagePool;
 import server.databaseConnect.UserDAO;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 /**
  * Синглтон

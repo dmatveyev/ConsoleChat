@@ -1,11 +1,9 @@
 package server;
 
-import client.message.MessagePair;
-import client.message.MessagePool;
+import messageSystem.MessagePair;
+import messageSystem.MessagePool;
 import server.clientData.User;
-import server.clientData.UserSessionManager;
-import server.clientData.UsersManager;
-import client.message.Message;
+import messageSystem.Message;
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;

@@ -1,6 +1,6 @@
 package client;
 
-import client.message.Message;
+import messageSystem.Message;
 
 public interface Observer {
     void update(Message message);

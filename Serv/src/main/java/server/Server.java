@@ -2,14 +2,12 @@ package server;
 
 
 
-import client.message.Message;
-import client.message.MessageManager;
-import client.message.MessagePool;
+import messageSystem.MessageManager;
+import messageSystem.MessagePool;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  * Created by Денис on 06.03.2018.

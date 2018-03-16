@@ -1,7 +1,7 @@
 package client;
 
-import client.message.Message;
-import client.message.User;
+import messageSystem.Message;
+import messageSystem.User;
 
 import java.util.ArrayList;
 

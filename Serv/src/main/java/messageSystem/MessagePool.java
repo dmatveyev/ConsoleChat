@@ -1,4 +1,4 @@
-package client.message;
+package messageSystem;
 
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;

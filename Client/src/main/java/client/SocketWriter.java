@@ -1,11 +1,11 @@
 package client;
 
-import client.message.Message;
+import messageSystem.Message;
 
 import java.io.*;
 
 
-/**Отвечает за серриализацию и отправку объекта client.message.Message
+/**Отвечает за серриализацию и отправку объекта Message
  * Created by Денис on 06.03.2018.
  */
 public class SocketWriter implements Observer {

@@ -1,9 +1,8 @@
 package client;
 
-import client.message.Message;
-import client.message.User;
+import messageSystem.Message;
+import messageSystem.User;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;

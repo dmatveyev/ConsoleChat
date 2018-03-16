@@ -1,7 +1,7 @@
 package client;
 
 
-import client.message.User;
+import messageSystem.User;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

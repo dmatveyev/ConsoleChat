@@ -1,6 +1,6 @@
 package server;
 
-import client.message.Message;
+import messageSystem.Message;
 import org.junit.*;
 import server.clientData.UsersManager;
 
@@ -8,7 +8,6 @@ import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
