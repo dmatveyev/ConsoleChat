@@ -16,12 +16,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Денис on 15.03.2018.
  */
 public class MessageManager {
+    private MessageFactory messageFactory;
     private MessagePair message;
     private ConcurrentHashMap<Integer, ClientHandler> handlers;
     private UsersManager usersManager;
     private UserSessionManager sessionManager;
 
-    public MessageManager() {
+    public MessageManager(MessageFactory messageFactory) {
+        this.messageFactory = messageFactory;
         handlers = new ConcurrentHashMap<>();
         usersManager = UsersManager.getInstance();
         sessionManager = UserSessionManager.getInstance();
@@ -47,19 +49,17 @@ public class MessageManager {
                     e.printStackTrace();
                 }
                 if (user != null) {
-                    Message authMessage = new Message(user.getUserId(), user.getLogin(),
-                            LocalDate.now(), LocalTime.now());
-                    authMessage.setMessageType("auth");
+                    Message authMessage = messageFactory.createMessage(
+                            "auth",
+                            user.getUserId(),
+                            user.getLogin());
                     handlers.get(handlerId).setUser(user);
                     handlers.get(handlerId).printMessage(authMessage);
                 }else {
-                    Message failedAuth = new Message(
+                    Message failedAuth =  messageFactory.createMessage(
+                            "auth",
                             "User allready loggined",
-                            "system",
-                            LocalDate.now(),
-                            LocalTime.now()
-                    );
-                    msg.setMessageType("auth");
+                            "system");
                     handlers.get(handlerId).printMessage(failedAuth);
                 }
             } break;

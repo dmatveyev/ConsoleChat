@@ -1,5 +1,6 @@
 package server;
 
+import messageSystem.MessageFactory;
 import messageSystem.MessagePair;
 import messageSystem.MessagePool;
 import server.clientData.User;
@@ -18,7 +19,9 @@ public class ClientHandler implements Runnable {
     private ObjectOutputStream out;
     private MessagePool messagePool;
     private User user;
-    public ClientHandler(int handlerId, Socket clientSocket) {
+    private MessageFactory messageFactory;
+    public ClientHandler(int handlerId, Socket clientSocket, MessageFactory messageFactory) {
+        this.messageFactory = messageFactory;
         this.clientSocket = clientSocket;
         this.handlerId = handlerId;
         messagePool = MessagePool.getInstance();
@@ -39,7 +42,6 @@ public class ClientHandler implements Runnable {
                 }
             }
         } catch (EOFException e) {
-    
         }
         catch (IOException e) {
             //System.err.printf ("Server error message: %s", e.getMessage());
@@ -53,7 +55,8 @@ public class ClientHandler implements Runnable {
                     LocalDate.now(),
                     LocalTime.now());
             clearUserSession.setMessageType("clearSession");
-            messagePool.addMessage(new MessagePair(handlerId,clearUserSession));
+            Message m = messageFactory.createMessage("clearSession",String.valueOf("clearSession") ,"system");
+            messagePool.addMessage(new MessagePair(handlerId,m));
         }
     }
     public void printMessage(Message message) {

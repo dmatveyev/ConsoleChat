@@ -33,7 +33,7 @@ public class ClientHandlerTest {
     public void tearDown() throws Exception {
         serverThread = null;
         client.socket.close();
-        client=null;
+        client = null;
         message = null;
     }
     @AfterClass
