@@ -37,8 +37,7 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return getDate().toString() +"T"+ getTime()
-                + " "+ userName +": " + getText() ;
+        return super.toString();
     }
 
     public String getUserName() {

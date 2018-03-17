@@ -58,7 +58,7 @@ public class UserMessageReader implements ClientSubject {
         notifyObservers();
         //переключаемся на чтение обычных сообщений
         while (in.hasNextLine()){
-            userMessage = messageFactory.createMessage("broadcast",
+            userMessage = messageFactory.createBroadcastMessage(
                     in.nextLine(),
                     user.getLogin());
             notifyObservers();
