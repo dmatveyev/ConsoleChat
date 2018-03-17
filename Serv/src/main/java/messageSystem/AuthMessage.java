@@ -34,4 +34,13 @@ public class AuthMessage extends Message {
     public String getUserPassword() {
         return userPassword;
     }
+
+    @Override
+    public String toString() {
+        return "AuthMessage{" +
+                "userlogin='" + userlogin + '\'' +
+                ", date=" + date +
+                ", time=" + time +
+                '}';
+    }
 }

@@ -55,10 +55,10 @@ public class ClientHandler implements Runnable {
     }
     public void printMessage(Message message) {
         try {
-            System.out.println ("sending message");
+            System.out.println ("sending message: " + message.toString());
             out.writeObject(message);
             out.flush();
-            System.out.println ("message sent");
+            System.out.println ("message sent: " + message.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
