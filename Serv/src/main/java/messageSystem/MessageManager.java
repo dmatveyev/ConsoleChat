@@ -61,12 +61,18 @@ public class MessageManager {
                 }
         }
         if (msg instanceof SystemMessage){
+            SystemMessage sys =(SystemMessage)msg;
+            String command = sys.getCommand();
+            if (command.equals("clearSession")) {
                 User user = handlers.get(handlerId).getUser();
                 if (user != null) {
                     Session ss = sessionManager.isActive(user);
                     ss.setName(null);
                     sessionManager.doUnactive(ss);
+                    sys.setResultMessage("Session for user "+ user.getLogin() +" was cleared successfully");
+                    System.out.println(sys);
                 }
+            }
         }
 
 

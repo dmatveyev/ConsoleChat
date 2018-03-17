@@ -49,7 +49,7 @@ public class ClientHandler implements Runnable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }finally {
-            Message m = messageFactory.createMessage("clearSession",String.valueOf("clearSession") ,"system");
+            Message m = messageFactory.createSystemMessage("clearSession");
             messagePool.addMessage(new MessagePair(handlerId,m));
         }
     }

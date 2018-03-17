@@ -4,12 +4,16 @@ import messageSystem.AuthMessage;
 import messageSystem.BroadcastMessage;
 import messageSystem.Message;
 import org.junit.*;
+import server.clientData.Session;
+import server.clientData.User;
+import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
 
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
@@ -84,7 +88,7 @@ public class ClientHandlerTest {
         assertNull(auth.getUserid());
     }
     @Test
-    public void sendingMessage() throws IOException {
+    public void sendingBroadcastMessage() throws IOException {
         Client c1 = new Client(8190);
         Client c2 = new Client(8190);
         Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c1",
