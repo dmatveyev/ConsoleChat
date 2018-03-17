@@ -52,9 +52,9 @@ public class UserMessageReader implements ClientSubject {
             password =in.nextLine();
         user.setLogin(login);
         user.setPassword(password);
-        userMessage = messageFactory.createMessage("auth",
-                login.concat(":").concat(password),
-                login);
+        userMessage = messageFactory.createAuthMessage(null,
+               login,
+                password);
         notifyObservers();
         //переключаемся на чтение обычных сообщений
         while (in.hasNextLine()){

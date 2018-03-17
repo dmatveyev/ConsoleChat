@@ -49,12 +49,6 @@ public class ClientHandler implements Runnable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }finally {
-            Message clearUserSession = new Message(
-                    String.valueOf("clearSession"),
-                    "system",
-                    LocalDate.now(),
-                    LocalTime.now());
-            clearUserSession.setMessageType("clearSession");
             Message m = messageFactory.createMessage("clearSession",String.valueOf("clearSession") ,"system");
             messagePool.addMessage(new MessagePair(handlerId,m));
         }

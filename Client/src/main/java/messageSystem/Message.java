@@ -18,6 +18,8 @@ public class Message implements Serializable {
         return time;
     }
 
+    public Message (){}
+
     public Message(String text, String userName, LocalDate date, LocalTime time) {
         this.text = text;
         this.userName = userName;

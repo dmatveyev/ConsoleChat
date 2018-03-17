@@ -19,14 +19,8 @@ public class MessageFactory {
                 );
                 break;
             }
-            case "auth": {
-                message = new AuthMessage(text,
-                        userLogin,
-                        LocalDate.now(),
-                        LocalTime.now()
-                );
-                break;
-            }
+
+
             case "clearSession": {
                 message = new SystemMessage(text,
                         userLogin,
@@ -37,5 +31,9 @@ public class MessageFactory {
             }
         }
         return  message;
+    }
+    public Message createAuthMessage (String userId, String userLogin, String userPassword){
+        Message message =  new AuthMessage(userId, userLogin, userPassword);
+        return message;
     }
 }

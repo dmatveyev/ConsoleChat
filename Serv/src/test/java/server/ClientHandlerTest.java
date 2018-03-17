@@ -49,46 +49,38 @@ public class ClientHandlerTest {
 
     @Test
     public void registration() throws Exception {
-        Message msg = new AuthMessage("aaa:aaa", "system",
-                LocalDate.now(), LocalTime.now());
-        msg.setMessageType("auth");
+        Message msg = new AuthMessage(String.valueOf(Math.random()), "aaa",
+                "aaa");
         client.write(msg);
         Message srv = client.read();
-        assertEquals("aaa",srv.getUserName());
+        AuthMessage auth = (AuthMessage)srv;
+        assertEquals("aaa",auth.getUserlogin());
     }
     @Test
     public void repeatedLoginAfterBreakConnection() throws IOException {
-       Message msg = new AuthMessage(
-                "repeatedLoginAfterBreakConnection:repeatedLoginAfterBreakConnection",
-                "system",
-                LocalDate.now(),
-                LocalTime.now());
-        msg.setMessageType("auth");
+        Message msg = new AuthMessage(String.valueOf(Math.random()), "repeatedLoginAfterBreakConnection",
+                "repeatedLoginAfterBreakConnection");
         client.write(msg);
         Message srv1 = client.read();
-        System.out.println(srv1);
         client.socket.close();
         client = new Client(8190);
         client.write(msg);
         Message srv = client.read();
-        assertEquals("repeatedLoginAfterBreakConnection",srv.getUserName());
+        AuthMessage auth = (AuthMessage)srv;
+        assertEquals("repeatedLoginAfterBreakConnection",auth.getUserlogin());
 
     }
     @Test
     public void failedDuplicateLogin () throws IOException {
-        Message msg = new AuthMessage(
-                "failedDuplicateLogin:failedDuplicateLogin",
-                "system",
-                LocalDate.now(),
-                LocalTime.now());
-        msg.setMessageType("auth");
+        Message msg = new AuthMessage(String.valueOf(Math.random()), "failedDuplicateLogin",
+                "failedDuplicateLogin");
         client.write(msg);
         Message srv1 = client.read();
-        System.out.println(srv1);
         Client cl2 = new Client(8190);
         cl2.write(msg);
         Message answ = cl2.read();
-        assertEquals("User allready loggined",answ.getText());
+        AuthMessage auth = (AuthMessage)answ;
+        assertNull(auth.getUserid());
     }
 }
 class Client {

@@ -17,6 +17,9 @@ public class Message implements Serializable {
     public LocalTime getTime() {
         return time;
     }
+    public Message () {
+
+    }
 
     public Message (String text, String userName, LocalDate date, LocalTime time) {
         this.text = text;

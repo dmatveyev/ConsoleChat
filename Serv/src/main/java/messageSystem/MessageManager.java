@@ -34,40 +34,40 @@ public class MessageManager {
     private void DoMessage() {
         int handlerId = message.getHandlerId();
         Message msg = message.getMessage();
-          if (msg instanceof BroadcastMessage) {
+        if (msg instanceof BroadcastMessage) {
               sendMessageToAll();
-          }
-           if (msg instanceof AuthMessage) {
-                String[] creds = msg.getText().split(":");
+        }
+        if (msg instanceof AuthMessage) {
+            AuthMessage auth = (AuthMessage)msg;
                 User user = null;
                 try {
-                    user = usersManager.authorize(creds[0], creds[1]);
+                    user = usersManager.authorize(auth.getUserlogin(), auth.getUserPassword());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 if (user != null) {
-                    Message authMessage = messageFactory.createMessage(
-                            "auth",
+                    Message authMessage = messageFactory.createAuthMessage(
                             user.getUserId(),
-                            user.getLogin());
+                            user.getLogin(),
+                            user.getPassword());
                     handlers.get(handlerId).setUser(user);
                     handlers.get(handlerId).printMessage(authMessage);
                 }else {
-                    Message failedAuth =  messageFactory.createMessage(
-                            "auth",
-                            "User allready loggined",
-                            "system");
+                    Message failedAuth = messageFactory.createAuthMessage(
+                            null,
+                            null,
+                           null);
                     handlers.get(handlerId).printMessage(failedAuth);
                 }
-            }
-           if (msg instanceof SystemMessage){
+        }
+        if (msg instanceof SystemMessage){
                 User user = handlers.get(handlerId).getUser();
                 if (user != null) {
                     Session ss = sessionManager.isActive(user);
                     ss.setName(null);
                     sessionManager.doUnactive(ss);
                 }
-            }
+        }
 
 
     }

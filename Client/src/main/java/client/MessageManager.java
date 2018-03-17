@@ -23,7 +23,7 @@ public class MessageManager implements Observer, Subject, ClientObserver {
         if (message instanceof BroadcastMessage)
             display();
         if (message instanceof AuthMessage){
-            user.setUserId(message.getText());
+            user.setUserId(((AuthMessage) message).getUserPassword());
             System.out.printf("Hello, %s!!!\n", user.getLogin());
         }
     }
