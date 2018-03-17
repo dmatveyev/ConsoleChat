@@ -1,6 +1,7 @@
 package server;
 
 import messageSystem.AuthMessage;
+import messageSystem.BroadcastMessage;
 import messageSystem.Message;
 import org.junit.*;
 import server.clientData.UsersManager;
@@ -81,6 +82,22 @@ public class ClientHandlerTest {
         Message answ = cl2.read();
         AuthMessage auth = (AuthMessage)answ;
         assertNull(auth.getUserid());
+    }
+    @Test
+    public void sendingMessage() throws IOException {
+        Client c1 = new Client(8190);
+        Client c2 = new Client(8190);
+        Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c1",
+                "c1");
+        Message msg2 = new AuthMessage(String.valueOf(Math.random()), "c2",
+                "c2");
+        c1.write(msg1);
+        c2.write(msg2);
+        c1.write(new BroadcastMessage("BroadcastMessage", "c1"));
+        Message message = c2.read();
+        BroadcastMessage b = (BroadcastMessage)message;
+        System.out.println(b);
+        assertEquals("BroadcastMessage", b.getText());
     }
 }
 class Client {

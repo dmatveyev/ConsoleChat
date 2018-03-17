@@ -20,6 +20,26 @@ public class BroadcastMessage extends Message {
     }
 
     @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public String getUserName() {
+        return userName;
+    }
+
+    @Override
+    public LocalDate getDate() {
+        return date;
+    }
+
+    @Override
+    public LocalTime getTime() {
+        return time;
+    }
+
+    @Override
     public String toString() {
         return date.toString() +"T"+ time
                 + " "+ userName +": " + text ;
