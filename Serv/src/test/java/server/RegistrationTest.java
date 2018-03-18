@@ -143,14 +143,14 @@ public class RegistrationTest {
             c.read();
         }
         Client c1 = client;
-        Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c1",
-                "c1");
+        Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c01",
+                "c01");
         c1.write(msg1);
         Message auth = c1.read();
         for (Client c: clients) {
-            c.write(new BroadcastMessage("BroadcastMessage for c1", c.getUsername()));
+            c.write(new BroadcastMessage("BroadcastMessage for c01", c.getUsername()));
             Message m =c1.read();
-            assertEquals("BroadcastMessage for c1", ((BroadcastMessage)m).getText());
+            assertEquals("BroadcastMessage for c01", ((BroadcastMessage)m).getText());
         }
     }
 }
