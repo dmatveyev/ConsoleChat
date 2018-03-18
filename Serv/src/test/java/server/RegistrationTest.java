@@ -124,14 +124,14 @@ public class RegistrationTest {
     }
 
     /**
-     * Создаёт заданное количество клиентов и одного контрольного клиента, который читает сообщения от остальных клиентов
+     *  Создаёт заданное количество клиентов и одного контрольного клиента, который читает сообщения от остальных клиентов
      * @throws IOException
      */
     @Test
     public void simpleLoad() throws IOException {
         System.out.println("simpleLoad");
         ArrayList<Client> clients = new ArrayList<>(100);
-        for (int i =1; i < 100; i++) {
+        for (int i =1; i < 1000; i++) {
             Client c = new Client(8190);
             c.setUsername(String.valueOf(i));
             clients.add(c);
