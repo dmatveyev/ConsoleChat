@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
+/**Управляет пользовательскими сообщениями
  * Created by Денис on 15.03.2018.
  */
 public class MessageManager {

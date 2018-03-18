@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**        asdf
+/** Перехватывает сообщения от подключившегося клиента и помещает их в пул для дальнейшей обработки
  * Created by Денис on 06.03.2018.
  */
 public class ClientHandler implements Runnable {
@@ -53,6 +53,11 @@ public class ClientHandler implements Runnable {
             messagePool.addMessage(new MessagePair(handlerId,m));
         }
     }
+
+    /**
+     * Передаёт объект сообщения
+     * @param message Объект собщения.
+     */
     public void printMessage(Message message) {
         try {
             System.out.println ("sending message: " + message.toString());

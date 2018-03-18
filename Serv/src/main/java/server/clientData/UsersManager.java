@@ -5,6 +5,7 @@ import server.databaseConnect.UserDAO;
 import java.io.IOException;
 
 /**
+ * Управляет пользователями
  * Синглтон
  */
 public class UsersManager {
@@ -78,8 +79,7 @@ public class UsersManager {
                 return user;
             } else {
                return null;
-                //throw new IOException("User " +user.getLogin()  + " already authorized");
-            }
+        }
         }else {
             user = new User ();
             user.setLogin(login);

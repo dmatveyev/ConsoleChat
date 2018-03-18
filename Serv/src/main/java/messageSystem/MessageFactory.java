@@ -2,7 +2,7 @@ package messageSystem;
 
 
 
-/**
+/**Создает сообщение нужного типа.
  * Created by Денис on 16.03.2018.
  */
 public class MessageFactory {

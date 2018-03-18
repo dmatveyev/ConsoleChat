@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * Инкапсулирует логику подключения к базе данных
+ */
 public class ConnectDB {
     private Properties properties;
     private SQLServerDataSource dataSource;

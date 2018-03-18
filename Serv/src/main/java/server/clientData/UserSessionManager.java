@@ -2,7 +2,7 @@ package server.clientData;
 
 import server.databaseConnect.SessionDAO;
 
-/**
+/**Управляет сессиями пользователей
  * Created by Денис on 08.03.2018.
  */
 public class UserSessionManager {
@@ -35,11 +35,21 @@ public class UserSessionManager {
 
     }
 
+    /**
+     * Активизирует сессия для покльзователя
+     * @param session Объект сессии
+     * @return
+     */
     public boolean doActive(Session session) {
         sessionDAO.update(session);
         return true;
     }
 
+    /**
+     * Удаляет сессию для поользователя
+     * @param session Объект сессии
+     * @return
+     */
     public boolean doUnactive(Session session) {
         sessionDAO.update(session);
         return true;
