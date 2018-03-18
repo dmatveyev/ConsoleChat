@@ -16,7 +16,7 @@ import java.net.Socket;
 public class Server {
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private int clientId;
+    private int clientId=1;
     private int port;
 
     public Server(int port) {
@@ -33,14 +33,23 @@ public class Server {
             messagePool.registerManager(messageManager);
             while (true) {
                 clientSocket = serverSocket.accept();
-                System.out.println("Spawing " + ++clientId);
+                System.out.println("Spawing " + clientId);
                 ClientHandler clientHandler = new ClientHandler(clientId, clientSocket,messageFactory);
                 messageManager.addHandler(clientId,clientHandler);
                 Thread t = new Thread(clientHandler);
                 t.start();
+                clientId++;
             }
         } catch (IOException e) {
             e.getMessage();
+        }
+    }
+
+    public void stop() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

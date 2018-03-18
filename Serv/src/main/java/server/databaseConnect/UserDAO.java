@@ -2,10 +2,7 @@ package server.databaseConnect;
 
 import server.clientData.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UserDAO implements DAO<User> {
      private ConnectDB connectDB;
@@ -14,9 +11,11 @@ public class UserDAO implements DAO<User> {
          connectDB = new ConnectDB();
      }
 
+
+
     @Override
     public User get(String id) {
-         User user = new User();
+        User user = new User();
         try (Connection conn = connectDB.getConnection()) {
             PreparedStatement st = conn.prepareStatement("select * from users where id = ?");
             st.setString(1, id);

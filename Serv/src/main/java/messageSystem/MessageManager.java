@@ -31,11 +31,11 @@ public class MessageManager {
      * Обрабатывает сообщение, определяет его тип,
      * и включает дальнеющую логику обработки в зависимости от типа сообщения
      */
-    private void DoMessage() {
+    private synchronized void DoMessage(MessagePair message) {
         int handlerId = message.getHandlerId();
         Message msg = message.getMessage();
         if (msg instanceof BroadcastMessage) {
-              sendMessageToAll();
+              sendMessageToAll(msg);
         }
         if (msg instanceof AuthMessage) {
             AuthMessage auth = (AuthMessage)msg;
@@ -58,6 +58,7 @@ public class MessageManager {
                             null,
                            null);
                     handlers.get(handlerId).printMessage(failedAuth);
+                    handlers.remove(handlerId);
                 }
         }
         if (msg instanceof SystemMessage){
@@ -71,6 +72,7 @@ public class MessageManager {
                     sessionManager.doUnactive(ss);
                     sys.setResultMessage("Session for user "+ user.getLogin() +" was cleared successfully");
                     System.out.println(sys);
+                    removeHandler(handlerId);
                 }
             }
         }
@@ -78,20 +80,22 @@ public class MessageManager {
 
     }
 
-    public void update(MessagePair message) {
-        this.message = message;
-        DoMessage();
+    public synchronized void update(MessagePair message) {
+        DoMessage(message);
     }
 
-    public void sendMessageToAll() {
-        for (Map.Entry<Integer, ClientHandler> handler: handlers.entrySet()) {
-            handler.getValue().printMessage(message.getMessage());
+    public synchronized void sendMessageToAll(Message msg) {
+        if(handlers.size()!= 0) {
+            for (Map.Entry<Integer, ClientHandler> handler : handlers.entrySet()) {
+                System.out.println("Sending for "+ handler.getValue().getUser().getLogin());
+                handler.getValue().printMessage(msg);
+            }
         }
     }
-    public void addHandler(int id, ClientHandler clientHandler) {
+    public synchronized void addHandler(int id, ClientHandler clientHandler) {
         handlers.put(id,clientHandler);
     }
-    public void removeHandler(int id){
+    public synchronized void removeHandler(int id){
         handlers.remove(id);
     }
 }

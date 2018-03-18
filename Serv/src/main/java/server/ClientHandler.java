@@ -61,9 +61,13 @@ public class ClientHandler implements Runnable {
     public void printMessage(Message message) {
         try {
             System.out.println ("sending message: " + message.toString());
-            out.writeObject(message);
-            out.flush();
-            System.out.println ("message sent: " + message.toString());
+            if (!clientSocket.isClosed()) {
+                out.writeObject(message);
+                out.flush();
+                System.out.println("message sent: " + message.toString());
+            } else {
+                System.err.println("Can't send message: socket was closed");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -74,5 +78,14 @@ public class ClientHandler implements Runnable {
 
     public User getUser() {
         return user;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ClientHandler{" +
+                "handlerId=" + handlerId +
+                ", user=" + user +
+                '}';
     }
 }

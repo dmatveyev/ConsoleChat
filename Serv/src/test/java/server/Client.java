@@ -33,6 +33,7 @@ class Client {
     public void write (Message msg) {
         try {
             out.writeObject(msg);
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

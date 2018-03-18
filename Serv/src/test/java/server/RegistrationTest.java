@@ -22,21 +22,35 @@ import static org.junit.Assert.*;
  */
 public class RegistrationTest {
 
-    Client client;
-    String message;
-
+    private static Server srv;
+    private Client client;
+    private String message;
+    private Client cl2;
     @BeforeClass
     public static void runServer () {
        Thread serverThread = new Thread(() ->{
-          Server srv = new Server(8190);
-          srv.start();
+           srv = new Server(8190);
+           srv.start();
        });
        serverThread.start();
+        UsersManager manager = UsersManager.getInstance();
+        manager.deleteUser(manager.isRegistered("aaa","aaa"));
+        manager.deleteUser(manager.isRegistered("repeatedLoginAfterBreakConnection",
+                "repeatedLoginAfterBreakConnection"));
+        manager.deleteUser(manager.isRegistered("failedDuplicateLogin",
+                "failedDuplicateLogin"));
+        manager.deleteUser(manager.isRegistered("c1",
+                "c1"));
+        manager.deleteUser(manager.isRegistered("c2",
+                "c2"));
+
     }
     @Before
     public void setUp() throws Exception {
         client = new Client(8190);
         message = "testMessage";
+
+
     }
     @After
     public void tearDown() throws Exception {
@@ -45,12 +59,7 @@ public class RegistrationTest {
     @AfterClass
     public  static void deletingTestData() {
 
-        UsersManager manager = UsersManager.getInstance();
-        manager.deleteUser(manager.isRegistered("aaa","aaa"));
-        manager.deleteUser(manager.isRegistered("repeatedLoginAfterBreakConnection",
-                "repeatedLoginAfterBreakConnection"));
-        manager.deleteUser(manager.isRegistered("failedDuplicateLogin",
-                "failedDuplicateLogin"));
+
     }
 
     @Test
@@ -63,6 +72,7 @@ public class RegistrationTest {
         AuthMessage auth = (AuthMessage)srv;
         assertEquals("aaa",auth.getUserlogin());
     }
+
     @Test
     public void repeatedLoginAfterBreakConnection() throws IOException {
         System.out.println("Run test repeatedLoginAfterBreakConnection");
@@ -85,11 +95,30 @@ public class RegistrationTest {
                 "failedDuplicateLogin");
         client.write(msg);
         Message srv1 = client.read();
-        Client cl2 = new Client(8190);
+        cl2 = new Client(8190);
         cl2.write(msg);
         Message answ = cl2.read();
         AuthMessage auth = (AuthMessage)answ;
         assertNull(auth.getUserid());
     }
 
+    @Test
+    public void sendingBroadcastMessage() throws IOException {
+        System.out.println("Run test sendingBroadcastMessage");
+        Client c2 = new Client(8190);
+        Client c1 = client;
+        Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c1",
+                "c1");
+        c1.write(msg1);
+        Message auth = c1.read();
+        assertNotNull(((AuthMessage )auth).getUserid());
+        Message msg2 = new AuthMessage(String.valueOf(Math.random()), "c2",
+                "c2");
+        c2.write(msg2);
+        auth = c2.read();
+        assertNotNull(((AuthMessage )auth).getUserid());
+        c1.write(new BroadcastMessage("BroadcastMessage form c1", "c1"));
+        Message message = c2.read();
+        assertEquals("BroadcastMessage form c1", ((BroadcastMessage) message).getText());
+    }
 }

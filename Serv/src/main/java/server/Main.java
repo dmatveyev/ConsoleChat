@@ -3,6 +3,7 @@ package server;
 import javax.sql.DataSource;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
@@ -14,7 +15,7 @@ public class Main {
     public static void main(String... args) {
         Properties property = new Properties();
         try {
-            property.load(Files.newInputStream(Paths.get("general.properties"),
+            property.load(Files.newInputStream(Paths.get("Serv\\src\\main\\resources\\general.properties"),
                     StandardOpenOption.READ));
         } catch (IOException e) {
             e.printStackTrace();
