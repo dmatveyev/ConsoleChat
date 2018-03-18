@@ -1,18 +1,12 @@
 package server.databaseConnect;
 
-import com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.h2.jdbcx.JdbcDataSource;
 
 
 import java.io.File;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -24,7 +18,7 @@ import java.util.Properties;
  */
 public class ConnectDB {
     private Properties properties;
-    private SQLServerConnectionPoolDataSource dataSource;
+
 
 
     public ConnectDB() {
@@ -45,11 +39,14 @@ public class ConnectDB {
         return null;
     }
 
-    public Connection getSQLServerConnection() throws SQLServerException {
-        dataSource = new SQLServerConnectionPoolDataSource();
-        dataSource.setURL(properties.getProperty("jdbc.url"));
-        dataSource.setUser(properties.getProperty("jdbc.username"));
-        dataSource.setPassword(properties.getProperty("jdbc.password"));
+    public Connection getSQLServerConnection() throws SQLException {
+        SQLServerDataSource dataSource = new SQLServerDataSource();
+        String url = properties.getProperty("jdbc.url");
+        String name = properties.getProperty("jdbc.username");
+        String pass = properties.getProperty("jdbc.password");
+        dataSource.setURL(url);
+        dataSource.setUser(name);
+        dataSource.setPassword(pass);
         return dataSource.getConnection();
     }
 
@@ -64,8 +61,6 @@ public class ConnectDB {
             ds.setURL(url);
             ds.setUser(name);
             ds.setPassword(pass);
-
-
             Connection connection = DriverManager.getConnection(url, name, pass);
             try (Statement st = connection.createStatement()){
                     st.executeUpdate("create table if not exists users(id varchar(255), login varchar(255) ,password varchar(255))");
