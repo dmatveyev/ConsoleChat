@@ -14,6 +14,7 @@ import java.util.Properties;
 public class Main {
     public static void main(String... args) {
         Properties property = new Properties();
+        Path path = Paths.get("Serv\\src\\main\\resources\\general.properties").toAbsolutePath();
         try {
             property.load(Files.newInputStream(Paths.get("Serv\\src\\main\\resources\\general.properties"),
                     StandardOpenOption.READ));
