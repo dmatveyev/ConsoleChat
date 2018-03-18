@@ -27,7 +27,10 @@ public class RegistrationTest {
 
     @BeforeClass
     public static void runServer () {
-       Thread serverThread = new Thread(() -> new Server(8190));
+       Thread serverThread = new Thread(() ->{
+          Server srv = new Server(8190);
+          srv.start();
+       });
        serverThread.start();
     }
     @Before

@@ -14,11 +14,13 @@ public class Main {
     public static void main(String... args) {
         Properties property = new Properties();
         try {
-            property.load(Files.newInputStream(Paths.get("Serv/src/main/resources/general.properties"), StandardOpenOption.READ));
+            property.load(Files.newInputStream(Paths.get("general.properties"),
+                    StandardOpenOption.READ));
         } catch (IOException e) {
             e.printStackTrace();
         }
         Server srv = new Server(Integer.parseInt(property.getProperty("port")));
+        srv.start();
         
     }
 }

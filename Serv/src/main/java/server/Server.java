@@ -17,17 +17,20 @@ public class Server {
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private int clientId;
+    private int port;
 
     public Server(int port) {
+        this.port = port;
+    }
+
+    public void start() {
         try {
             serverSocket = new ServerSocket(port);
-            System.out.printf("Server started on port %s", port);
-            System.out.println();
+            System.out.printf("Server started on port %s\n", port);
             MessageFactory messageFactory = new MessageFactory();
             MessagePool messagePool = MessagePool.getInstance();
             MessageManager messageManager = new MessageManager(messageFactory);
             messagePool.registerManager(messageManager);
-
             while (true) {
                 clientSocket = serverSocket.accept();
                 System.out.println("Spawing " + ++clientId);

@@ -1,9 +1,11 @@
 package server.clientData;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 
 import static org.junit.Assert.*;
@@ -22,16 +24,22 @@ public class UsersManagerTest {
         test.setPassword("test");
         test.setUserId(String.valueOf(Math.random()));
         usersManager = UsersManager.getInstance();
-
     }
-
     @After
     public void tearDown() throws Exception {
        usersManager.deleteUser(test.getUserId());
     }
-
+    @AfterClass
+    public static void deletingData(){
+        UsersManager manager = UsersManager.getInstance();
+        manager.deleteUser(manager.isRegistered("test","test"));
+        manager.deleteUser(manager.isRegistered("a",
+                "a"));
+        manager.deleteUser(manager.isRegistered("OldUser",
+                "OldUser"));
+    }
     @Test
-    public void registerUser(){
+    public void registerUser() throws IOException {
         assertEquals(test.getUserId(), usersManager.registerUser(test));
     }
 
