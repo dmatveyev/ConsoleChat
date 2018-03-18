@@ -64,7 +64,6 @@
                     <target>${jdk.version}</target>
                 </configuration>
             </plugin>
-
         </plugins>
         <resources>
             <resource>
@@ -72,23 +71,5 @@
             </resource>
         </resources>
     </build>
-    <dependencies>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <version>6.4.0.jre8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.190</version>
-        </dependency>
-    </dependencies>
 </project>

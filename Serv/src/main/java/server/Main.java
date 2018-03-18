@@ -14,10 +14,11 @@ import java.util.Properties;
 public class Main {
     public static void main(String... args) {
         Properties property = new Properties();
-        Path path = Paths.get("Serv\\src\\main\\resources\\general.properties").toAbsolutePath();
+
+        ClassLoader.getSystemResource("general.properties");
+
         try {
-            property.load(Files.newInputStream(Paths.get("Serv\\src\\main\\resources\\general.properties"),
-                    StandardOpenOption.READ));
+            property.load(ClassLoader.getSystemResourceAsStream("general.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }

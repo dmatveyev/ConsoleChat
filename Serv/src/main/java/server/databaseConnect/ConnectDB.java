@@ -24,44 +24,41 @@ import java.util.Properties;
  */
 public class ConnectDB {
     private Properties properties;
-    private SQLServerDataSource dataSource;
+    private SQLServerConnectionPoolDataSource dataSource;
 
 
     public ConnectDB() {
-        dataSource = new SQLServerConnectionPoolDataSource();
         properties = new Properties();
-
-        /*try {
-
-            System.out.println(path);
-            InputStream in = Files.newInputStream(Paths.get("Serv\\src\\main\\resources\\general.properties"));
-            properties.load(in);
+        try {
+            properties.load(ClassLoader.getSystemResourceAsStream("general.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        dataSource.setURL(properties.getProperty("jdbc.url"));
-        dataSource.setUser(properties.getProperty("jdbc.username"));
-        dataSource.setPassword(properties.getProperty("jdbc.password"));*/
-
     }
 
     public Connection getConnection() throws SQLException {
-        return getH2Connection();
+        String driver =properties.getProperty("dbdriver");
+        if(driver.equals("sqlserver"))
+            return getSQLServerConnection();
+        if(driver.equals("h2"))
+            return getH2Connection();
+        return null;
     }
 
     public Connection getSQLServerConnection() throws SQLServerException {
-        dataSource.setURL("jdbc:sqlserver://localhost:1433;databaseName=dendb");
-        dataSource.setUser("sa");
-        dataSource.setPassword("magenta");
+        dataSource = new SQLServerConnectionPoolDataSource();
+        dataSource.setURL(properties.getProperty("jdbc.url"));
+        dataSource.setUser(properties.getProperty("jdbc.username"));
+        dataSource.setPassword(properties.getProperty("jdbc.password"));
         return dataSource.getConnection();
     }
 
 
     public  Connection getH2Connection() {
         try {
-            String url = "jdbc:h2:./target/h2db";
-            String name = "sa";
-            String pass = "";
+            String url = properties.getProperty("h2.url");
+            String name = properties.getProperty("h2.username");
+            String pass = properties.getProperty("h2.password");
 
             JdbcDataSource ds = new JdbcDataSource();
             ds.setURL(url);
