@@ -59,7 +59,7 @@ public class ConnectDB {
 
     public  Connection getH2Connection() {
         try {
-            String url = "jdbc:h2:./h2db";
+            String url = "jdbc:h2:./target/h2db";
             String name = "sa";
             String pass = "";
 

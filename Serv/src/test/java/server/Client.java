@@ -11,6 +11,7 @@ import java.net.Socket;
  * Created by Денис on 17.03.2018.
  */
 class Client {
+    private String username;
     Socket socket;
     ObjectInputStream in;
     ObjectOutputStream out;
@@ -19,6 +20,15 @@ class Client {
         in = new ObjectInputStream(socket.getInputStream());
         out = new ObjectOutputStream(socket.getOutputStream());
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public Message read (){
         try {
             return (Message) in.readObject();

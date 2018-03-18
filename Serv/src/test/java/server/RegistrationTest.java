@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static org.junit.Assert.*;
@@ -120,5 +121,36 @@ public class RegistrationTest {
         c1.write(new BroadcastMessage("BroadcastMessage form c1", "c1"));
         Message message = c2.read();
         assertEquals("BroadcastMessage form c1", ((BroadcastMessage) message).getText());
+    }
+
+    /**
+     * Создаёт заданное количество клиентов и одного контрольного клиента, который читает сообщения от остальных клиентов
+     * @throws IOException
+     */
+    @Test
+    public void simpleLoad() throws IOException {
+        System.out.println("simpleLoad");
+        ArrayList<Client> clients = new ArrayList<>(100);
+        for (int i =1; i < 100; i++) {
+            Client c = new Client(8190);
+            c.setUsername(String.valueOf(i));
+            clients.add(c);
+        }
+        for (Client c: clients) {
+            Message msg = new AuthMessage(String.valueOf(Math.random()), c.getUsername(),
+                    String.valueOf(Math.random()));
+            c.write(msg);
+            c.read();
+        }
+        Client c1 = client;
+        Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c1",
+                "c1");
+        c1.write(msg1);
+        Message auth = c1.read();
+        for (Client c: clients) {
+            c.write(new BroadcastMessage("BroadcastMessage for c1", c.getUsername()));
+            Message m =c1.read();
+            assertEquals("BroadcastMessage for c1", ((BroadcastMessage)m).getText());
+        }
     }
 }
