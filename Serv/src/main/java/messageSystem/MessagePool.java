@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+
+import static server.Server.logger;
 
 
 /**
@@ -32,7 +35,7 @@ public class MessagePool {
             queue.put(message);
             notifyManagers();
         } catch (final InterruptedException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 
@@ -40,7 +43,7 @@ public class MessagePool {
         try {
             return queue.take();
         } catch (final InterruptedException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
         return null;
     }
