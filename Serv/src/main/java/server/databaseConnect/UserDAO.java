@@ -75,7 +75,7 @@ public class UserDAO implements DAO<User> {
     public void update(final User t) {
     }
 
-    @SuppressWarnings("JDBCResourceOpenedButNotSafelyClosed")
+
     @Override
     public void delete(final String userId) {
         try (Connection conn = connectDB.getConnection()) {
