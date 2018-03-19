@@ -12,26 +12,30 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+
 /**
  * Created by Денис on 06.03.2018.
  */
 public class Server {
+    public static Logger logger = Logger.getLogger("Server");
+
     private ServerSocket serverSocket;
     private int clientId = 1;
-    private final int port;
-    public static final Logger logger = Logger.getLogger("Server");
-    private FileHandler fileHandler;
+    private int port;
+
+
 
     public Server(final int port) {
-
+        FileHandler fileHandler = null;
         try {
             fileHandler = new FileHandler("system.log", 1000000, 5, true);
             fileHandler.setFormatter(new SimpleFormatter());
         } catch (final IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
+        assert fileHandler != null;
         logger.addHandler(fileHandler);
-        logger.setLevel(Level.FINEST);
+        logger.setLevel(Level.INFO);
         fileHandler.setLevel(Level.INFO);
         this.port = port;
     }
@@ -59,7 +63,7 @@ public class Server {
         }
     }
 
-    @SuppressWarnings("unused")
+
     public void stop() {
         try {
             serverSocket.close();

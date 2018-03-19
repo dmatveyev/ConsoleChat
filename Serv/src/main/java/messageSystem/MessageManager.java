@@ -10,14 +10,15 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import static server.Server.logger;
 
 /**
  * Управляет пользовательскими сообщениями
  * Created by Денис on 15.03.2018.
  */
 public class MessageManager {
+    private Logger logger = Logger.getLogger("Server");
     private final Map<Integer, ClientHandler> handlers;
     private final UsersManager usersManager;
     private final UserSessionManager sessionManager;

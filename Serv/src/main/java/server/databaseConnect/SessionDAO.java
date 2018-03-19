@@ -7,11 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static server.Server.logger;
 
 
 public class SessionDAO implements DAO<Session> {
+
     private final ConnectDB connectDB;
 
     public SessionDAO() {

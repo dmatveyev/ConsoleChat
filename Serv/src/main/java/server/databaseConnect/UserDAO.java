@@ -4,11 +4,14 @@ import server.clientData.User;
 
 import java.sql.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static server.Server.logger;
 
+
 public class UserDAO implements DAO<User> {
     private final ConnectDB connectDB;
+
 
     public UserDAO() {
         connectDB = new ConnectDB();
