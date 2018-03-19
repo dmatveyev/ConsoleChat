@@ -43,7 +43,7 @@ public class ClientHandler implements Runnable {
                 }
             }
         } catch (EOFException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
+            logger.log(Level.WARNING, handlerId +e.getMessage(), e);
         }
         catch (IOException e) {
             //System.err.printf ("Server error message: %s", e.getMessage());

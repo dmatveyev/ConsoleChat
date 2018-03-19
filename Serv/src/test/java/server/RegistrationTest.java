@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 public class RegistrationTest {
 
     private static Server srv;
-    private Client client;
+
     private String message;
     private Client cl2;
     private ArrayList<Client> clients;
@@ -42,7 +42,7 @@ public class RegistrationTest {
     }
     @Before
     public void setUp() throws Exception {
-        client = new Client(8190);
+
         message = "testMessage";
 
 
@@ -63,8 +63,8 @@ public class RegistrationTest {
             for (Client c : clients) {
                 manager.deleteUser(manager.isRegistered(c.getUsername(), c.getPass()));
             }
-            manager.deleteUser(manager.isRegistered("c01", "c01"));
         }
+        manager.deleteUser(manager.isRegistered("c01", "c01"));
 
     }
     @AfterClass
@@ -75,6 +75,7 @@ public class RegistrationTest {
     @Test
     public void registration() throws Exception {
         System.out.println("Run test registration");
+        Client client = new Client(8190);
         Message msg = new AuthMessage(String.valueOf(Math.random()), "aaa",
                 "aaa");
         client.write(msg);
@@ -102,6 +103,7 @@ public class RegistrationTest {
     }
     @Test
     public void failedDuplicateLogin () throws IOException {
+        Client client = new Client(8190);
         System.out.println("Run test failedDuplicateLogin");
         Message msg = new AuthMessage(String.valueOf(Math.random()), "failedDuplicateLogin",
                 "failedDuplicateLogin");
@@ -113,9 +115,10 @@ public class RegistrationTest {
         AuthMessage auth = (AuthMessage)answ;
         assertNull(auth.getUserid());
     }
-
+     @Ignore
     @Test
     public void sendingBroadcastMessage() throws IOException {
+        Client client = new Client(8190);
         System.out.println("Run test sendingBroadcastMessage");
         Client c2 = new Client(8190);
         Client c1 = client;
@@ -142,9 +145,9 @@ public class RegistrationTest {
     public void simpleLoad() throws IOException {
         System.out.println("simpleLoad");
         clients = new ArrayList<>(100);
-        for (int i =1; i < 100; i++) {
+        for (int i =1; i < 10; i++) {
             Client c = new Client(8190);
-            String str = String.valueOf(i);
+            String str = String.valueOf(Math.random());
             c.setUsername(str);
             c.setPass(str);
             clients.add(c);
@@ -155,16 +158,18 @@ public class RegistrationTest {
             c.write(msg);
             c.read();
         }
-        Client c1 = client;
+        Client c1 = new Client(8190);
         Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c01",
                 "c01");
         c1.write(msg1);
         Message auth = c1.read();
         for (Client c: clients) {
+            System.out.println("Sending test messages");
             c.write(new BroadcastMessage("BroadcastMessage for c01", c.getUsername()));
             Message m =c1.read();
             System.out.println(m);
             assertEquals("BroadcastMessage for c01", ((BroadcastMessage)m).getText());
+            System.out.println("test end");
         }
     }
 }
