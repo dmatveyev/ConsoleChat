@@ -15,6 +15,7 @@ public class UserDAO implements DAO<User> {
     }
 
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed", "resource"})
     @Override
     public User get(final String id) {
         final User user = new User();
@@ -33,6 +34,7 @@ public class UserDAO implements DAO<User> {
         return user;
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed", "resource"})
     public String getUserId(final String login, final String password) {
         String userId = null;
         try (Connection conn = connectDB.getConnection()) {
@@ -49,6 +51,7 @@ public class UserDAO implements DAO<User> {
         return userId;
     }
 
+    @SuppressWarnings("JDBCResourceOpenedButNotSafelyClosed")
     @Override
     public void insert(final User t) {
         try (Connection conn = connectDB.getConnection()) {
@@ -72,6 +75,7 @@ public class UserDAO implements DAO<User> {
     public void update(final User t) {
     }
 
+    @SuppressWarnings("JDBCResourceOpenedButNotSafelyClosed")
     @Override
     public void delete(final String userId) {
         try (Connection conn = connectDB.getConnection()) {
@@ -81,7 +85,7 @@ public class UserDAO implements DAO<User> {
             st2.setString(1, userId);
             st.executeUpdate();
             st2.executeUpdate();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
