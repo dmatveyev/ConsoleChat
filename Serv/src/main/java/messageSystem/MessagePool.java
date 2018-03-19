@@ -1,7 +1,9 @@
 package messageSystem;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 
 /**
@@ -11,8 +13,8 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public class MessagePool {
     private static MessagePool instance;
-    private ArrayList<MessageManager> messageManagers;
-    private ArrayBlockingQueue<MessagePair> queue;
+    private final List<MessageManager> messageManagers;
+    private final BlockingQueue<MessagePair> queue;
 
     private MessagePool() {
         queue = new ArrayBlockingQueue<>(100);
@@ -25,11 +27,11 @@ public class MessagePool {
         return instance;
     }
 
-    public void addMessage(MessagePair message) {
+    public void addMessage(final MessagePair message) {
         try {
             queue.put(message);
             notifyManagers();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -37,22 +39,18 @@ public class MessagePool {
     public MessagePair getMessage() {
         try {
             return queue.take();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void registerManager(MessageManager messageManager) {
+    public void registerManager(final MessageManager messageManager) {
         messageManagers.add(messageManager);
     }
 
-    public void removeManager(MessageManager messageManager) {
-        messageManagers.remove(messageManager);
-    }
-
     private void notifyManagers() {
-        for (MessageManager messageManager : messageManagers) {
+        for (final MessageManager messageManager : messageManagers) {
             messageManager.update(getMessage());
         }
     }

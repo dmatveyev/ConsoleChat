@@ -6,10 +6,10 @@ package messageSystem;
  * Created by Денис on 15.03.2018.
  */
 public class MessagePair {
-    private Message message;
-    private int handlerId;
+    private final Message message;
+    private final int handlerId;
 
-    public MessagePair(int handlerId, Message message) {
+    public MessagePair(final int handlerId, final Message message) {
         this.handlerId = handlerId;
         this.message = message;
     }
@@ -18,7 +18,7 @@ public class MessagePair {
         return message;
     }
 
-    public int getHandlerId() {
+    int getHandlerId() {
         return handlerId;
     }
 }

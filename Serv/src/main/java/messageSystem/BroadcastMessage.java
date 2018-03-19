@@ -7,12 +7,12 @@ import java.time.LocalTime;
  * Created by Денис on 16.03.2018.
  */
 public class BroadcastMessage extends Message {
-    private String text;
-    private String userName;
-    private LocalDate date;
-    private LocalTime time;
+    private final String text;
+    private final String userName;
+    private final LocalDate date;
+    private final LocalTime time;
 
-    public BroadcastMessage(String text, String userName) {
+    public BroadcastMessage(final String text, final String userName) {
         this.date = LocalDate.now();
         this.time = LocalTime.now();
         this.text = text;
@@ -25,23 +25,8 @@ public class BroadcastMessage extends Message {
     }
 
     @Override
-    public String getUserName() {
-        return userName;
-    }
-
-    @Override
-    public LocalDate getDate() {
-        return date;
-    }
-
-    @Override
-    public LocalTime getTime() {
-        return time;
-    }
-
-    @Override
     public String toString() {
-        return date.toString() + "T" + time
+        return date + "T" + time
                 + " " + userName + ": " + text;
 
     }

@@ -54,7 +54,7 @@ public class ClientHandler implements Runnable {
             //System.err.printf ("Server error message: %s", e.getMessage());
             logger.log(Level.WARNING, e.getMessage(), e);
         } finally {
-            Message m = messageFactory.createSystemMessage("clearSession");
+            Message m = MessageFactory.createSystemMessage("clearSession");
             messagePool.addMessage(new MessagePair(handlerId, m));
         }
     }

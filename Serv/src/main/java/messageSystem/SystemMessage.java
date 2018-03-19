@@ -1,31 +1,21 @@
 package messageSystem;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 /**
  * Created by Денис on 16.03.2018.
  */
 public class SystemMessage extends Message {
-    private String userName = "system";
-    private String command;
+    private final String command;
     private String resultMessage;
-    private LocalDate date;
-    private LocalTime time;
 
-    public SystemMessage(String comamand) {
+    SystemMessage(final String comamand) {
         this.command = comamand;
     }
 
-    public String getCommand() {
+    String getCommand() {
         return command;
     }
 
-    public String getResultMessage() {
-        return resultMessage;
-    }
-
-    public void setResultMessage(String resultMessage) {
+    void setResultMessage(final String resultMessage) {
         this.resultMessage = resultMessage;
     }
 

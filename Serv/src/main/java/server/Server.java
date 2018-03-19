@@ -8,7 +8,6 @@ import messageSystem.MessagePool;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalDate;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +45,7 @@ public class Server {
                     new String[]{this.getClass().getSimpleName(), String.valueOf(port)});
             MessageFactory messageFactory = new MessageFactory();
             MessagePool messagePool = MessagePool.getInstance();
-            MessageManager messageManager = new MessageManager(messageFactory);
+            MessageManager messageManager = new MessageManager();
             messagePool.registerManager(messageManager);
             while (true) {
                 clientSocket = serverSocket.accept();
