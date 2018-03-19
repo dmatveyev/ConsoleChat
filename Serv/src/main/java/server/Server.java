@@ -1,7 +1,6 @@
 package server;
 
 
-import messageSystem.MessageFactory;
 import messageSystem.MessageManager;
 import messageSystem.MessagePool;
 
@@ -18,19 +17,18 @@ import java.util.logging.SimpleFormatter;
  */
 public class Server {
     private ServerSocket serverSocket;
-    private Socket clientSocket;
     private int clientId = 1;
-    private int port;
-    public static Logger logger;
+    private final int port;
+    public static final Logger logger = Logger.getLogger("Server");
     private FileHandler fileHandler;
 
-    public Server(int port) {
-        logger = Logger.getLogger("Server");
+    public Server(final int port) {
+
         try {
             fileHandler = new FileHandler("system.log", 1000000, 5, true);
             fileHandler.setFormatter(new SimpleFormatter());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
         logger.addHandler(fileHandler);
         logger.setLevel(Level.FINEST);
@@ -38,33 +36,34 @@ public class Server {
         this.port = port;
     }
 
-    public void start() {
+    void start() {
         try {
             serverSocket = new ServerSocket(port);
             logger.log(Level.INFO, "{0}: Server started on port {1}",
                     new String[]{this.getClass().getSimpleName(), String.valueOf(port)});
-            MessageFactory messageFactory = new MessageFactory();
-            MessagePool messagePool = MessagePool.getInstance();
-            MessageManager messageManager = new MessageManager();
+            final MessagePool messagePool = MessagePool.getInstance();
+            final MessageManager messageManager = new MessageManager();
             messagePool.registerManager(messageManager);
+            //noinspection InfiniteLoopStatement
             while (true) {
-                clientSocket = serverSocket.accept();
+                final Socket clientSocket = serverSocket.accept();
                 logger.log(Level.INFO, "Spawing " + clientId);
-                ClientHandler clientHandler = new ClientHandler(clientId, clientSocket, messageFactory);
+                final ClientHandler clientHandler = new ClientHandler(clientId, clientSocket);
                 messageManager.addHandler(clientId, clientHandler);
-                Thread t = new Thread(clientHandler);
+                final Thread t = new Thread(clientHandler);
                 t.start();
                 clientId++;
             }
-        } catch (IOException e) {
-            e.getMessage();
+        } catch (final IOException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 
+    @SuppressWarnings("unused")
     public void stop() {
         try {
             serverSocket.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }

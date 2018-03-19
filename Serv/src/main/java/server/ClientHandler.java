@@ -17,44 +17,40 @@ import static server.Server.logger;
  * Created by Денис on 06.03.2018.
  */
 public class ClientHandler implements Runnable {
-    private int handlerId;
-    private Socket clientSocket;
+    private final int handlerId;
+    private final Socket clientSocket;
     private ObjectOutputStream out;
-    private MessagePool messagePool;
+    private final MessagePool messagePool;
     private User user;
-    private MessageFactory messageFactory;
 
-    public ClientHandler(int handlerId, Socket clientSocket, MessageFactory messageFactory) {
-        this.messageFactory = messageFactory;
+    ClientHandler(final int handlerId, final Socket clientSocket) {
         this.clientSocket = clientSocket;
         this.handlerId = handlerId;
         messagePool = MessagePool.getInstance();
         try {
             this.out = new ObjectOutputStream(clientSocket.getOutputStream());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
     public void run() {
-        try (InputStream inputStream = clientSocket.getInputStream()) {
-            ObjectInputStream oin = new ObjectInputStream(inputStream);
+        try (InputStream inputStream = clientSocket.getInputStream();
+             ObjectInputStream oin = new ObjectInputStream(inputStream)) {
             while (!clientSocket.isClosed()) {
-                Message clientMessage = (Message) oin.readObject();
+                final Message clientMessage = (Message) oin.readObject();
                 {
-                    MessagePair pair = new MessagePair(handlerId, clientMessage);
+                    final MessagePair pair = new MessagePair(handlerId, clientMessage);
                     messagePool.addMessage(pair);
                 }
             }
-        } catch (EOFException e) {
+        } catch (final EOFException e) {
             //logger.log(Level.WARNING, handlerId +e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            //System.err.printf ("Server error message: %s", e.getMessage());
+        } catch (final ClassNotFoundException | IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         } finally {
-            Message m = MessageFactory.createSystemMessage("clearSession");
+            final Message m = MessageFactory.createSystemMessage("clearSession");
             messagePool.addMessage(new MessagePair(handlerId, m));
         }
     }
@@ -64,7 +60,7 @@ public class ClientHandler implements Runnable {
      *
      * @param message Объект собщения.
      */
-    public void printMessage(Message message) {
+    public void printMessage(final Message message) {
         try {
             logger.log(Level.FINER, "{0} sending message: {1}",
                     new Object[]{this.getClass().getSimpleName(), message.toString()});
@@ -77,8 +73,8 @@ public class ClientHandler implements Runnable {
                 logger.log(Level.WARNING, "{0} can't send message: socket was closed",
                         new Object[]{this.getClass().getSimpleName()});
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 

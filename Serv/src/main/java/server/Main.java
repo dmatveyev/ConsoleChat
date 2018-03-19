@@ -1,27 +1,25 @@
 package server;
 
-import javax.sql.DataSource;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Properties;
+import java.util.logging.Level;
+
+import static server.Server.logger;
 
 /**
  * a
  * Created by Денис on 06.03.2018.
  */
 public class Main {
-    public static void main(String... args) {
-        Properties property = new Properties();
+    public static void main(final String... args) {
         ClassLoader.getSystemResource("general.properties");
+        final Properties property = new Properties();
         try {
             property.load(ClassLoader.getSystemResourceAsStream("general.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
-        Server srv = new Server(Integer.parseInt(property.getProperty("port")));
+        final Server srv = new Server(Integer.parseInt(property.getProperty("port")));
         srv.start();
     }
 }
