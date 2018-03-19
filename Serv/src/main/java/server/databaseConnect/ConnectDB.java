@@ -18,21 +18,22 @@ import static server.Server.logger;
 /**
  * Инкапсулирует логику подключения к базе данных
  */
-public class ConnectDB {
+@SuppressWarnings("ALL")
+class ConnectDB {
 
-    private Properties properties;
+    private final Properties properties;
 
-    public ConnectDB() {
+    ConnectDB() {
         properties = new Properties();
         try {
             properties.load(ClassLoader.getSystemResourceAsStream("general.properties"));
-        } catch (IOException e) {
-            logger.log(Level.WARNING, e.getStackTrace().toString());
+        } catch (final IOException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 
-    public Connection getConnection() throws SQLException {
-        String driver = properties.getProperty("dbdriver");
+    Connection getConnection() throws SQLException {
+        final String driver = properties.getProperty("dbdriver");
         if (driver.equals("sqlserver"))
             return getSQLServerConnection();
         if (driver.equals("h2"))
@@ -40,39 +41,41 @@ public class ConnectDB {
         return null;
     }
 
-    public Connection getSQLServerConnection() {
-        SQLServerDataSource dataSource = new SQLServerDataSource();
-        String url = properties.getProperty("jdbc.url");
-        String name = properties.getProperty("jdbc.username");
-        String pass = properties.getProperty("jdbc.password");
+    private Connection getSQLServerConnection() {
+        final SQLServerDataSource dataSource = new SQLServerDataSource();
+        final String url = properties.getProperty("jdbc.url");
+        final String name = properties.getProperty("jdbc.username");
+        final String pass = properties.getProperty("jdbc.password");
         dataSource.setURL(url);
         dataSource.setUser(name);
         dataSource.setPassword(pass);
         try {
             return dataSource.getConnection();
-        } catch (SQLServerException e) {
+        } catch (final SQLServerException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
         return null;
     }
 
-    public Connection getH2Connection() {
+    private Connection getH2Connection() {
         try {
-            String url = properties.getProperty("h2.url");
-            String name = properties.getProperty("h2.username");
-            String pass = properties.getProperty("h2.password");
+            final String url = properties.getProperty("h2.url");
+            final String name = properties.getProperty("h2.username");
+            final String pass = properties.getProperty("h2.password");
 
-            JdbcDataSource ds = new JdbcDataSource();
+            final JdbcDataSource ds = new JdbcDataSource();
             ds.setURL(url);
             ds.setUser(name);
             ds.setPassword(pass);
-            Connection connection = ds.getConnection();
+            final Connection connection = ds.getConnection();
             try (Statement st = connection.createStatement()) {
                 st.executeUpdate("create table if not exists users(id varchar(255), login varchar(255) ,password varchar(255))");
                 st.executeUpdate("create table if not exists user_session(id varchar(255), session varchar(255))");
+            } catch (final SQLException e) {
+                logger.log(Level.WARNING, e.getMessage(), e);
             }
             return connection;
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
         return null;

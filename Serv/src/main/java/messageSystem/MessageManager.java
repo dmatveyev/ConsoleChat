@@ -71,7 +71,7 @@ public class MessageManager {
                     final Session ss = sessionManager.isActive(user);
                     if (ss != null) {
                         ss.setName(null);
-                        sessionManager.doUnactive(ss);
+                        sessionManager.Unactivated(ss);
                         sys.setResultMessage("Session for user " + user.getLogin() + " was cleared successfully");
                         logger.log(Level.INFO, "{0} {1}",
                                 new Object[]{this.getClass().getSimpleName(), sys});

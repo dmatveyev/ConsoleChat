@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import static server.Server.logger;
 
 public class UserDAO implements DAO<User> {
-    private ConnectDB connectDB;
+    private final ConnectDB connectDB;
 
     public UserDAO() {
         connectDB = new ConnectDB();
@@ -16,73 +16,73 @@ public class UserDAO implements DAO<User> {
 
 
     @Override
-    public User get(String id) {
-        User user = new User();
+    public User get(final String id) {
+        final User user = new User();
         try (Connection conn = connectDB.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("select * from users where id = ?");
+            final PreparedStatement st = conn.prepareStatement("select * from users where id = ?");
             st.setString(1, id);
-            ResultSet res = st.executeQuery();
+            final ResultSet res = st.executeQuery();
             res.next();
             user.setUserId(res.getString(1));
             user.setLogin(res.getString(2));
             user.setPassword(res.getString(3));
 
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, e.getStackTrace().toString());
+        } catch (final SQLException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
         return user;
     }
 
-    public String getUserId(String login, String password) {
+    public String getUserId(final String login, final String password) {
         String userId = null;
         try (Connection conn = connectDB.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("select * from users where login = ? and password = ?");
+            final PreparedStatement st = conn.prepareStatement("select * from users where login = ? and password = ?");
             st.setString(1, login);
             st.setString(2, password);
-            ResultSet res = st.executeQuery();
+            final ResultSet res = st.executeQuery();
             if (res.next()) {
                 userId = res.getString(1);
             }
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, e.getStackTrace().toString());
+        } catch (final SQLException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
         return userId;
     }
 
     @Override
-    public void insert(final User user) {
+    public void insert(final User t) {
         try (Connection conn = connectDB.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement("insert into users (id,login, password) values (?,?,?)");
-            statement.setString(1, user.getUserId());
-            statement.setString(2, user.getLogin());
-            statement.setString(3, user.getPassword());
+            final PreparedStatement statement = conn.prepareStatement("insert into users (id,login, password) values (?,?,?)");
+            statement.setString(1, t.getUserId());
+            statement.setString(2, t.getLogin());
+            statement.setString(3, t.getPassword());
             statement.executeUpdate();
             //переписать создание сессии с использованием sessionDAO
-            PreparedStatement session = conn.prepareStatement("insert into user_session" +
+            final PreparedStatement session = conn.prepareStatement("insert into user_session" +
                     " (id, session) values (?,?)");
-            session.setString(1, user.getUserId());
+            session.setString(1, t.getUserId());
             session.setString(2, null);
             session.executeUpdate();
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, e.getStackTrace().toString());
+        } catch (final SQLException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 
     @Override
-    public void update(final User user) {
+    public void update(final User t) {
     }
 
     @Override
     public void delete(final String userId) {
         try (Connection conn = connectDB.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("delete from user_session where id = ?");
+            final PreparedStatement st = conn.prepareStatement("delete from user_session where id = ?");
             st.setString(1, userId);
-            PreparedStatement st2 = conn.prepareStatement("delete from users where id = ?");
+            final PreparedStatement st2 = conn.prepareStatement("delete from users where id = ?");
             st2.setString(1, userId);
             st.executeUpdate();
             st2.executeUpdate();
         } catch (SQLException e) {
-            logger.log(Level.WARNING, e.getStackTrace().toString());
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 }

@@ -1,7 +1,5 @@
 package server.clientData;
 
-import org.omg.PortableServer.ServantRetentionPolicy;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -36,26 +34,26 @@ public class User implements Serializable {
     }
 
 
-    public void setLogin(String login) {
+    public void setLogin(final String login) {
         this.login = login;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
     @Override
     public int hashCode() {
-        return 7 * Objects.hashCode(getLogin()) +
-                11 * Objects.hashCode(getPassword());
+        return (7 * Objects.hashCode(getLogin())) +
+                (11 * Objects.hashCode(getPassword()));
     }
 
     @Override
-    public boolean equals(Object otherObject) {
-        if (this == otherObject) return true;
-        if (otherObject == null) return false;
-        if (getClass() != otherObject.getClass()) return false;
-        User other = (User) otherObject;
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        final User other = (User) obj;
         return getLogin().equals(other.getLogin()) && getPassword().equals(other.getPassword());
     }
 

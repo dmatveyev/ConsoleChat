@@ -15,22 +15,13 @@ import static server.Server.logger;
 public class UsersManager {
 
     private static UsersManager usersManager;
-    private UserDAO userDAO;
-    private UserSessionManager userSessionManager;
+    private final UserDAO userDAO;
+    private final UserSessionManager userSessionManager;
 
 
     private UsersManager() {
         userDAO = new UserDAO();
         userSessionManager = UserSessionManager.getInstance();
-        //createAdmin();
-    }
-
-    private void createAdmin() {
-        User admin = new User();
-        admin.setUserId("999");
-        admin.setLogin("admin");
-        admin.setPassword("password");
-        userDAO.insert(admin);
     }
 
     public static UsersManager getInstance() {
@@ -40,7 +31,7 @@ public class UsersManager {
         return usersManager;
     }
 
-    public String registerUser(User user) {
+    String registerUser(final User user) {
         userDAO.insert(user);
         return user.getUserId();
     }
@@ -53,15 +44,15 @@ public class UsersManager {
      * @return Id пользователя, если такой пользователь был найден,
      * null если пользователь не найден
      */
-    public String isRegistered(String login, String password) {
+    public String isRegistered(final String login, final String password) {
         return userDAO.getUserId(login, password);
     }
 
-    public User getRegisteredUser(String id) {
+    User getRegisteredUser(final String id) {
         return userDAO.get(id);
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(final String id) {
         userDAO.delete(id);
     }
 
@@ -73,14 +64,14 @@ public class UsersManager {
      * @return Зарегистрированный или новый пользователь
      * @throws IOException Пробоасывается в случае, если есть активная сессия пользователя.
      */
-    public synchronized User authorize(String login, String password) throws IOException {
-        User user;
-        String userId = usersManager.isRegistered(login, password);
+    public synchronized User authorize(final String login, final String password) throws IOException {
+        final User user;
+        final String userId = usersManager.isRegistered(login, password);
         if (userId != null) {
             user = usersManager.getRegisteredUser(userId);
             Session ss = userSessionManager.isActive(user);
             if (ss.getName() == null) {
-                ss = userSessionManager.createUserSession(user);
+                ss = UserSessionManager.createUserSession(user);
                 userSessionManager.doActive(ss);
                 return user;
             } else {
@@ -92,10 +83,10 @@ public class UsersManager {
             user = new User();
             user.setLogin(login);
             user.setPassword(password);
-            String userid = String.valueOf(Math.random());
+            final String userid = String.valueOf(Math.random());
             user.setUserId(userid);
             registerUser(user);
-            userSessionManager.doActive(userSessionManager.createUserSession(user));
+            userSessionManager.doActive(UserSessionManager.createUserSession(user));
             return user;
         }
     }
