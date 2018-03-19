@@ -1,10 +1,11 @@
 package server.databaseConnect;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-import org.h2.jdbcx.JdbcDataSource;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 
 
-import java.io.File;
+
+
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,11 +13,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.logging.Level;
+
+import static server.Server.logger;
 
 /**
  * Инкапсулирует логику подключения к базе данных
  */
 public class ConnectDB {
+
     private Properties properties;
 
 
@@ -26,7 +31,8 @@ public class ConnectDB {
         try {
             properties.load(ClassLoader.getSystemResourceAsStream("general.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getStackTrace().toString());
+
         }
     }
 
@@ -39,7 +45,7 @@ public class ConnectDB {
         return null;
     }
 
-    public Connection getSQLServerConnection() throws SQLException {
+    public Connection getSQLServerConnection() {
         SQLServerDataSource dataSource = new SQLServerDataSource();
         String url = properties.getProperty("jdbc.url");
         String name = properties.getProperty("jdbc.username");
@@ -47,7 +53,12 @@ public class ConnectDB {
         dataSource.setURL(url);
         dataSource.setUser(name);
         dataSource.setPassword(pass);
-        return dataSource.getConnection();
+        try {
+            return dataSource.getConnection();
+        } catch (SQLServerException e) {
+            logger.log(Level.WARNING, e.getStackTrace().toString());
+        }
+        return  null;
     }
 
 
@@ -57,10 +68,6 @@ public class ConnectDB {
             String name = properties.getProperty("h2.username");
             String pass = properties.getProperty("h2.password");
 
-            JdbcDataSource ds = new JdbcDataSource();
-            ds.setURL(url);
-            ds.setUser(name);
-            ds.setPassword(pass);
             Connection connection = DriverManager.getConnection(url, name, pass);
             try (Statement st = connection.createStatement()){
                     st.executeUpdate("create table if not exists users(id varchar(255), login varchar(255) ,password varchar(255))");
@@ -68,7 +75,7 @@ public class ConnectDB {
             }
             return connection;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getStackTrace().toString());
         }
         return null;
     }

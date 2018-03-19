@@ -3,6 +3,7 @@ package server;
 import messageSystem.AuthMessage;
 import messageSystem.BroadcastMessage;
 import messageSystem.Message;
+import messageSystem.MessageManager;
 import org.junit.*;
 import server.clientData.Session;
 import server.clientData.User;
@@ -27,6 +28,7 @@ public class RegistrationTest {
     private Client client;
     private String message;
     private Client cl2;
+    private ArrayList<Client> clients;
     @BeforeClass
     public static void runServer () {
        Thread serverThread = new Thread(() ->{
@@ -35,15 +37,7 @@ public class RegistrationTest {
        });
        serverThread.start();
         UsersManager manager = UsersManager.getInstance();
-        manager.deleteUser(manager.isRegistered("aaa","aaa"));
-        manager.deleteUser(manager.isRegistered("repeatedLoginAfterBreakConnection",
-                "repeatedLoginAfterBreakConnection"));
-        manager.deleteUser(manager.isRegistered("failedDuplicateLogin",
-                "failedDuplicateLogin"));
-        manager.deleteUser(manager.isRegistered("c1",
-                "c1"));
-        manager.deleteUser(manager.isRegistered("c2",
-                "c2"));
+
 
     }
     @Before
@@ -55,12 +49,27 @@ public class RegistrationTest {
     }
     @After
     public void tearDown() throws Exception {
+        UsersManager manager = UsersManager.getInstance();
+        manager.deleteUser(manager.isRegistered("aaa","aaa"));
+        manager.deleteUser(manager.isRegistered("repeatedLoginAfterBreakConnection",
+                "repeatedLoginAfterBreakConnection"));
+        manager.deleteUser(manager.isRegistered("failedDuplicateLogin",
+                "failedDuplicateLogin"));
+        manager.deleteUser(manager.isRegistered("c1",
+                "c1"));
+        manager.deleteUser(manager.isRegistered("c2",
+                "c2"));
+        if(clients != null) {
+            for (Client c : clients) {
+                manager.deleteUser(manager.isRegistered(c.getUsername(), c.getPass()));
+            }
+            manager.deleteUser(manager.isRegistered("c01", "c01"));
+        }
 
     }
     @AfterClass
     public  static void deletingTestData() {
-
-
+        
     }
 
     @Test
@@ -130,15 +139,17 @@ public class RegistrationTest {
     @Test
     public void simpleLoad() throws IOException {
         System.out.println("simpleLoad");
-        ArrayList<Client> clients = new ArrayList<>(100);
+        clients = new ArrayList<>(100);
         for (int i =1; i < 100; i++) {
             Client c = new Client(8190);
-            c.setUsername(String.valueOf(i));
+            String str = String.valueOf(i);
+            c.setUsername(str);
+            c.setPass(str);
             clients.add(c);
         }
         for (Client c: clients) {
             Message msg = new AuthMessage(String.valueOf(Math.random()), c.getUsername(),
-                    String.valueOf(Math.random()));
+                   c.getPass());
             c.write(msg);
             c.read();
         }

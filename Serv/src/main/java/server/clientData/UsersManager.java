@@ -3,6 +3,9 @@ package server.clientData;
 
 import server.databaseConnect.UserDAO;
 import java.io.IOException;
+import java.util.logging.Level;
+
+import static server.Server.logger;
 
 /**
  * Управляет пользователями
@@ -78,6 +81,8 @@ public class UsersManager {
                 userSessionManager.doActive(ss);
                 return user;
             } else {
+                logger.log(Level.WARNING, "{0} can\\'t authorize user {1}",
+                        new Object[]{this.getClass().getSimpleName(), login});
                return null;
         }
         }else {

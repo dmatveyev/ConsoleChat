@@ -9,6 +9,9 @@ import server.clientData.UsersManager;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+
+import static server.Server.logger;
 
 /**Управляет пользовательскими сообщениями
  * Created by Денис on 15.03.2018.
@@ -43,7 +46,7 @@ public class MessageManager {
                 try {
                     user = usersManager.authorize(auth.getUserlogin(), auth.getUserPassword());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.log(Level.WARNING, e.getStackTrace().toString());
                 }
                 if (user != null) {
                     Message authMessage = messageFactory.createAuthMessage(
@@ -71,7 +74,8 @@ public class MessageManager {
                     ss.setName(null);
                     sessionManager.doUnactive(ss);
                     sys.setResultMessage("Session for user "+ user.getLogin() +" was cleared successfully");
-                    System.out.println(sys);
+                    logger.log(Level.INFO, "{0} {1}",
+                            new Object[]{this.getClass().getSimpleName(), sys});
                     removeHandler(handlerId);
                 }
             }
@@ -87,7 +91,9 @@ public class MessageManager {
     public synchronized void sendMessageToAll(Message msg) {
         if(handlers.size()!= 0) {
             for (Map.Entry<Integer, ClientHandler> handler : handlers.entrySet()) {
-                System.out.println("Sending for "+ handler.getValue().getUser().getLogin());
+                logger.log(Level.FINE, "{0} sending message to {1}",
+                        new Object[]{this.getClass().getSimpleName(),
+                                handler.getValue().getUser().getLogin()});
                 handler.getValue().printMessage(msg);
             }
         }

@@ -23,8 +23,8 @@ public class Server {
     private Socket clientSocket;
     private int clientId=1;
     private int port;
-    private Logger logger;
-    public static FileHandler fileHandler;
+    public static Logger logger;
+    private FileHandler fileHandler;
 
     public Server(int port)  {
         logger = Logger.getLogger("Server");
@@ -34,8 +34,9 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //fileHandler.
         logger.addHandler(fileHandler);
+        logger.setLevel(Level.FINEST);
+        fileHandler.setLevel(Level.INFO);
 
         this.port = port;
     }
@@ -44,14 +45,14 @@ public class Server {
         try {
             serverSocket = new ServerSocket(port);
             logger.log(Level.INFO, "{0}: Server started on port {1}",
-                    new String[]{logger.getName(),String.valueOf(port)} );
+                    new String[]{this.getClass().getSimpleName(),String.valueOf(port)} );
             MessageFactory messageFactory = new MessageFactory();
             MessagePool messagePool = MessagePool.getInstance();
             MessageManager messageManager = new MessageManager(messageFactory);
             messagePool.registerManager(messageManager);
             while (true) {
                 clientSocket = serverSocket.accept();
-                System.out.println("Spawing " + clientId);
+                logger.log(Level.INFO,"Spawing " + clientId);
                 ClientHandler clientHandler = new ClientHandler(clientId, clientSocket,messageFactory);
                 messageManager.addHandler(clientId,clientHandler);
                 Thread t = new Thread(clientHandler);

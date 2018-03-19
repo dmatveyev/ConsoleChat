@@ -3,6 +3,9 @@ package server.databaseConnect;
 import server.clientData.User;
 
 import java.sql.*;
+import java.util.logging.Level;
+
+import static server.Server.logger;
 
 public class UserDAO implements DAO<User> {
      private ConnectDB connectDB;
@@ -26,7 +29,7 @@ public class UserDAO implements DAO<User> {
             user.setPassword(res.getString(3));
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getStackTrace().toString());
         }
         return user;
     }
@@ -41,7 +44,7 @@ public class UserDAO implements DAO<User> {
                 userId = res.getString(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getStackTrace().toString());
         }
         return userId;
     }
@@ -62,7 +65,7 @@ public class UserDAO implements DAO<User> {
             session.setString(2, null);
             session.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getStackTrace().toString());
         }
     }
 
@@ -81,7 +84,7 @@ public class UserDAO implements DAO<User> {
             st.executeUpdate();
             st2.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getStackTrace().toString());
         }
     }
 }

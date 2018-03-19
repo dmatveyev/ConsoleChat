@@ -7,18 +7,14 @@ import server.clientData.User;
 import messageSystem.Message;
 import java.io.*;
 import java.net.Socket;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import static server.Server.fileHandler;
+import static server.Server.logger;
 
 /** Перехватывает сообщения от подключившегося клиента и помещает их в пул для дальнейшей обработки
  * Created by Денис on 06.03.2018.
  */
 public class ClientHandler implements Runnable {
-    private final Logger logger;
     private int handlerId;
     private Socket clientSocket;
     private ObjectOutputStream out;
@@ -26,8 +22,6 @@ public class ClientHandler implements Runnable {
     private User user;
     private MessageFactory messageFactory;
     public ClientHandler(int handlerId, Socket clientSocket, MessageFactory messageFactory) {
-        logger = Logger.getLogger("Client handler");
-        logger.addHandler(fileHandler);
         this.messageFactory = messageFactory;
         this.clientSocket = clientSocket;
         this.handlerId = handlerId;
@@ -67,16 +61,16 @@ public class ClientHandler implements Runnable {
      */
     public void printMessage(Message message) {
         try {
-            logger.log(Level.INFO,"{0} sending message: {1}",
-                    new Object[]{logger.getName(), message.toString()});
+            logger.log(Level.FINER ,"{0} sending message: {1}",
+                    new Object[]{this.getClass().getSimpleName(), message.toString()});
             if (!clientSocket.isClosed()) {
                 out.writeObject(message);
                 out.flush();
-                logger.log(Level.INFO,"{0} message sent:  {1}",
-                        new Object[]{this.getClass().getName(), message.toString()});
+                logger.log(Level.FINER,"{0} message sent:  {1}",
+                        new Object[]{this.getClass().getSimpleName(), message.toString()});
             } else {
                 logger.log(Level.WARNING,"{0} can't send message: socket was closed",
-                        new Object[]{this.getClass().getName()});
+                        new Object[]{this.getClass().getSimpleName()});
             }
         } catch (IOException e) {
             e.printStackTrace();

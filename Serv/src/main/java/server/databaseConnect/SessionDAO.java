@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+
+import static server.Server.logger;
 
 public class SessionDAO implements DAO<Session> {
     private ConnectDB connectDB;
@@ -26,7 +29,7 @@ public class SessionDAO implements DAO<Session> {
                 session = new Session(result.getString(1),
                         result.getString(2));
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getStackTrace().toString());
         }
         return session;
     }
@@ -46,7 +49,7 @@ public class SessionDAO implements DAO<Session> {
             st.setString(1, session.getName());
             st.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getStackTrace().toString());
         }
 
     }
