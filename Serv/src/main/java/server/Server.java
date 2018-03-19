@@ -29,7 +29,7 @@ public class Server {
     public Server(int port)  {
         logger = Logger.getLogger("Server");
         try {
-            fileHandler = new FileHandler("system.log",0,10,true);
+            fileHandler = new FileHandler("system.log",1000000,5,true);
             fileHandler.setFormatter(new SimpleFormatter());
         } catch (IOException e) {
             e.printStackTrace();

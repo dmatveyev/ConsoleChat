@@ -43,12 +43,13 @@ public class ClientHandler implements Runnable {
                 }
             }
         } catch (EOFException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
         catch (IOException e) {
             //System.err.printf ("Server error message: %s", e.getMessage());
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage(), e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage(), e);
         }finally {
             Message m = messageFactory.createSystemMessage("clearSession");
             messagePool.addMessage(new MessagePair(handlerId,m));
