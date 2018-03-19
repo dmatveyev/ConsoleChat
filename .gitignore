@@ -3,4 +3,6 @@
 /Serv/lib
 /.idea
 /system.log.*
-/Serv/system.log.0
+/Serv/system.log.*
+/target
+/Serv/h2db.*
