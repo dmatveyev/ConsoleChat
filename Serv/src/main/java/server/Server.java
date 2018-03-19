@@ -1,7 +1,6 @@
 package server;
 
 
-
 import messageSystem.MessageFactory;
 import messageSystem.MessageManager;
 import messageSystem.MessagePool;
@@ -21,15 +20,15 @@ import java.util.logging.SimpleFormatter;
 public class Server {
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private int clientId=1;
+    private int clientId = 1;
     private int port;
     public static Logger logger;
     private FileHandler fileHandler;
 
-    public Server(int port)  {
+    public Server(int port) {
         logger = Logger.getLogger("Server");
         try {
-            fileHandler = new FileHandler("system.log",1000000,5,true);
+            fileHandler = new FileHandler("system.log", 1000000, 5, true);
             fileHandler.setFormatter(new SimpleFormatter());
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,7 +36,6 @@ public class Server {
         logger.addHandler(fileHandler);
         logger.setLevel(Level.FINEST);
         fileHandler.setLevel(Level.INFO);
-
         this.port = port;
     }
 
@@ -45,16 +43,16 @@ public class Server {
         try {
             serverSocket = new ServerSocket(port);
             logger.log(Level.INFO, "{0}: Server started on port {1}",
-                    new String[]{this.getClass().getSimpleName(),String.valueOf(port)} );
+                    new String[]{this.getClass().getSimpleName(), String.valueOf(port)});
             MessageFactory messageFactory = new MessageFactory();
             MessagePool messagePool = MessagePool.getInstance();
             MessageManager messageManager = new MessageManager(messageFactory);
             messagePool.registerManager(messageManager);
             while (true) {
                 clientSocket = serverSocket.accept();
-                logger.log(Level.INFO,"Spawing " + clientId);
-                ClientHandler clientHandler = new ClientHandler(clientId, clientSocket,messageFactory);
-                messageManager.addHandler(clientId,clientHandler);
+                logger.log(Level.INFO, "Spawing " + clientId);
+                ClientHandler clientHandler = new ClientHandler(clientId, clientSocket, messageFactory);
+                messageManager.addHandler(clientId, clientHandler);
                 Thread t = new Thread(clientHandler);
                 t.start();
                 clientId++;

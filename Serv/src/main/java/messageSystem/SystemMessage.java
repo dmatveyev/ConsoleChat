@@ -13,7 +13,7 @@ public class SystemMessage extends Message {
     private LocalDate date;
     private LocalTime time;
 
-    public SystemMessage (String comamand) {
+    public SystemMessage(String comamand) {
         this.command = comamand;
     }
 

@@ -1,7 +1,6 @@
 package messageSystem;
 
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -9,26 +8,26 @@ import java.time.LocalTime;
  * Created by Денис on 16.03.2018.
  */
 public class AuthMessage extends Message {
-    private String userid;
-    private String userlogin;
-    private String userPassword;
-    private LocalDate date;
-    private LocalTime time;
+    private final String userId;
+    private final String userLogin;
+    private final String userPassword;
+    private final LocalDate date;
+    private final LocalTime time;
 
-    public AuthMessage (String userId, String userlogin, String userPassword) {
+    public AuthMessage(String userId, String userlogin, String userPassword) {
         this.date = LocalDate.now();
         this.time = LocalTime.now();
-        this.userid = userId;
-        this.userlogin = userlogin;
+        this.userId = userId;
+        this.userLogin = userlogin;
         this.userPassword = userPassword;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getUserlogin() {
-        return userlogin;
+    public String getUserLogin() {
+        return userLogin;
     }
 
     public String getUserPassword() {
@@ -38,7 +37,7 @@ public class AuthMessage extends Message {
     @Override
     public String toString() {
         return "AuthMessage{" +
-                "userlogin='" + userlogin + '\'' +
+                "userLogin='" + userLogin + '\'' +
                 ", date=" + date +
                 ", time=" + time +
                 '}';

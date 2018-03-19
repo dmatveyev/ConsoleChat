@@ -13,7 +13,7 @@ import static server.Server.logger;
 public class SessionDAO implements DAO<Session> {
     private ConnectDB connectDB;
 
-    public SessionDAO (){
+    public SessionDAO() {
         connectDB = new ConnectDB();
     }
 
@@ -36,7 +36,6 @@ public class SessionDAO implements DAO<Session> {
 
     @Override
     public void insert(final Session session) {
-
     }
 
     @Override
@@ -45,14 +44,14 @@ public class SessionDAO implements DAO<Session> {
             PreparedStatement st = conn.prepareStatement("update user_session" +
                     " set session = ?" +
                     " where id = ?");
-            st.setString(2,session.getUserId());
+            st.setString(2, session.getUserId());
             st.setString(1, session.getName());
             st.executeUpdate();
         } catch (SQLException e) {
             logger.log(Level.WARNING, e.getStackTrace().toString());
         }
-
     }
+
     @Override
     public void delete(final String userId) {
     }

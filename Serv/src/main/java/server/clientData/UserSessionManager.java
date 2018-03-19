@@ -2,7 +2,8 @@ package server.clientData;
 
 import server.databaseConnect.SessionDAO;
 
-/**Управляет сессиями пользователей
+/**
+ * Управляет сессиями пользователей
  * Created by Денис on 08.03.2018.
  */
 public class UserSessionManager {
@@ -14,19 +15,20 @@ public class UserSessionManager {
         sessionDAO = new SessionDAO();
     }
 
-    public static UserSessionManager getInstance(){
-        if(instance == null)
+    public static UserSessionManager getInstance() {
+        if (instance == null)
             instance = new UserSessionManager();
         return instance;
     }
 
-    public Session createUserSession (User user) {
+    public Session createUserSession(User user) {
         String session = user.getUserId().concat(user.getLogin()).concat(user.getPassword());
         return new Session(user.getUserId(), session);
     }
 
     /**
      * Проверяет есть ли активный пользователь под этой сессией
+     *
      * @param user пользователь для проверки
      * @return Объект сессии пользователя, если есть активный пользователь. Null, если нет активного пользователя.
      */
@@ -37,6 +39,7 @@ public class UserSessionManager {
 
     /**
      * Активизирует сессия для покльзователя
+     *
      * @param session Объект сессии
      * @return
      */
@@ -47,6 +50,7 @@ public class UserSessionManager {
 
     /**
      * Удаляет сессию для поользователя
+     *
      * @param session Объект сессии
      * @return
      */

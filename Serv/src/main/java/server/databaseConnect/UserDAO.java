@@ -8,12 +8,11 @@ import java.util.logging.Level;
 import static server.Server.logger;
 
 public class UserDAO implements DAO<User> {
-     private ConnectDB connectDB;
+    private ConnectDB connectDB;
 
-     public UserDAO (){
-         connectDB = new ConnectDB();
-     }
-
+    public UserDAO() {
+        connectDB = new ConnectDB();
+    }
 
 
     @Override
@@ -33,11 +32,12 @@ public class UserDAO implements DAO<User> {
         }
         return user;
     }
+
     public String getUserId(String login, String password) {
         String userId = null;
         try (Connection conn = connectDB.getConnection()) {
             PreparedStatement st = conn.prepareStatement("select * from users where login = ? and password = ?");
-            st.setString(1,login);
+            st.setString(1, login);
             st.setString(2, password);
             ResultSet res = st.executeQuery();
             if (res.next()) {
@@ -51,8 +51,7 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public void insert(final User user) {
-
-        try(Connection conn = connectDB.getConnection()) {
+        try (Connection conn = connectDB.getConnection()) {
             PreparedStatement statement = conn.prepareStatement("insert into users (id,login, password) values (?,?,?)");
             statement.setString(1, user.getUserId());
             statement.setString(2, user.getLogin());
@@ -71,7 +70,6 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public void update(final User user) {
-
     }
 
     @Override

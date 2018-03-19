@@ -18,6 +18,7 @@ public class User implements Serializable {
         this.login = null;
         this.password = null;
     }
+
     public String getUserId() {
         return userId;
     }
@@ -55,7 +56,7 @@ public class User implements Serializable {
         if (otherObject == null) return false;
         if (getClass() != otherObject.getClass()) return false;
         User other = (User) otherObject;
-        return getLogin().equals(other.getLogin())&& getPassword().equals(other.getPassword());
+        return getLogin().equals(other.getLogin()) && getPassword().equals(other.getPassword());
     }
 
     @Override

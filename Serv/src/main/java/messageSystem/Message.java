@@ -17,19 +17,20 @@ public class Message implements Serializable {
     public LocalTime getTime() {
         return time;
     }
-    public Message () {
 
+    public Message() {
     }
 
-    public Message (String text, String userName, LocalDate date, LocalTime time) {
+    public Message(String text, String userName, LocalDate date, LocalTime time) {
         this.text = text;
         this.userName = userName;
         this.date = date;
         this.time = time;
 
     }
+
     public String getText() {
-        return  text;
+        return text;
     }
 
     public LocalDate getDate() {

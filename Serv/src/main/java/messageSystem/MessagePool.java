@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
 
-/**Создаёт очередь для обработки сообщений.
- *  Оповещает Менеджера сообщений о новом поступившем ссообщении.
+/**
+ * Создаёт очередь для обработки сообщений.
+ * Оповещает Менеджера сообщений о новом поступившем ссообщении.
  * Created by Денис on 15.03.2018.
  */
 public class MessagePool {
@@ -18,13 +19,13 @@ public class MessagePool {
         messageManagers = new ArrayList<>();
     }
 
-    public static MessagePool getInstance(){
+    public static MessagePool getInstance() {
         if (instance == null)
             instance = new MessagePool();
         return instance;
     }
 
-    public void addMessage (MessagePair message){
+    public void addMessage(MessagePair message) {
         try {
             queue.put(message);
             notifyManagers();
@@ -33,24 +34,25 @@ public class MessagePool {
         }
     }
 
-    public MessagePair getMessage ()  {
+    public MessagePair getMessage() {
         try {
-            return  queue.take();
+            return queue.take();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void registerManager (MessageManager messageManager) {
+    public void registerManager(MessageManager messageManager) {
         messageManagers.add(messageManager);
     }
+
     public void removeManager(MessageManager messageManager) {
         messageManagers.remove(messageManager);
     }
 
-    private void notifyManagers () {
-        for(MessageManager messageManager: messageManagers) {
+    private void notifyManagers() {
+        for (MessageManager messageManager : messageManagers) {
             messageManager.update(getMessage());
         }
     }

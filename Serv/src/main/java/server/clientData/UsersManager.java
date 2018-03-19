@@ -2,6 +2,7 @@ package server.clientData;
 
 
 import server.databaseConnect.UserDAO;
+
 import java.io.IOException;
 import java.util.logging.Level;
 
@@ -18,7 +19,7 @@ public class UsersManager {
     private UserSessionManager userSessionManager;
 
 
-    private UsersManager () {
+    private UsersManager() {
         userDAO = new UserDAO();
         userSessionManager = UserSessionManager.getInstance();
         //createAdmin();
@@ -39,14 +40,15 @@ public class UsersManager {
         return usersManager;
     }
 
-    public String registerUser(User user)  {
-         userDAO.insert(user);
+    public String registerUser(User user) {
+        userDAO.insert(user);
         return user.getUserId();
     }
 
     /**
      * Проверяет совпадение пользователя в списке зарегистрированных
-     * @param login логин пользователя
+     *
+     * @param login    логин пользователя
      * @param password пароль пользователя
      * @return Id пользователя, если такой пользователь был найден,
      * null если пользователь не найден
@@ -60,12 +62,13 @@ public class UsersManager {
     }
 
     public void deleteUser(String id) {
-       userDAO.delete(id);
+        userDAO.delete(id);
     }
 
     /**
      * Проверяет введенные данные и авторизует пользователя.
-     * @param login Предполагаемый логин пользователя
+     *
+     * @param login    Предполагаемый логин пользователя
      * @param password предполагаемый пароль пользователя.
      * @return Зарегистрированный или новый пользователь
      * @throws IOException Пробоасывается в случае, если есть активная сессия пользователя.
@@ -73,7 +76,7 @@ public class UsersManager {
     public synchronized User authorize(String login, String password) throws IOException {
         User user;
         String userId = usersManager.isRegistered(login, password);
-        if (userId!= null) {
+        if (userId != null) {
             user = usersManager.getRegisteredUser(userId);
             Session ss = userSessionManager.isActive(user);
             if (ss.getName() == null) {
@@ -83,10 +86,10 @@ public class UsersManager {
             } else {
                 logger.log(Level.WARNING, "{0} can\\'t authorize user {1}",
                         new Object[]{this.getClass().getSimpleName(), login});
-               return null;
-        }
-        }else {
-            user = new User ();
+                return null;
+            }
+        } else {
+            user = new User();
             user.setLogin(login);
             user.setPassword(password);
             String userid = String.valueOf(Math.random());

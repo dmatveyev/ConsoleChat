@@ -8,15 +8,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
 
-/**     a
+/**
+ * a
  * Created by Денис on 06.03.2018.
  */
 public class Main {
     public static void main(String... args) {
         Properties property = new Properties();
-
         ClassLoader.getSystemResource("general.properties");
-
         try {
             property.load(ClassLoader.getSystemResourceAsStream("general.properties"));
         } catch (IOException e) {
@@ -24,6 +23,5 @@ public class Main {
         }
         Server srv = new Server(Integer.parseInt(property.getProperty("port")));
         srv.start();
-        
     }
 }

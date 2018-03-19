@@ -1,23 +1,25 @@
 package messageSystem;
 
 
-
-/**Создает сообщение нужного типа.
+/**
+ * Создает сообщение нужного типа.
  * Created by Денис on 16.03.2018.
  */
 public class MessageFactory {
 
-    public Message createSystemMessage(String command){
+    public Message createSystemMessage(String command) {
         Message message = new SystemMessage(command);
         return message;
     }
-    public Message createBroadcastMessage(String text, String userName){
+
+    public Message createBroadcastMessage(String text, String userName) {
         Message message = new BroadcastMessage(text,
                 userName);
         return message;
     }
-    public Message createAuthMessage (String userId, String userLogin, String userPassword){
-        Message message =  new AuthMessage(userId, userLogin, userPassword);
+
+    public Message createAuthMessage(String userId, String userLogin, String userPassword) {
+        Message message = new AuthMessage(userId, userLogin, userPassword);
         return message;
     }
 }

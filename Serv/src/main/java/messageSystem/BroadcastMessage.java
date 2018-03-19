@@ -41,8 +41,8 @@ public class BroadcastMessage extends Message {
 
     @Override
     public String toString() {
-        return date.toString() +"T"+ time
-                + " "+ userName +": " + text ;
+        return date.toString() + "T" + time
+                + " " + userName + ": " + text;
 
     }
 }

@@ -13,7 +13,8 @@ import java.util.logging.Level;
 
 import static server.Server.logger;
 
-/**Управляет пользовательскими сообщениями
+/**
+ * Управляет пользовательскими сообщениями
  * Created by Денис on 15.03.2018.
  */
 public class MessageManager {
@@ -38,40 +39,40 @@ public class MessageManager {
         int handlerId = message.getHandlerId();
         Message msg = message.getMessage();
         if (msg instanceof BroadcastMessage) {
-              sendMessageToAll(msg);
+            sendMessageToAll(msg);
         }
         if (msg instanceof AuthMessage) {
-            AuthMessage auth = (AuthMessage)msg;
-                User user = null;
-                try {
-                    user = usersManager.authorize(auth.getUserlogin(), auth.getUserPassword());
-                } catch (IOException e) {
-                    logger.log(Level.WARNING, e.getStackTrace().toString());
-                }
-                if (user != null) {
-                    Message authMessage = messageFactory.createAuthMessage(
-                            user.getUserId(),
-                            user.getLogin(),
-                            user.getPassword());
-                    handlers.get(handlerId).setUser(user);
-                    handlers.get(handlerId).printMessage(authMessage);
-                }else {
-                    Message failedAuth = messageFactory.createAuthMessage(
-                            null,
-                            null,
-                           null);
-                    handlers.get(handlerId).printMessage(failedAuth);
-                    handlers.remove(handlerId);
-                }
+            AuthMessage auth = (AuthMessage) msg;
+            User user = null;
+            try {
+                user = usersManager.authorize(auth.getUserLogin(), auth.getUserPassword());
+            } catch (IOException e) {
+                logger.log(Level.WARNING, e.getStackTrace().toString());
+            }
+            if (user != null) {
+                Message authMessage = messageFactory.createAuthMessage(
+                        user.getUserId(),
+                        user.getLogin(),
+                        user.getPassword());
+                handlers.get(handlerId).setUser(user);
+                handlers.get(handlerId).printMessage(authMessage);
+            } else {
+                Message failedAuth = messageFactory.createAuthMessage(
+                        null,
+                        null,
+                        null);
+                handlers.get(handlerId).printMessage(failedAuth);
+                handlers.remove(handlerId);
+            }
         }
-        if (msg instanceof SystemMessage){
-            SystemMessage sys =(SystemMessage)msg;
+        if (msg instanceof SystemMessage) {
+            SystemMessage sys = (SystemMessage) msg;
             String command = sys.getCommand();
             if (command.equals("clearSession")) {
                 User user = handlers.get(handlerId).getUser();
                 if (user != null) {
                     Session ss = sessionManager.isActive(user);
-                    if (ss!= null) {
+                    if (ss != null) {
                         ss.setName(null);
                         sessionManager.doUnactive(ss);
                         sys.setResultMessage("Session for user " + user.getLogin() + " was cleared successfully");
@@ -82,8 +83,6 @@ public class MessageManager {
                 }
             }
         }
-
-
     }
 
     public synchronized void update(MessagePair message) {
@@ -91,7 +90,7 @@ public class MessageManager {
     }
 
     public synchronized void sendMessageToAll(Message msg) {
-        if(handlers.size()!= 0) {
+        if (handlers.size() != 0) {
             for (Map.Entry<Integer, ClientHandler> handler : handlers.entrySet()) {
                 logger.log(Level.FINE, "{0} sending message to {1}",
                         new Object[]{this.getClass().getSimpleName(),
@@ -100,10 +99,12 @@ public class MessageManager {
             }
         }
     }
+
     public synchronized void addHandler(int id, ClientHandler clientHandler) {
-        handlers.put(id,clientHandler);
+        handlers.put(id, clientHandler);
     }
-    public synchronized void removeHandler(int id){
+
+    public synchronized void removeHandler(int id) {
         handlers.remove(id);
     }
 }
