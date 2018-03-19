@@ -7,3 +7,7 @@
 /target
 /Serv/h2db.*
 /Common/*.iml
+/*.db
+/Client/target
+/Common/target
+/Serv/target
