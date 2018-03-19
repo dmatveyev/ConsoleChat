@@ -47,7 +47,7 @@ public class Server {
             //noinspection InfiniteLoopStatement
             while (true) {
                 final Socket clientSocket = serverSocket.accept();
-                logger.log(Level.INFO, "Spawing " + clientId);
+                logger.log(Level.INFO, "Spawning " + clientId);
                 final ClientHandler clientHandler = new ClientHandler(clientId, clientSocket);
                 messageManager.addHandler(clientId, clientHandler);
                 final Thread t = new Thread(clientHandler);
