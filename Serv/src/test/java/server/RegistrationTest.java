@@ -169,7 +169,7 @@ public class RegistrationTest {
             Message m =c1.read();
             System.out.println(m);
             assertEquals("BroadcastMessage for c01", ((BroadcastMessage)m).getText());
-            System.out.println("test end");
         }
+        System.out.println("test end");
     }
 }

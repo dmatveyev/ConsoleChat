@@ -71,12 +71,14 @@ public class MessageManager {
                 User user = handlers.get(handlerId).getUser();
                 if (user != null) {
                     Session ss = sessionManager.isActive(user);
-                    ss.setName(null);
-                    sessionManager.doUnactive(ss);
-                    sys.setResultMessage("Session for user "+ user.getLogin() +" was cleared successfully");
-                    logger.log(Level.INFO, "{0} {1}",
-                            new Object[]{this.getClass().getSimpleName(), sys});
-                    removeHandler(handlerId);
+                    if (ss!= null) {
+                        ss.setName(null);
+                        sessionManager.doUnactive(ss);
+                        sys.setResultMessage("Session for user " + user.getLogin() + " was cleared successfully");
+                        logger.log(Level.INFO, "{0} {1}",
+                                new Object[]{this.getClass().getSimpleName(), sys});
+                        removeHandler(handlerId);
+                    }
                 }
             }
         }
