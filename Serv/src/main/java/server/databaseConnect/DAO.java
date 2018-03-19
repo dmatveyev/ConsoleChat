@@ -5,5 +5,4 @@ public interface DAO <T> {
     void insert(T t);
     void update(T t);
     void delete(String userId);
-
 }

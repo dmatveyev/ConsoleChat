@@ -1,14 +1,12 @@
 package server.clientData;
 
-import org.omg.PortableServer.ServantRetentionPolicy;
-
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Created by Денис on 07.03.2018.
  */
-public class User implements Serializable {
+public class User  {
     private String userId;
     private String login;
     private String password;
@@ -18,6 +16,7 @@ public class User implements Serializable {
         this.login = null;
         this.password = null;
     }
+
     public String getUserId() {
         return userId;
     }
@@ -35,27 +34,27 @@ public class User implements Serializable {
     }
 
 
-    public void setLogin(String login) {
+    public void setLogin(final String login) {
         this.login = login;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
     @Override
     public int hashCode() {
-        return 7 * Objects.hashCode(getLogin()) +
-                11 * Objects.hashCode(getPassword());
+        return (7 * Objects.hashCode(getLogin())) +
+                (11 * Objects.hashCode(getPassword()));
     }
 
     @Override
-    public boolean equals(Object otherObject) {
-        if (this == otherObject) return true;
-        if (otherObject == null) return false;
-        if (getClass() != otherObject.getClass()) return false;
-        User other = (User) otherObject;
-        return getLogin().equals(other.getLogin())&& getPassword().equals(other.getPassword());
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        final User other = (User) obj;
+        return getLogin().equals(other.getLogin()) && getPassword().equals(other.getPassword());
     }
 
     @Override

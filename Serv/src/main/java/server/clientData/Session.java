@@ -2,9 +2,9 @@ package server.clientData;
 
 public class Session {
     private String name;
-    private String userId;
+    private final String userId;
 
-    public Session(String userId, String name) {
+    public Session(final String userId, final String name) {
         this.name = name;
         this.userId = userId;
     }

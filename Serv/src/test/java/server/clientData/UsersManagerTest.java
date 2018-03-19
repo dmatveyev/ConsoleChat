@@ -40,21 +40,25 @@ public class UsersManagerTest {
     }
     @Test
     public void registerUser() throws IOException {
+        System.out.println("Run test registerUser" );
         assertEquals(test.getUserId(), usersManager.registerUser(test));
     }
 
     @Test
     public void isRegisteredPositive() throws Exception {
+        System.out.println("Run test isRegisteredPositive" );
         assertNotNull(usersManager.isRegistered(test.getLogin(), test.getPassword()));
     }
 
     @Test
     public void isRegisteredNegative() throws Exception {
+        System.out.println("Run test isRegisteredNegative" );
         assertNull(usersManager.isRegistered("a", "a"));
     }
 
     @Test
     public void getRegisteredUser() throws Exception {
+        System.out.println("Run test getRegisteredUser" );
         usersManager.registerUser(test);
         assertEquals(test, usersManager.getRegisteredUser(test.getUserId()));
 
@@ -62,11 +66,13 @@ public class UsersManagerTest {
 
     @Test
     public void authorizeNewUser() throws Exception {
+        System.out.println("Run test authorizeNewUser" );
         assertEquals(test, usersManager.authorize("test", "test"));
     }
 
     @Test
     public void authorizeOldUser() throws Exception {
+        System.out.println("Run test authorizeOldUser" );
         User oldUser = new User();
         oldUser.setUserId(String.valueOf(Math.random()));
         oldUser.setLogin("OldUser");

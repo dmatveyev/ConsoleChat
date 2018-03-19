@@ -1,0 +1,13 @@
+/Client/*.iml
+/Serv/*.iml
+/Serv/lib
+/.idea
+/system.log.*
+/Serv/system.log.*
+/target
+/Serv/h2db.*
+/Common/*.iml
+/*.db
+/Client/target
+/Common/target
+/Serv/target

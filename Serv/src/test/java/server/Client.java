@@ -12,6 +12,7 @@ import java.net.Socket;
  */
 class Client {
     private String username;
+    private String pass;
     Socket socket;
     ObjectInputStream in;
     ObjectOutputStream out;
@@ -27,6 +28,14 @@ class Client {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(final String pass) {
+        this.pass = pass;
     }
 
     public Message read (){
