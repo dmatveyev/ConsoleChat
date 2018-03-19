@@ -18,7 +18,7 @@ import static server.Server.logger;
 /**
  * Инкапсулирует логику подключения к базе данных
  */
-@SuppressWarnings("ALL")
+
 class ConnectDB {
 
     private final Properties properties;

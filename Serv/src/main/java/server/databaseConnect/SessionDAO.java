@@ -10,7 +10,7 @@ import java.util.logging.Level;
 
 import static server.Server.logger;
 
-@SuppressWarnings("ALL")
+
 public class SessionDAO implements DAO<Session> {
     private final ConnectDB connectDB;
 
