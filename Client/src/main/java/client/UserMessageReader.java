@@ -4,8 +4,6 @@ import messageSystem.Message;
 import messageSystem.MessageFactory;
 import messageSystem.User;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -52,13 +50,13 @@ public class UserMessageReader implements ClientSubject {
             password =in.nextLine();
         user.setLogin(login);
         user.setPassword(password);
-        userMessage = messageFactory.createAuthMessage(null,
+        userMessage = MessageFactory.createAuthMessage(null,
                login,
                 password);
         notifyObservers();
         //переключаемся на чтение обычных сообщений
         while (in.hasNextLine()){
-            userMessage = messageFactory.createBroadcastMessage(
+            userMessage = MessageFactory.createBroadcastMessage(
                     in.nextLine(),
                     user.getLogin());
             notifyObservers();

@@ -15,6 +15,7 @@ import static server.Server.logger;
  * Created by Денис on 15.03.2018.
  */
 public class MessagePool {
+
     private static MessagePool instance;
     private final List<MessageManager> messageManagers;
     private final BlockingQueue<MessagePair> queue;

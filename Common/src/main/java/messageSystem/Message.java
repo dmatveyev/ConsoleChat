@@ -1,7 +1,6 @@
 package messageSystem;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 /**
  * Created by Денис on 06.03.2018.

@@ -44,7 +44,7 @@ public class Server {
             final MessagePool messagePool = MessagePool.getInstance();
             final MessageManager messageManager = new MessageManager();
             messagePool.registerManager(messageManager);
-            //noinspection InfiniteLoopStatement
+
             while (true) {
                 final Socket clientSocket = serverSocket.accept();
                 logger.log(Level.INFO, "Spawning " + clientId);

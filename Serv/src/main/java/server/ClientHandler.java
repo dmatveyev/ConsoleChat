@@ -8,6 +8,7 @@ import messageSystem.Message;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 
 import static server.Server.logger;
@@ -49,7 +50,7 @@ public class ClientHandler implements Runnable {
             //logger.log(Level.WARNING, handlerId +e.getMessage(), e);
         } catch (final ClassNotFoundException | IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
-        } finally {
+        }finally {
             final Message m = MessageFactory.createSystemMessage("clearSession");
             messagePool.addMessage(new MessagePair(handlerId, m));
         }

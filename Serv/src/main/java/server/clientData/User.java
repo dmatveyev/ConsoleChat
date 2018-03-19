@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * Created by Денис on 07.03.2018.
  */
-public class User implements Serializable {
+public class User  {
     private String userId;
     private String login;
     private String password;

@@ -10,7 +10,12 @@ public class MessageFactory {
         return new SystemMessage(command);
     }
 
-    static Message createAuthMessage(final String userId, final String userLogin, final String userPassword) {
+    public static Message createAuthMessage(final String userId, final String userLogin, final String userPassword) {
         return new AuthMessage(userId, userLogin, userPassword);
+    }
+    public static Message createBroadcastMessage(String text, String userName){
+
+        return new BroadcastMessage(text,
+                userName);
     }
 }
