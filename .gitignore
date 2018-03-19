@@ -1,3 +1,6 @@
 /Client/*.iml
 /Serv/*.iml
 /Serv/lib
+/.idea
+/system.log.*
+/Serv/system.log.0
