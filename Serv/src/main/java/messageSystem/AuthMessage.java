@@ -14,11 +14,11 @@ public class AuthMessage extends Message {
     private final LocalDate date;
     private final LocalTime time;
 
-    public AuthMessage(String userId, String userlogin, String userPassword) {
+    public AuthMessage(final String userId, final String userLogin, final String userPassword) {
         this.date = LocalDate.now();
         this.time = LocalTime.now();
         this.userId = userId;
-        this.userLogin = userlogin;
+        this.userLogin = userLogin;
         this.userPassword = userPassword;
     }
 
@@ -30,7 +30,7 @@ public class AuthMessage extends Message {
         return userLogin;
     }
 
-    public String getUserPassword() {
+    String getUserPassword() {
         return userPassword;
     }
 
