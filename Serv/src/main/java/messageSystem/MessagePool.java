@@ -2,9 +2,6 @@ package messageSystem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -17,10 +14,8 @@ public class MessagePool {
     private Logger logger = Logger.getLogger("Server");
     private static MessagePool instance;
     private final List<MessageManager> messageManagers;
-    private final BlockingQueue<MessagePair> queue;
 
     private MessagePool() {
-        queue = new ArrayBlockingQueue<>(100);
         messageManagers = new ArrayList<>();
     }
 
@@ -31,30 +26,16 @@ public class MessagePool {
     }
 
     public void addMessage(final MessagePair message) {
-        try {
-            queue.put(message);
-            notifyManagers();
-        } catch (final InterruptedException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
-        }
-    }
-
-    public MessagePair getMessage() {
-        try {
-            return queue.take();
-        } catch (final InterruptedException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
-        }
-        return null;
+        notifyManagers(message);
     }
 
     public void registerManager(final MessageManager messageManager) {
         messageManagers.add(messageManager);
     }
 
-    private void notifyManagers() {
+    private void notifyManagers(final MessagePair message) {
         for (final MessageManager messageManager : messageManagers) {
-            messageManager.update(getMessage());
+            messageManager.update(message);
         }
     }
 }
