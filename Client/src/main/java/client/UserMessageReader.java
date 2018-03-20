@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class UserMessageReader implements ClientSubject {
+public class UserMessageReader implements ClientSubject, Runnable {
     private final User user;
     private Message userMessage;
     private final List<ClientObserver> observers;
@@ -36,8 +36,8 @@ public class UserMessageReader implements ClientSubject {
             observer.updateClient(userMessage);
         }
     }
-
-    void read() {
+    @Override
+    public void run() {
         System.out.println ("Enter Login");
         String login = "";
         if (in.hasNextLine())

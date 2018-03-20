@@ -29,13 +29,11 @@ public class SocketReader implements Runnable, Subject {
             //Не уверен в условии чтения.
             while (true) {
                 message = (Message) in.readObject();
-                notifyObservers();
+                notifyObservers(message);
             }
-        }
-        catch ( final SocketException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
+
         }catch (IOException | ClassNotFoundException e) {
-            logger.log(Level.WARNING, e.getMessage(), e.getCause());
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 
@@ -50,9 +48,9 @@ public class SocketReader implements Runnable, Subject {
     }
 
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(final Message message) {
         for (final Observer observer: observers) {
-            observer.update(message);
+            observer.update(this.message);
         }
 
     }

@@ -6,33 +6,34 @@ import messageSystem.Message;
 import messageSystem.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessageManager implements Observer, Subject, ClientObserver {
     private final User user;
-    private Message message;
 
-    private ArrayList<Observer> observers;
+    private final List<Observer> observers;
 
-    public MessageManager(User user) {
+    MessageManager(final User user) {
         this.user = user;
         observers = new ArrayList<>();
     }
 
 
-    public void doMessage() {
+    private void doMessage(final Message message) {
         if (message instanceof BroadcastMessage)
-            display();
-        if (message instanceof AuthMessage){
+            display(message);
+        if (message instanceof AuthMessage) {
             user.setUserId(((AuthMessage) message).getUserPassword());
             System.out.printf("Hello, %s!!!\n", user.getLogin());
         }
     }
+
     @Override
-    public void update(Message message) {
-        this.message = message;
-        doMessage();
+    public void update(final Message message) {
+        doMessage(message);
     }
-    public void display() {
+
+    private void display(final Message message) {
         System.out.println(message);
     }
 
@@ -47,18 +48,18 @@ public class MessageManager implements Observer, Subject, ClientObserver {
     }
 
     @Override
-    public void notifyObservers() {
-        for (Observer observer: observers) {
+    public void notifyObservers(final Message message) {
+        for (final Observer observer : observers) {
             observer.update(message);
         }
     }
 
     @Override
-    public void updateClient(final Message userMessage) {
+    public void updateClient(final Message message) {
 
-            for (Observer observer: observers) {
-                observer.update(userMessage);
-            }
+        for (final Observer observer : observers) {
+            observer.update(message);
+        }
 
     }
 

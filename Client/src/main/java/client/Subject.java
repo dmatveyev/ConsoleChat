@@ -1,7 +1,9 @@
 package client;
 
+import messageSystem.Message;
+
 public interface Subject {
    void registerObserver(Observer observer);
    void removeObservers(Observer observer);
-   void notifyObservers();
+   void notifyObservers(final Message message);
 }
