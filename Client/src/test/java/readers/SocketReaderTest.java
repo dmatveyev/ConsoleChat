@@ -2,32 +2,48 @@ package readers;
 
 import messageSystem.Message;
 import messageSystem.MessageFactory;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
 public class SocketReaderTest {
-    private File file;
+    private Path file;
+
     @Before
     public void createFile() {
-        file = new File ("messages.txt");
+        try {
+            file = Files.createFile(Paths.get("messages.txt"));
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
-    @Ignore
+
+    @After
+    public void deleteTestData() {
+        try {
+            Files.deleteIfExists(file);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
-    public void run() throws Exception {
-        SocketReader reader = new SocketReader(
-                new ObjectInputStream(Files.newInputStream(file.toPath())));
-        Server server = new Server(file);
-        Message message = MessageFactory.createBroadcastMessage("test",
+    public void readBroadcastMessage() throws IOException, ClassNotFoundException {
+        final Server server = new Server(file);
+        final Message message = MessageFactory.createBroadcastMessage("test",
                 "test");
-         server.write(message);
-
+        server.write(new ObjectOutputStream(
+                Files.newOutputStream(file)), message);
+        final SocketReader reader = new SocketReader(
+                new ObjectInputStream(Files.newInputStream(file)));
+        final Message newMessage = reader.read();
+        assertEquals("test", newMessage.getText());
     }
-
 }

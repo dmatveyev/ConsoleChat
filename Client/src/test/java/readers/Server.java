@@ -4,27 +4,18 @@ import messageSystem.Message;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 public class Server {
-    private  ObjectInput input = null;
-    private  ObjectOutput output = null;
-    public final File file;
 
 
-    public Server (final File file) throws IOException {
-        this.file = file;
-        try {
-            input = new ObjectInputStream(Files.newInputStream(
-                    file.toPath()));
-            output = new ObjectOutputStream(
-                    Files.newOutputStream(file.toPath())
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
+    public Server (final Path file) throws IOException {
+
     }
-    public Message read(){
+    public Message read(ObjectInput input){
         try {
             return (Message) input.readObject();
         } catch (ClassNotFoundException e) {
@@ -35,7 +26,7 @@ public class Server {
         return null;
     }
 
-    public void write(final Message message){
+    public void write(ObjectOutput output, final Message message){
         try {
             output.writeObject(message);
             output.flush();

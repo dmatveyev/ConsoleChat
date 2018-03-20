@@ -27,13 +27,19 @@ public class SocketReader implements Runnable, Subject {
         try {
             //Не уверен в условии чтения.
             while (true) {
-                message = (Message) in.readObject();
+                read();
                 notifyObservers(message);
             }
 
         }catch (IOException | ClassNotFoundException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
+    }
+
+    public Message read() throws IOException, ClassNotFoundException {
+        message = (Message) in.readObject();
+        return  message;
+
     }
 
     @Override
