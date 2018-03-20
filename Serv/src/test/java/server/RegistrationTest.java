@@ -69,7 +69,7 @@ public class RegistrationTest {
         assertEquals("aaa", auth.getUserLogin());
     }
 
-    @Ignore
+    
     @Test
     public void repeatedLoginAfterBreakConnection() throws IOException {
         System.out.println("Run test repeatedLoginAfterBreakConnection");
@@ -101,7 +101,7 @@ public class RegistrationTest {
         assertNull(auth.getUserId());
     }
 
-    @Ignore
+    
     @Test
     public void sendingBroadcastMessage() throws IOException {
         System.out.println("Run test sendingBroadcastMessage");
@@ -129,7 +129,7 @@ public class RegistrationTest {
     public void simpleLoad() throws IOException {
         System.out.println("simpleLoad");
         clients = new ArrayList<>(100);
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i < 100; i++) {
             final Client c = new Client(8190);
             final String str = String.valueOf(Math.random());
             c.setUsername(str);

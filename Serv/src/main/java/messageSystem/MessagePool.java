@@ -2,7 +2,6 @@ package messageSystem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 /**
@@ -11,7 +10,6 @@ import java.util.logging.Logger;
  * Created by Денис on 15.03.2018.
  */
 public class MessagePool {
-    private Logger logger = Logger.getLogger("Server");
     private static MessagePool instance;
     private final List<MessageManager> messageManagers;
 
