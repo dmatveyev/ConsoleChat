@@ -15,10 +15,11 @@ import static org.junit.Assert.*;
  */
 public class UserSessionManagerTest {
 
-    public static UserSessionManager manager;
-    public static ConnectDB connect;
-    static User user;
-    String sessionName = "testSession";
+    private static UserSessionManager manager;
+    private static ConnectDB connect;
+    private static User user;
+    private String sessionName = "testSession";
+
     @BeforeClass
     public static void create() {
         user = new User();
@@ -29,6 +30,7 @@ public class UserSessionManagerTest {
         connect = new ConnectDB();
 
     }
+
     @Before
     public void createTestData() {
         try (Connection conn = connect.getConnection();
@@ -81,7 +83,7 @@ public class UserSessionManagerTest {
     @Test
     public void unactivated() throws Exception {
         manager.Unactivated(user);
-        Session unactivated =manager.getSession(user);
+        Session unactivated = manager.getSession(user);
         assertNull(unactivated.getName());
     }
 
