@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * Created by Денис on 07.03.2018.
  */
-public class User  {
+public class User {
     private String userId;
     private String login;
     private String password;
@@ -54,7 +54,8 @@ public class User  {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         final User other = (User) obj;
-        return getLogin().equals(other.getLogin()) && getPassword().equals(other.getPassword());
+        return Objects.equals(getLogin(), other.getLogin())
+                && Objects.equals(getPassword(), other.getPassword());
     }
 
     @Override
