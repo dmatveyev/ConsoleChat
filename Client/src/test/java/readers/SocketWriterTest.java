@@ -2,12 +2,14 @@ package readers;
 
 import messageSystem.Message;
 import messageSystem.MessageFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,12 +22,20 @@ public class SocketWriterTest {
     @Before
     public void createFile() {
         try {
-            file = Files.createFile(Paths.get("messages.txt"));
+            file = Files.createFile(Paths.get("writer.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    @Ignore
+    @After
+    public void deleteTestData() {
+        try {
+            Files.deleteIfExists(file);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void update() throws Exception {
         Server server = new Server(file);
@@ -33,6 +43,9 @@ public class SocketWriterTest {
                 "test");
         SocketWriter w = new SocketWriter(new ObjectOutputStream(
                 Files.newOutputStream(file)));
+        w.update(message);
+        Message serverMessage = server.read(new ObjectInputStream(Files.newInputStream(file)));
+        assertEquals("test", serverMessage.getText());
     }
 
 }

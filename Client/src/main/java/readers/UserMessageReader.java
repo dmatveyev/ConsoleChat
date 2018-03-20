@@ -38,6 +38,9 @@ public class UserMessageReader implements ClientSubject, Runnable {
     }
     @Override
     public void run() {
+        read();
+    }
+    public void read(){
         System.out.println ("Enter Login");
         String login = "";
         if (in.hasNextLine())
@@ -49,7 +52,7 @@ public class UserMessageReader implements ClientSubject, Runnable {
         user.setLogin(login);
         user.setPassword(password);
         userMessage = MessageFactory.createAuthMessage(null,
-               login,
+                login,
                 password);
         notifyObservers();
         //переключаемся на чтение обычных сообщений

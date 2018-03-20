@@ -1,9 +1,5 @@
 package messageSystem;
 
-import messageSystem.AuthMessage;
-import messageSystem.BroadcastMessage;
-import messageSystem.Message;
-import messageSystem.User;
 import readers.ClientObserver;
 import readers.Observer;
 import readers.Subject;
