@@ -7,8 +7,8 @@ public class SystemMessage extends Message {
     private final String command;
     private String resultMessage;
 
-    SystemMessage(final String comamand) {
-        this.command = comamand;
+    SystemMessage(final String command) {
+        this.command = command;
     }
 
     String getCommand() {

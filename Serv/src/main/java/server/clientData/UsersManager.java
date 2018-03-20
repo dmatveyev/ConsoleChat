@@ -85,8 +85,8 @@ public class UsersManager {
             user = new User();
             user.setLogin(login);
             user.setPassword(password);
-            final String userid = String.valueOf(Math.random());
-            user.setUserId(userid);
+            final String id = String.valueOf(Math.random());
+            user.setUserId(id);
             registerUser(user);
             userSessionManager.doActive(UserSessionManager.createUserSession(user));
             return user;

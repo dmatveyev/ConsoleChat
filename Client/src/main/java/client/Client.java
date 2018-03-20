@@ -37,7 +37,7 @@ public class Client {
             e.printStackTrace();
         } catch (IOException e) {
             if (e.getMessage().contains("refused"))
-                System.err.println("Connetcion Refused");
+                System.err.println("Connection Refused");
             else e.printStackTrace();
         }
         finally {

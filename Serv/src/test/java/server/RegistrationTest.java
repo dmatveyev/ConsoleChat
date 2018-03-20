@@ -100,8 +100,8 @@ public class RegistrationTest {
         Message srv1 = client.read();
         cl2 = new Client(8190);
         cl2.write(msg);
-        Message answ = cl2.read();
-        AuthMessage auth = (AuthMessage) answ;
+        Message answer = cl2.read();
+        AuthMessage auth = (AuthMessage) answer;
         assertNull(auth.getUserId());
     }
 
