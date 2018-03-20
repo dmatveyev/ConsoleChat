@@ -27,14 +27,12 @@ public class UserSessionManager {
     }
 
     /**
-     * Проверяет есть ли активный пользователь под этой сессией
-     *
+     * Получает объект сессии пользователя
      * @param user пользователь для проверки
      * @return Объект сессии пользователя, если есть активный пользователь. Null, если нет активного пользователя.
      */
-    public Session isActive(final User user) {
+    public Session getSession(final User user) {
         return sessionDAO.get(user.getUserId());
-
     }
 
     /**
@@ -50,10 +48,12 @@ public class UserSessionManager {
     /**
      * Удаляет сессию для поользователя
      *
-     * @param session Объект сессии
+     * @param user Пользователь, для которого необходимо удалить сессию
      *
      */
-    public void Unactivated(final Session session) {
+    public void Unactivated(final User user) {
+        Session session = getSession(user);
+        session.setName(null);
         sessionDAO.update(session);
     }
 
