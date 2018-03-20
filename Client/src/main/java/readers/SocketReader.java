@@ -1,10 +1,9 @@
-package client;
+package readers;
 
 import messageSystem.Message;
 
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,7 +17,7 @@ public class SocketReader implements Runnable, Subject {
     private final ObjectInput in;
     private final List<Observer> observers;
     private Message message;
-    SocketReader(final ObjectInput in) {
+    public SocketReader(final ObjectInput in) {
         this.in = in;
         observers = new ArrayList<>();
     }

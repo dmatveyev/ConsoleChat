@@ -1,4 +1,4 @@
-package client;
+package readers;
 
 import messageSystem.Message;
 
@@ -13,7 +13,7 @@ import static client.Client.logger;
  */
 public class SocketWriter implements Observer {
     private final ObjectOutput outputStream;
-    SocketWriter(final ObjectOutput outputStream) {
+    public SocketWriter(final ObjectOutput outputStream) {
         this.outputStream = outputStream;
     }
     private void write(final Message message) {

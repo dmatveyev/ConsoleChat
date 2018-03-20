@@ -1,4 +1,4 @@
-package client;
+package readers;
 
 import messageSystem.Message;
 import messageSystem.MessageFactory;
@@ -14,7 +14,7 @@ public class UserMessageReader implements ClientSubject, Runnable {
     private final List<ClientObserver> observers;
     private final Scanner in;
 
-    UserMessageReader(final User user) {
+    public UserMessageReader(final User user) {
         this.user = user;
         observers = new ArrayList<>();
          in = new Scanner(System.in);

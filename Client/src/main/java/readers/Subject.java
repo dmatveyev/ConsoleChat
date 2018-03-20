@@ -1,4 +1,4 @@
-package client;
+package readers;
 
 import messageSystem.Message;
 
