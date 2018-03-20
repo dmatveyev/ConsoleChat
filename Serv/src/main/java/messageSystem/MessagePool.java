@@ -31,7 +31,7 @@ public class MessagePool {
         messageManagers.add(messageManager);
     }
 
-    private void notifyManagers(final MessagePair message) {
+    private void notifyManagers(final MessagePair message)  {
         for (final MessageManager messageManager : messageManagers) {
             messageManager.update(message);
         }
