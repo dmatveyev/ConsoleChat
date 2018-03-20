@@ -3,22 +3,25 @@ package client;
 import messageSystem.Message;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.ObjectInput;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
+import static client.Client.logger;
 
 /**Принимает входящее сообщение  дессериализует
  * Created by Денис on 06.03.2018.
  */
 public class SocketReader implements Runnable, Subject {
-    private ObjectInputStream in;
-    private ArrayList<Observer> observers;
+    private final ObjectInput in;
+    private final List<Observer> observers;
     private Message message;
-    public SocketReader(ObjectInputStream in) {
+    SocketReader(final ObjectInput in) {
         this.in = in;
         observers = new ArrayList<>();
     }
-
 
     @Override
     public void run() {
@@ -29,12 +32,10 @@ public class SocketReader implements Runnable, Subject {
                 notifyObservers();
             }
         }
-        catch ( SocketException e) {
-            System.err.println(e.getMessage());
-        }catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        catch ( final SocketException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+        }catch (IOException | ClassNotFoundException e) {
+            logger.log(Level.WARNING, e.getMessage(), e.getCause());
         }
     }
 
@@ -50,7 +51,7 @@ public class SocketReader implements Runnable, Subject {
 
     @Override
     public void notifyObservers() {
-        for (Observer observer: observers) {
+        for (final Observer observer: observers) {
             observer.update(message);
         }
 

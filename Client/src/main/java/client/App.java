@@ -5,6 +5,8 @@ package client;
  */
 public class App {
     public static void main (String ... args) {
-        Client client = new Client(8190);
+
+        final Client client = new Client(8190);
+        client.start();
     }
 }

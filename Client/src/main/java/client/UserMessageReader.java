@@ -5,18 +5,17 @@ import messageSystem.MessageFactory;
 import messageSystem.User;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserMessageReader implements ClientSubject {
     private final User user;
     private Message userMessage;
-    private ArrayList<ClientObserver> observers;
-    private Scanner in;
-    private MessageFactory messageFactory;
+    private final List<ClientObserver> observers;
+    private final Scanner in;
 
-    public UserMessageReader (User user, MessageFactory messageFactory) {
+    UserMessageReader(final User user) {
         this.user = user;
-        this.messageFactory = messageFactory;
         observers = new ArrayList<>();
          in = new Scanner(System.in);
     }
@@ -33,19 +32,18 @@ public class UserMessageReader implements ClientSubject {
 
     @Override
     public void notifyObservers() {
-        for (ClientObserver observer: observers) {
+        for (final ClientObserver observer: observers) {
             observer.updateClient(userMessage);
         }
     }
 
-    public void read() {
+    void read() {
         System.out.println ("Enter Login");
-
         String login = "";
-        String password = "";
         if (in.hasNextLine())
             login=in.nextLine();
         System.out.println ("Enter password");
+        String password = "";
         if (in.hasNextLine())
             password =in.nextLine();
         user.setLogin(login);
