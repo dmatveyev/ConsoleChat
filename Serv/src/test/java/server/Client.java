@@ -6,55 +6,63 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.logging.Logger;
+
 
 /**
  * Created by Денис on 17.03.2018.
  */
 class Client {
+    private static final Logger logger = Logger.getLogger("Tests");
     private String username;
     private String pass;
     Socket socket;
-    ObjectInputStream in;
-    ObjectOutputStream out;
-    public Client (int port) throws IOException {
-        socket = new Socket("localhost", port);
-        in = new ObjectInputStream(socket.getInputStream());
-        out = new ObjectOutputStream(socket.getOutputStream());
+    private ObjectInputStream in = null;
+    private ObjectOutputStream out = null;
+    Client(final int port)  {
+        try {
+            socket = new Socket("localhost", port);
+            in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+        } catch (final UnknownHostException e) {
+             logger.warning(e.toString());
+        } catch (final IOException e) {
+            logger.warning(e.getCause().toString());
+        }
     }
 
-    public String getUsername() {
+    String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    void setUsername(final String username) {
         this.username = username;
     }
 
-    public String getPass() {
+    String getPass() {
         return pass;
     }
 
-    public void setPass(final String pass) {
+    void setPass(final String pass) {
         this.pass = pass;
     }
 
-    public Message read (){
+    Message read(){
         try {
             return (Message) in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            logger.warning(e.toString());
         }
         return null ;
     }
 
-    public void write (Message msg) {
+    void write(final Message msg) {
         try {
             out.writeObject(msg);
             out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logger.warning(e.toString());
         }
     }
 

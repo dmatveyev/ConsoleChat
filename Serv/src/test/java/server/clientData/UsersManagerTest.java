@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
 
 import static org.junit.Assert.*;
 
@@ -14,8 +13,8 @@ import static org.junit.Assert.*;
  * Created by Денис on 08.03.2018.
  */
 public class UsersManagerTest {
-    User test;
-    UsersManager usersManager;
+    private User test;
+    private UsersManager usersManager;
 
     @Before
     public void setUp() throws Exception {
@@ -31,7 +30,7 @@ public class UsersManagerTest {
     }
     @AfterClass
     public static void deletingData(){
-        UsersManager manager = UsersManager.getInstance();
+        final UsersManager manager = UsersManager.getInstance();
         manager.deleteUser(manager.isRegistered("test","test"));
         manager.deleteUser(manager.isRegistered("a",
                 "a"));
@@ -65,15 +64,15 @@ public class UsersManagerTest {
     }
 
     @Test
-    public void authorizeNewUser() throws Exception {
+    public void authorizeNewUser() throws IOException {
         System.out.println("Run test authorizeNewUser" );
         assertEquals(test, usersManager.authorize("test", "test"));
     }
 
     @Test
-    public void authorizeOldUser() throws Exception {
+    public void authorizeOldUser() throws IOException {
         System.out.println("Run test authorizeOldUser" );
-        User oldUser = new User();
+        final User oldUser = new User();
         oldUser.setUserId(String.valueOf(Math.random()));
         oldUser.setLogin("OldUser");
         oldUser.setPassword("OldUser");

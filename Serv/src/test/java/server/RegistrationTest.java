@@ -8,6 +8,7 @@ import server.clientData.UsersManager;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -17,29 +18,24 @@ import static org.junit.Assert.*;
 public class RegistrationTest {
 
     private static Server srv;
-
-    private String message;
-    private Client cl2;
-    private ArrayList<Client> clients;
+    private List<Client> clients;
 
     @BeforeClass
     public static void runServer() {
-        Thread serverThread = new Thread(() -> {
+        final Thread serverThread = new Thread(() -> {
             srv = new Server(8190);
             srv.start();
         });
         serverThread.start();
-        UsersManager manager = UsersManager.getInstance();
     }
 
     @Before
     public void setUp() throws Exception {
-        message = "testMessage";
     }
 
     @After
     public void tearDown() throws Exception {
-        UsersManager manager = UsersManager.getInstance();
+        final UsersManager manager = UsersManager.getInstance();
         manager.deleteUser(manager.isRegistered("aaa", "aaa"));
         manager.deleteUser(manager.isRegistered("repeatedLoginAfterBreakConnection",
                 "repeatedLoginAfterBreakConnection"));
@@ -50,7 +46,7 @@ public class RegistrationTest {
         manager.deleteUser(manager.isRegistered("c2",
                 "c2"));
         if (clients != null) {
-            for (Client c : clients) {
+            for (final Client c : clients) {
                 manager.deleteUser(manager.isRegistered(c.getUsername(), c.getPass()));
             }
         }
@@ -64,12 +60,12 @@ public class RegistrationTest {
     @Test
     public void registration() throws Exception {
         System.out.println("Run test registration");
-        Client client = new Client(8190);
-        Message msg = new AuthMessage(String.valueOf(Math.random()), "aaa",
+        final Client client = new Client(8190);
+        final Message msg = new AuthMessage(String.valueOf(Math.random()), "aaa",
                 "aaa");
         client.write(msg);
-        Message srv = client.read();
-        AuthMessage auth = (AuthMessage) srv;
+        final Message serverMessage = client.read();
+        final AuthMessage auth = (AuthMessage) serverMessage;
         assertEquals("aaa", auth.getUserLogin());
     }
 
@@ -77,89 +73,86 @@ public class RegistrationTest {
     @Test
     public void repeatedLoginAfterBreakConnection() throws IOException {
         System.out.println("Run test repeatedLoginAfterBreakConnection");
-        Client c1 = new Client(8190);
-        Message msg = new AuthMessage(String.valueOf(Math.random()), "repeatedLoginAfterBreakConnection",
+        final Client c1 = new Client(8190);
+        final Message msg = new AuthMessage(String.valueOf(Math.random()), "repeatedLoginAfterBreakConnection",
                 "repeatedLoginAfterBreakConnection");
         c1.write(msg);
-        Message srv1 = c1.read();
+        c1.read();
         c1.socket.close();
-        Client c2 = new Client(8190);
+        final Client c2 = new Client(8190);
         c2.write(msg);
-        Message srv = c2.read();
-        AuthMessage auth = (AuthMessage) srv;
+        final Message serverMessage = c2.read();
+        final AuthMessage auth = (AuthMessage) serverMessage;
         assertEquals("repeatedLoginAfterBreakConnection", auth.getUserLogin());
     }
 
     @Test
     public void failedDuplicateLogin() throws IOException {
-        Client client = new Client(8190);
+        final Client client = new Client(8190);
         System.out.println("Run test failedDuplicateLogin");
-        Message msg = new AuthMessage(String.valueOf(Math.random()), "failedDuplicateLogin",
+        final Message msg = new AuthMessage(String.valueOf(Math.random()), "failedDuplicateLogin",
                 "failedDuplicateLogin");
         client.write(msg);
-        Message srv1 = client.read();
-        cl2 = new Client(8190);
+        client.read();
+        final Client cl2 = new Client(8190);
         cl2.write(msg);
-        Message answer = cl2.read();
-        AuthMessage auth = (AuthMessage) answer;
+        final Message answer = cl2.read();
+        final AuthMessage auth = (AuthMessage) answer;
         assertNull(auth.getUserId());
     }
 
     @Ignore
     @Test
     public void sendingBroadcastMessage() throws IOException {
-        Client client = new Client(8190);
         System.out.println("Run test sendingBroadcastMessage");
-        Client c2 = new Client(8190);
-        Client c1 = client;
-        Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c1",
+        final Client c2 = new Client(8190);
+        final Client c1 = new Client(8190);
+        final Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c1",
                 "c1");
         c1.write(msg1);
         Message auth = c1.read();
         assertNotNull(((AuthMessage) auth).getUserId());
-        Message msg2 = new AuthMessage(String.valueOf(Math.random()), "c2",
+        final Message msg2 = new AuthMessage(String.valueOf(Math.random()), "c2",
                 "c2");
         c2.write(msg2);
         auth = c2.read();
         assertNotNull(((AuthMessage) auth).getUserId());
         c1.write(new BroadcastMessage("BroadcastMessage form c1", "c1"));
-        Message message = c2.read();
-        assertEquals("BroadcastMessage form c1", ((BroadcastMessage) message).getText());
+        final Message message = c2.read();
+        assertEquals("BroadcastMessage form c1", message.getText());
     }
 
     /**
      * Создаёт заданное количество клиентов и одного контрольного клиента, который читает сообщения от остальных клиентов
-     *
-     * @throws IOException
      */
     @Test
     public void simpleLoad() throws IOException {
         System.out.println("simpleLoad");
         clients = new ArrayList<>(100);
         for (int i = 1; i < 10; i++) {
-            Client c = new Client(8190);
-            String str = String.valueOf(Math.random());
+            final Client c = new Client(8190);
+            final String str = String.valueOf(Math.random());
             c.setUsername(str);
             c.setPass(str);
             clients.add(c);
         }
-        for (Client c : clients) {
-            Message msg = new AuthMessage(String.valueOf(Math.random()), c.getUsername(),
+        for (final Client c : clients) {
+            final Message msg = new AuthMessage(String.valueOf(Math.random()), c.getUsername(),
                     c.getPass());
             c.write(msg);
             c.read();
         }
-        Client c1 = new Client(8190);
-        Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c01",
+        final Client c1 = new Client(8190);
+        final Message msg1 = new AuthMessage(String.valueOf(Math.random()), "c01",
                 "c01");
         c1.write(msg1);
-        Message auth = c1.read();
-        for (Client c : clients) {
+        c1.read();
+        for (final Client c : clients) {
             System.out.println("Sending test messages");
             c.write(new BroadcastMessage("BroadcastMessage for c01", c.getUsername()));
-            Message m = c1.read();
+            final Message m = c1.read();
             System.out.println(m);
-            assertEquals("BroadcastMessage for c01", ((BroadcastMessage) m).getText());
+            assertEquals("BroadcastMessage for c01", m.getText());
         }
         System.out.println("test end");
     }
