@@ -2,10 +2,13 @@ package server.databaseConnect;
 
 import server.clientData.Session;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,22 +18,32 @@ import static server.Server.logger;
 public class SessionDAO implements DAO<Session> {
 
     private final ConnectDB connectDB;
+    private final Properties sqlQueries;
 
     public SessionDAO() {
         connectDB = new ConnectDB();
+        sqlQueries = new Properties();
+        try {
+            sqlQueries.loadFromXML(ClassLoader.getSystemResourceAsStream("sql_queries.xml"));
+        } catch (final InvalidPropertiesFormatException e) {
+            e.getCause();
+            logger.log(Level.WARNING, e.getMessage(), e);
+        } catch (final IOException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+        }
     }
 
     @Override
     public Session get(final String id) {
         Session session = null;
-        try (Connection conn = connectDB.getConnection()) {
-            final PreparedStatement st = conn.prepareStatement("select * from user_session" +
-                    " where id = ?");
+        try (Connection conn = connectDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("getUserSession"))) {
             st.setString(1, id);
-            final ResultSet result = st.executeQuery();
-            if (result.next())
-                session = new Session(result.getString(1),
-                        result.getString(2));
+            try(ResultSet result = st.executeQuery()) {
+                if (result.next())
+                    session = new Session(result.getString(1),
+                            result.getString(2));
+            }
         } catch (final SQLException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
@@ -39,23 +52,36 @@ public class SessionDAO implements DAO<Session> {
 
     @Override
     public void insert(final Session t) {
+        try (Connection conn = connectDB.getConnection();
+             PreparedStatement session = conn.prepareStatement(sqlQueries.getProperty("insertUserSession"))) {
+            session.setString(1, t.getUserId());
+            session.setString(2, t.getName());
+            session.executeUpdate();
+        } catch (final SQLException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+        }
     }
 
     @Override
     public void update(final Session t) {
-        try (Connection conn = connectDB.getConnection()) {
-            final PreparedStatement st = conn.prepareStatement("update user_session" +
-                    " set session = ?" +
-                    " where id = ?");
+        try (Connection conn = connectDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("updateSession"))) {
             st.setString(2, t.getUserId());
             st.setString(1, t.getName());
             st.executeUpdate();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 
     @Override
     public void delete(final String userId) {
+        try (Connection conn = connectDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("deleteUserSession"))) {
+            st.setString(1, userId);
+            st.executeUpdate();
+        } catch (final SQLException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+        }
     }
 }

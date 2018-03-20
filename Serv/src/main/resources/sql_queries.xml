@@ -2,10 +2,12 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>sql queries</comment>
-<entry key="getUserById">select * from users where id = ?</entry>
-<entry key="getUserId">select * from users where login = ? and password = ?</entry>
-<entry key="insertUser">insert into users (id,login, password) values (?,?,?)</entry>
-<entry key="insertUserSession">insert into user_session (id, session) values (?,?)</entry>
-<entry key="deleteUser">delete from users where id = ?</entry>
-<entry key="deleteUserSession">delete from user_session where id = ?</entry>
+    <entry key="getUserById">select * from users where id = ?</entry>
+    <entry key="getUserId">select * from users where login = ? and password = ?</entry>
+    <entry key="insertUser">insert into users (id,login, password) values (?,?,?)</entry>
+    <entry key="deleteUser">delete from users where id = ?</entry>
+    <entry key="insertUserSession">insert into user_session (id, session) values (?,?)</entry>
+    <entry key="getUserSession">select * from user_session where id = ?</entry>
+    <entry key="updateSession">update user_session set session = ? where id = ?</entry>
+    <entry key="deleteUserSession">delete from user_session where id = ?</entry>
 </properties>

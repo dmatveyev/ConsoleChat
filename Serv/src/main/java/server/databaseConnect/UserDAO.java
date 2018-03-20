@@ -1,5 +1,6 @@
 package server.databaseConnect;
 
+import server.clientData.Session;
 import server.clientData.User;
 
 import java.io.IOException;
@@ -14,11 +15,13 @@ import static server.Server.logger;
 public class UserDAO implements DAO<User> {
     private final ConnectDB connectDB;
     private final Properties sqlQueries;
+    private final SessionDAO sessionDAO;
 
 
     public UserDAO() {
         connectDB = new ConnectDB();
         sqlQueries = new Properties();
+        sessionDAO = new SessionDAO();
         try {
             sqlQueries.loadFromXML(ClassLoader.getSystemResourceAsStream("sql_queries.xml"));
         } catch (final InvalidPropertiesFormatException e) {
@@ -72,17 +75,14 @@ public class UserDAO implements DAO<User> {
     @Override
     public void insert(final User t) {
         try (Connection conn = connectDB.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sqlQueries.getProperty("insertUser"));
-             PreparedStatement session = conn.prepareStatement(sqlQueries.getProperty("insertUserSession"))) {
+             PreparedStatement statement = conn.prepareStatement(sqlQueries.getProperty("insertUser"))
+             ) {
             statement.setString(1, t.getUserId());
             statement.setString(2, t.getLogin());
             statement.setString(3, t.getPassword());
             statement.executeUpdate();
-            //переписать создание сессии с использованием sessionDAO
 
-            session.setString(1, t.getUserId());
-            session.setString(2, null);
-            session.executeUpdate();
+            sessionDAO.insert(new Session(t.getUserId(),null));
         } catch (final SQLException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
@@ -96,12 +96,10 @@ public class UserDAO implements DAO<User> {
     @Override
     public void delete(final String userId) {
         try (Connection conn = connectDB.getConnection();
-             PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("deleteUserSession"));
-             PreparedStatement st2 = conn.prepareStatement(sqlQueries.getProperty("deleteUser"))) {
+             PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("deleteUser"))) {
+            sessionDAO.delete(userId);
             st.setString(1, userId);
-            st2.setString(1, userId);
             st.executeUpdate();
-            st2.executeUpdate();
         } catch (final SQLException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
