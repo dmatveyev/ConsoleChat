@@ -11,10 +11,10 @@ import java.util.logging.Logger;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         final Logger logger = Logger.getLogger("Server");
-        Properties property = new Properties();
         ClassLoader.getSystemResource("general.properties");
+        final Properties property = new Properties();
         try {
             property.load(ClassLoader.getSystemResourceAsStream("general.properties"));
         } catch (final IOException e) {
