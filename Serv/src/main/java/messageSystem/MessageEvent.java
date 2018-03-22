@@ -1,16 +1,21 @@
 package messageSystem;
 
+import org.springframework.context.ApplicationEvent;
+import server.ClientHandler;
+
 /**
  * Объект для хранения сообщения от конкретного хендлера
  * <p>
  * Created by Денис on 15.03.2018.
  */
-public class MessagePair {
+public class MessageEvent extends ApplicationEvent {
     private final Message message;
-    private final int handlerId;
+    private final ClientHandler handler;
 
-    public MessagePair(final int handlerId, final Message message) {
-        this.handlerId = handlerId;
+
+    public MessageEvent(final ClientHandler handler, final Message message) {
+        super(handler);
+        this.handler = handler;
         this.message = message;
     }
 
@@ -19,6 +24,6 @@ public class MessagePair {
     }
 
     int getHandlerId() {
-        return handlerId;
+        return handler.getHandlerId() ;
     }
 }

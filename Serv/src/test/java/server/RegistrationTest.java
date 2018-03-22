@@ -4,6 +4,8 @@ import messageSystem.AuthMessage;
 import messageSystem.BroadcastMessage;
 import messageSystem.Message;
 import org.junit.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import server.clientData.UsersManager;
 
@@ -24,12 +26,9 @@ public class RegistrationTest {
 
     @BeforeClass
     public static void runServer() {
-        final Thread serverThread = new Thread(() -> {
-            ctx = new GenericXmlApplicationContext();
-            ctx.load("classpath:META-INF/app-context-annotation.xml");
-            ctx.refresh();
-            srv = (Server) ctx.getBean("server");
-        });
+        ctx = new ClassPathXmlApplicationContext("classpath:META-INF/app-context-annotation.xml");
+        srv = (Server) ctx.getBean("server");
+        final Thread serverThread = new Thread(() -> srv.start());
         serverThread.start();
     }
 

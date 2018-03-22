@@ -1,6 +1,7 @@
 package messageSystem;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import server.ClientHandler;
 import server.clientData.Session;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  * Created by Денис on 15.03.2018.
  */
 @Service("messageManager")
-public class MessageManager {
+public class MessageManager implements ApplicationListener<MessageEvent>{
     private Logger logger = Logger.getLogger("Server");
     private final Map<Integer, ClientHandler> handlers;
     private final UsersManager usersManager;
@@ -37,9 +38,9 @@ public class MessageManager {
      * Обрабатывает сообщение, определяет его тип,
      * и включает дальнеющую логику обработки в зависимости от типа сообщения
      */
-    private synchronized void DoMessage(final MessagePair messagePair) {
-        final int handlerId = messagePair.getHandlerId();
-        final Message msg = messagePair.getMessage();
+    private synchronized void DoMessage(final MessageEvent messageEvent) {
+        final int handlerId = messageEvent.getHandlerId();
+        final Message msg = messageEvent.getMessage();
         if (msg instanceof BroadcastMessage) {
             sendMessageToAll(msg);
         }
@@ -87,10 +88,6 @@ public class MessageManager {
         }
     }
 
-    synchronized void update(final MessagePair messagePair) {
-        DoMessage(messagePair);
-    }
-
     private synchronized void sendMessageToAll(final Message msg) {
         if (!handlers.isEmpty()) {
             for (final Map.Entry<Integer, ClientHandler> handler : handlers.entrySet()) {
@@ -101,12 +98,16 @@ public class MessageManager {
             }
         }
     }
-
     public synchronized void addHandler(final int id, final ClientHandler clientHandler) {
         handlers.put(id, clientHandler);
     }
 
     private synchronized void removeHandler(final int id) {
         handlers.remove(id);
+    }
+
+    @Override
+    public void onApplicationEvent(MessageEvent messageEvent) {
+        DoMessage(messageEvent);
     }
 }

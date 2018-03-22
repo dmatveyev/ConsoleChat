@@ -1,5 +1,8 @@
 package messageSystem;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,30 +15,26 @@ import java.util.List;
  * Created by Денис on 15.03.2018.
  */
 @Service("messagePool")
-public class MessagePool {
-    private static MessagePool instance;
+public class MessagePool implements ApplicationContextAware{
+
     private final List<MessageManager> messageManagers;
+    private ApplicationContext applicationContext;
 
     private MessagePool() {
         messageManagers = new ArrayList<>();
     }
 
-    public static MessagePool getInstance() {
-
-        return instance;
-    }
-
-    public void addMessage(final MessagePair message) {
-        notifyManagers(message);
+    public void addMessage(final MessageEvent message) {
+        applicationContext.publishEvent(message);
     }
 
     public void registerManager(final MessageManager messageManager) {
         messageManagers.add(messageManager);
     }
 
-    private void notifyManagers(final MessagePair message) {
-        for (final MessageManager messageManager : messageManagers) {
-            messageManager.update(message);
-        }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

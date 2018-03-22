@@ -1,18 +1,21 @@
 package server;
 
 import messageSystem.MessageFactory;
-import messageSystem.MessagePair;
+import messageSystem.MessageEvent;
 import messageSystem.MessagePool;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import server.clientData.User;
 import messageSystem.Message;
 
-import javax.xml.ws.ServiceMode;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -56,8 +59,7 @@ public class ClientHandler implements Runnable {
             while (!clientSocket.isClosed()) {
                 final Message clientMessage = (Message) oin.readObject();
                 {
-                    final MessagePair pair = new MessagePair(handlerId, clientMessage);
-                    messagePool.addMessage(pair);
+                    messagePool.addMessage(new MessageEvent(this, clientMessage));
                 }
             }
         } catch (final EOFException e) {
@@ -69,7 +71,7 @@ public class ClientHandler implements Runnable {
             logger.log(Level.WARNING, e.getMessage(), e.getCause());
         } finally {
             final Message m = MessageFactory.createSystemMessage("clearSession");
-            messagePool.addMessage(new MessagePair(handlerId, m));
+            messagePool.addMessage(new MessageEvent(this, m));
         }
     }
 
@@ -111,5 +113,9 @@ public class ClientHandler implements Runnable {
                 "handlerId=" + handlerId +
                 ", user=" + user +
                 '}';
+    }
+
+    public int getHandlerId() {
+        return handlerId;
     }
 }
