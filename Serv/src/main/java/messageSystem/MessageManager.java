@@ -27,7 +27,7 @@ public class MessageManager {
     private final UserSessionManager sessionManager;
 
     @Autowired
-    public MessageManager( final UsersManager usersManager, final UserSessionManager sessionManager) {
+    MessageManager(final UsersManager usersManager, final UserSessionManager sessionManager) {
         handlers = new ConcurrentHashMap<>();
         this.usersManager = usersManager;
         this.sessionManager = sessionManager;

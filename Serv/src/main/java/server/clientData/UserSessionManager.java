@@ -15,7 +15,7 @@ public class UserSessionManager {
 
     @Autowired
     private UserSessionManager(final SessionDAO sessionDAO) {
-        this.sessionDAO =sessionDAO;
+        this.sessionDAO = sessionDAO;
     }
 
     public static UserSessionManager getInstance() {
@@ -30,6 +30,7 @@ public class UserSessionManager {
 
     /**
      * Получает объект сессии пользователя
+     *
      * @param user пользователь для проверки
      * @return Объект сессии пользователя, если есть активный пользователь. Null, если нет активного пользователя.
      */
@@ -40,10 +41,10 @@ public class UserSessionManager {
     /**
      * Активизирует сессия для покльзователя
      *
-     * @param session Объект сессии
-     *
+     * @param user Объект сессии
      */
-    void doActive(final Session session) {
+    void doActive(final User user) {
+        Session session = createUserSession(user);
         sessionDAO.update(session);
     }
 
@@ -51,7 +52,6 @@ public class UserSessionManager {
      * Удаляет сессию для поользователя
      *
      * @param user Пользователь, для которого необходимо удалить сессию
-     *
      */
     public void Unactivated(final User user) {
         Session session = getSession(user);

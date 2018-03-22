@@ -19,7 +19,6 @@ public class UserSessionManagerTest {
     private static UserSessionManager manager;
     private static ConnectDB connect;
     private static User user;
-    private String sessionName = "testSession";
     private static UsersManager usersManager;
 
     private static GenericXmlApplicationContext ctx;
@@ -30,39 +29,25 @@ public class UserSessionManagerTest {
         ctx.load("classpath:META-INF/app-context-annotation.xml");
         ctx.refresh();
         user = new User();
-        user.setUserId("test");
+        user.setUserId(String.valueOf(Math.random()));
         user.setLogin("login");
         user.setPassword("password");
         manager = (UserSessionManager) ctx.getBean("sessionManager");
         connect = new ConnectDB();
         usersManager = (UsersManager) ctx.getBean("userManager");
         usersManager.registerUser(user);
+        manager.Unactivated(user);
 
     }
 
     @Before
     public void createTestData() {
-        try (Connection conn = connect.getConnection();
-             PreparedStatement st = conn.prepareStatement(
-                     "Insert into user_session (id, session) values (?,?) ")) {
-            st.setString(1, user.getUserId());
-            st.setString(2, sessionName);
-            st.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @After
     public void deleteTestData() {
-        try (Connection conn = connect.getConnection();
-             PreparedStatement st = conn.prepareStatement(
-                     "delete from user_session where id = ?")) {
-            st.setString(1, user.getUserId());
-            st.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
     @AfterClass
     public static void stop() {
@@ -79,18 +64,18 @@ public class UserSessionManagerTest {
 
     @Test
     public void getUserSession() throws Exception {
+        manager.doActive(user);
         Session session = manager.getSession(user);
         assertEquals(user.getUserId(), session.getUserId());
-        assertEquals(sessionName, session.getName());
+        assertNotNull(session.getName());
     }
 
     @Test
     public void doActive() throws Exception {
-        String newSessionName = "newSession";
-        Session session = new Session(user.getUserId(), newSessionName);
-        manager.doActive(session);
+        manager.Unactivated(user);
+        manager.doActive(user);
         Session newSession = manager.getSession(user);
-        assertEquals(newSessionName, newSession.getName());
+        assertNotNull(newSession.getName());
     }
 
     @Test

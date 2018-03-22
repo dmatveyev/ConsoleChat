@@ -73,7 +73,7 @@ public class UsersManager {
             Session ss = userSessionManager.getSession(user);
             if (ss.getName() == null) {
                 ss = UserSessionManager.createUserSession(user);
-                userSessionManager.doActive(ss);
+                userSessionManager.doActive(user);
                 return user;
             } else {
                 logger.log(Level.WARNING, "{0} can\\'t authorize user {1}",
@@ -87,7 +87,7 @@ public class UsersManager {
             final String id = String.valueOf(Math.random());
             user.setUserId(id);
             registerUser(user);
-            userSessionManager.doActive(UserSessionManager.createUserSession(user));
+            userSessionManager.doActive(user);
             return user;
         }
     }
