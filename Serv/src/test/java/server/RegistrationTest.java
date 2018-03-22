@@ -129,7 +129,7 @@ public class RegistrationTest {
     public void simpleLoad() throws IOException {
         System.out.println("simpleLoad");
         clients = new ArrayList<>(100);
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i < 10; i++) {
             final Client c = new Client(8190);
             final String str = String.valueOf(Math.random());
             c.setUsername(str);

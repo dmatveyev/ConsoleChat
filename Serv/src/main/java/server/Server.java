@@ -3,6 +3,8 @@ package server;
 
 import messageSystem.MessageManager;
 import messageSystem.MessagePool;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,6 +18,7 @@ import java.util.logging.SimpleFormatter;
 /**Класс сервера
  * Created by Денис on 06.03.2018.
  */
+@Service("server")
 public class Server {
     public static Logger logger = Logger.getLogger("Server");
 

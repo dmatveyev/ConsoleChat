@@ -1,5 +1,7 @@
 package server;
 
+import org.springframework.context.support.GenericXmlApplicationContext;
+
 import java.io.*;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -20,7 +22,11 @@ public class Main {
         } catch (final IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
-        final Server srv = new Server(Integer.parseInt(property.getProperty("port")));
+        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
+        ctx.load("classpath:META-INF/app-context-annotation.xml");
+        ctx.refresh();
+        final Server srv = ctx.getBean("server", Server.class);
+        //final Server srv = new Server(Integer.parseInt(property.getProperty("port")));
         srv.start();
     }
 }

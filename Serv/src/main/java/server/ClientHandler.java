@@ -3,9 +3,11 @@ package server;
 import messageSystem.MessageFactory;
 import messageSystem.MessagePair;
 import messageSystem.MessagePool;
+import org.springframework.stereotype.Service;
 import server.clientData.User;
 import messageSystem.Message;
 
+import javax.xml.ws.ServiceMode;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -19,6 +21,7 @@ import static server.Server.logger;
  * Перехватывает сообщения от подключившегося клиента и помещает их в пул для дальнейшей обработки
  * Created by Денис on 06.03.2018.
  */
+
 public class ClientHandler implements Runnable {
 
     private final int handlerId;
