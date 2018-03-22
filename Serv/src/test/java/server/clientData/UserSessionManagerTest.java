@@ -1,6 +1,7 @@
 package server.clientData;
 
 import org.junit.*;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import server.databaseConnect.ConnectDB;
 
 import java.sql.Connection;
@@ -19,15 +20,23 @@ public class UserSessionManagerTest {
     private static ConnectDB connect;
     private static User user;
     private String sessionName = "testSession";
+    private static UsersManager usersManager;
+
+    private static GenericXmlApplicationContext ctx;
 
     @BeforeClass
-    public static void create() {
+    public static void start() {
+        ctx = new GenericXmlApplicationContext();
+        ctx.load("classpath:META-INF/app-context-annotation.xml");
+        ctx.refresh();
         user = new User();
         user.setUserId("test");
         user.setLogin("login");
         user.setPassword("password");
-        manager = UserSessionManager.getInstance();
+        manager = (UserSessionManager) ctx.getBean("sessionManager");
         connect = new ConnectDB();
+        usersManager = (UsersManager) ctx.getBean("userManager");
+        usersManager.registerUser(user);
 
     }
 
@@ -54,6 +63,10 @@ public class UserSessionManagerTest {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    @AfterClass
+    public static void stop() {
+        
     }
 
 

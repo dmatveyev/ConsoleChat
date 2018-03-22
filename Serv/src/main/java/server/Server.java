@@ -21,7 +21,8 @@ import java.util.logging.SimpleFormatter;
 import static server.Main.ctx;
 
 
-/**Класс сервера
+/**
+ * Класс сервера
  * Created by Денис on 06.03.2018.
  */
 @Service("server")
@@ -51,17 +52,18 @@ public class Server {
 
     void start() {
         try {
+            logger.info("Starting server");
+            logger.info("Registering beans");
             serverSocket = new ServerSocket(port);
-            logger.log(Level.INFO, "{0}: Server started on port {1}",
-                    new String[]{this.getClass().getSimpleName(), String.valueOf(port)});
             final MessagePool messagePool = (MessagePool) ctx.getBean("messagePool");
             final MessageManager messageManager = (MessageManager) ctx.getBean("messageManager");
             final UsersManager usersManager = (UsersManager) ctx.getBean("userManager");
             final UserSessionManager sessionManager = (UserSessionManager) ctx.getBean("sessionManager");
             final UserDAO userDAO = (UserDAO) ctx.getBean("userDao");
-            final SessionDAO sessionDAO= (SessionDAO) ctx.getBean("sessionDao");
+            final SessionDAO sessionDAO = (SessionDAO) ctx.getBean("sessionDao");
             messagePool.registerManager(messageManager);
-
+            logger.log(Level.INFO, "{0}: Server started on port {1}",
+                    new String[]{this.getClass().getSimpleName(), String.valueOf(port)});
             while (true) {
                 clientSocket = serverSocket.accept();
                 logger.log(Level.INFO, "Spawning " + clientId);

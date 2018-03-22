@@ -41,7 +41,7 @@ public class RegistrationTest {
 
     @After
     public void tearDown() throws Exception {
-        final UsersManager manager = UsersManager.getInstance();
+        final UsersManager manager = (UsersManager) ctx.getBean("userManager");
         manager.deleteUser(manager.isRegistered("aaa", "aaa"));
         manager.deleteUser(manager.isRegistered("repeatedLoginAfterBreakConnection",
                 "repeatedLoginAfterBreakConnection"));
@@ -75,7 +75,7 @@ public class RegistrationTest {
         assertEquals("aaa", auth.getUserLogin());
     }
 
-    
+    //@Ignore
     @Test
     public void repeatedLoginAfterBreakConnection() throws IOException {
         System.out.println("Run test repeatedLoginAfterBreakConnection");

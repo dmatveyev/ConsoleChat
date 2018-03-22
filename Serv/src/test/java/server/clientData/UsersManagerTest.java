@@ -1,9 +1,7 @@
 package server.clientData;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.io.IOException;
 
@@ -13,8 +11,18 @@ import static org.junit.Assert.*;
  * Created by Денис on 08.03.2018.
  */
 public class UsersManagerTest {
+    private static GenericXmlApplicationContext c;
     private User test;
-    private UsersManager usersManager;
+    private static UsersManager usersManager;
+
+
+    @BeforeClass
+    public static void start() {
+        c = new GenericXmlApplicationContext();
+        c.load("classpath:META-INF/app-context-annotation.xml");
+        c.refresh();
+        usersManager = (UsersManager) c.getBean("userManager");
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -22,7 +30,7 @@ public class UsersManagerTest {
         test.setLogin("test");
         test.setPassword("test");
         test.setUserId(String.valueOf(Math.random()));
-        usersManager = UsersManager.getInstance();
+
     }
     @After
     public void tearDown() throws Exception {
@@ -30,11 +38,10 @@ public class UsersManagerTest {
     }
     @AfterClass
     public static void deletingData(){
-        final UsersManager manager = UsersManager.getInstance();
-        manager.deleteUser(manager.isRegistered("test","test"));
-        manager.deleteUser(manager.isRegistered("a",
+        usersManager.deleteUser(usersManager.isRegistered("test","test"));
+        usersManager.deleteUser(usersManager.isRegistered("a",
                 "a"));
-        manager.deleteUser(manager.isRegistered("OldUser",
+        usersManager.deleteUser(usersManager.isRegistered("OldUser",
                 "OldUser"));
     }
     @Test
