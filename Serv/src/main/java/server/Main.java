@@ -25,7 +25,7 @@ public class Main {
         ctx = new GenericXmlApplicationContext();
         ctx.load("classpath:META-INF/app-context-annotation.xml");
         ctx.refresh();
-        final Server srv = new Server(Integer.parseInt(property.getProperty("port")));
+        final Server srv = (Server) ctx.getBean("server");
         srv.start();
     }
 }
