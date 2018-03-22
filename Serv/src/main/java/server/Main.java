@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * Created by Денис on 06.03.2018.
  */
 public class Main {
-
+    public static GenericXmlApplicationContext ctx = null;
     public static void main(final String[] args) {
         final Logger logger = Logger.getLogger("Server");
         ClassLoader.getSystemResource("general.properties");
@@ -22,7 +22,7 @@ public class Main {
         } catch (final IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
-        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
+        ctx = new GenericXmlApplicationContext();
         ctx.load("classpath:META-INF/app-context-annotation.xml");
         ctx.refresh();
         final Server srv = ctx.getBean("server", Server.class);

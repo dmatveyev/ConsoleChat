@@ -14,17 +14,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import static server.Main.ctx;
+
 
 /**Класс сервера
  * Created by Денис on 06.03.2018.
  */
-@Service("server")
-public class Server {
-    public static Logger logger = Logger.getLogger("Server");
 
+public class Server {
+    public static final Logger logger = Logger.getLogger("Server");
     private ServerSocket serverSocket;
-    private int clientId = 1;
-    private int port;
+    public int clientId = 1;
+    private final int port;
+    private ClientHandler clientHandler;
+    public Socket clientSocket;
 
 
     public Server(final int port) {
@@ -52,9 +55,9 @@ public class Server {
             messagePool.registerManager(messageManager);
 
             while (true) {
-                final Socket clientSocket = serverSocket.accept();
+                clientSocket = serverSocket.accept();
                 logger.log(Level.INFO, "Spawning " + clientId);
-                final ClientHandler clientHandler = new ClientHandler(clientId, clientSocket);
+                clientHandler = ctx.getBean("clientHandler", ClientHandler.class);
                 messageManager.addHandler(clientId, clientHandler);
                 final Thread t = new Thread(clientHandler);
                 t.start();

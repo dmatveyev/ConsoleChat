@@ -3,6 +3,10 @@ package server;
 import messageSystem.MessageFactory;
 import messageSystem.MessagePair;
 import messageSystem.MessagePool;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import server.clientData.User;
 import messageSystem.Message;
@@ -21,28 +25,30 @@ import static server.Server.logger;
  * Перехватывает сообщения от подключившегося клиента и помещает их в пул для дальнейшей обработки
  * Created by Денис on 06.03.2018.
  */
-
+@Component("clientHandler")
+@DependsOn("server")
+@Scope("prototype")
 public class ClientHandler implements Runnable {
-
-    private final int handlerId;
-    private final Socket clientSocket;
+    @Value("#{server.clientId}")
+    public int handlerId;
+    @Value("#{server.clientSocket}")
+    public Socket clientSocket;
     private ObjectOutputStream out;
     private final MessagePool messagePool;
     private User user;
 
-    ClientHandler(final int handlerId, final Socket clientSocket) {
-        this.clientSocket = clientSocket;
-        this.handlerId = handlerId;
+    ClientHandler(/*final int handlerId, final Socket clientSocket*/) {
         messagePool = MessagePool.getInstance();
+
+    }
+
+    @Override
+    public void run() {
         try {
             this.out = new ObjectOutputStream(clientSocket.getOutputStream());
         } catch (final IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void run() {
         try (InputStream inputStream = clientSocket.getInputStream();
              ObjectInputStream oin = new ObjectInputStream(inputStream)) {
             while (!clientSocket.isClosed()) {

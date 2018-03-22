@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static server.Main.ctx;
 
 /**
  * Created by Денис on 08.03.2018.
@@ -23,7 +24,7 @@ public class RegistrationTest {
     @BeforeClass
     public static void runServer() {
         final Thread serverThread = new Thread(() -> {
-            srv = new Server(8190);
+            srv = ctx.getBean("server", Server.class);
             srv.start();
         });
         serverThread.start();
