@@ -69,10 +69,10 @@ public class MessageManager {
             if (command.equals("clearSession")) {
                 final User user = handlers.get(handlerId).getUser();
                 if (user != null) {
-                    final Session ss = sessionManager.isActive(user);
+                    final Session ss = sessionManager.getSession(user);
                     if (ss != null) {
                         ss.setName(null);
-                        sessionManager.Unactivated(ss);
+                        sessionManager.Unactivated(user);
                         sys.setResultMessage("Session for user " + user.getLogin() + " was cleared successfully");
                         logger.log(Level.INFO, "{0} {1}",
                                 new Object[]{this.getClass().getSimpleName(), sys});

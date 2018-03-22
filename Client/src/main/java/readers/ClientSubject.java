@@ -1,4 +1,4 @@
-package client;
+package readers;
 
 public interface ClientSubject {
     void registerObserver(ClientObserver observer);

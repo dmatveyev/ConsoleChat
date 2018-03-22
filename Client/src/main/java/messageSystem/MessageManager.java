@@ -1,9 +1,8 @@
-package client;
+package messageSystem;
 
-import messageSystem.AuthMessage;
-import messageSystem.BroadcastMessage;
-import messageSystem.Message;
-import messageSystem.User;
+import readers.ClientObserver;
+import readers.Observer;
+import readers.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,7 @@ public class MessageManager implements Observer, Subject, ClientObserver {
 
     private final List<Observer> observers;
 
-    MessageManager(final User user) {
+    public MessageManager(final User user) {
         this.user = user;
         observers = new ArrayList<>();
     }

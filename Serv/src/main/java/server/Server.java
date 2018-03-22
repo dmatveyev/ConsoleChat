@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 
-/**
+/**Класс сервера
  * Created by Денис on 06.03.2018.
  */
 public class Server {
@@ -22,7 +22,6 @@ public class Server {
     private ServerSocket serverSocket;
     private int clientId = 1;
     private int port;
-
 
 
     public Server(final int port) {
@@ -60,15 +59,16 @@ public class Server {
             }
         } catch (final IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
+        } finally {
+            stop();
         }
     }
 
-
-    public void stop() {
+    private void stop() {
         try {
             serverSocket.close();
         } catch (final IOException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
 }

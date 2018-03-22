@@ -1,6 +1,10 @@
 package client;
 
+import messageSystem.MessageManager;
 import messageSystem.User;
+import readers.SocketReader;
+import readers.SocketWriter;
+import readers.UserMessageReader;
 
 import java.io.*;
 import java.net.Socket;
@@ -15,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class Client {
 
-    static final Logger logger = Logger.getLogger("Client");
+    public static final Logger logger = Logger.getLogger("Client");
     private Socket clientS = null;
     private final int port;
     private ObjectInput in = null;
@@ -30,23 +34,22 @@ public class Client {
         final User user = new User();
         final MessageManager manager = new MessageManager(user);
         final UserMessageReader userMessageReader = new UserMessageReader(user);
-
         try  {
             clientS = new Socket("localhost", port);
             in = new ObjectInputStream(clientS.getInputStream());
             out = new ObjectOutputStream(clientS.getOutputStream());
+            final SocketReader reader = new SocketReader(in);
+            final SocketWriter writer = new SocketWriter(out);
+            userMessageReader.registerObserver(manager);
+            reader.registerObserver(manager);
+            manager.registerObserver(writer);
+            final Thread read = new Thread(reader);
+            read.start();
+            userMessageReader.run();
         } catch (final UnknownHostException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         } catch (final IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e.getCause());
         }
-        final SocketReader reader = new SocketReader(in);
-        final SocketWriter writer = new SocketWriter(out);
-        userMessageReader.registerObserver(manager);
-        reader.registerObserver(manager);
-        manager.registerObserver(writer);
-        final Thread read = new Thread(reader);
-        read.start();
-        userMessageReader.run();
     }
 }

@@ -5,7 +5,6 @@ import server.databaseConnect.UserDAO;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static server.Server.logger;
 
@@ -71,7 +70,7 @@ public class UsersManager {
         final String userId = usersManager.isRegistered(login, password);
         if (userId != null) {
             user = usersManager.getRegisteredUser(userId);
-            Session ss = userSessionManager.isActive(user);
+            Session ss = userSessionManager.getSession(user);
             if (ss.getName() == null) {
                 ss = UserSessionManager.createUserSession(user);
                 userSessionManager.doActive(ss);

@@ -1,4 +1,4 @@
-package client;
+package readers;
 
 import messageSystem.Message;
 import messageSystem.MessageFactory;
@@ -14,7 +14,7 @@ public class UserMessageReader implements ClientSubject, Runnable {
     private final List<ClientObserver> observers;
     private final Scanner in;
 
-    UserMessageReader(final User user) {
+    public UserMessageReader(final User user) {
         this.user = user;
         observers = new ArrayList<>();
          in = new Scanner(System.in);
@@ -38,6 +38,9 @@ public class UserMessageReader implements ClientSubject, Runnable {
     }
     @Override
     public void run() {
+        read();
+    }
+    public void read(){
         System.out.println ("Enter Login");
         String login = "";
         if (in.hasNextLine())
@@ -49,7 +52,7 @@ public class UserMessageReader implements ClientSubject, Runnable {
         user.setLogin(login);
         user.setPassword(password);
         userMessage = MessageFactory.createAuthMessage(null,
-               login,
+                login,
                 password);
         notifyObservers();
         //переключаемся на чтение обычных сообщений

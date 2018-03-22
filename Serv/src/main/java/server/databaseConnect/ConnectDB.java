@@ -21,12 +21,11 @@ import static server.Server.logger;
  * Инкапсулирует логику подключения к базе данных
  */
 
-class ConnectDB {
-
+public class ConnectDB {
 
     private final Properties properties;
 
-    ConnectDB() {
+    public ConnectDB() {
         properties = new Properties();
         try {
             properties.load(ClassLoader.getSystemResourceAsStream("general.properties"));
@@ -35,7 +34,7 @@ class ConnectDB {
         }
     }
 
-    Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         final String driver = properties.getProperty("dbdriver");
         if (driver.equals("sqlserver"))
             return getSQLServerConnection();

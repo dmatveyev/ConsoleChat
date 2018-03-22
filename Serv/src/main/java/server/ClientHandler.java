@@ -53,10 +53,9 @@ public class ClientHandler implements Runnable {
             //logger.log(Level.WARNING, handlerId +e.getMessage(), e);
         } catch (final SocketException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
-        }
-        catch (final ClassNotFoundException | IOException e) {
+        } catch (final ClassNotFoundException | IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e.getCause());
-        }finally {
+        } finally {
             final Message m = MessageFactory.createSystemMessage("clearSession");
             messagePool.addMessage(new MessagePair(handlerId, m));
         }

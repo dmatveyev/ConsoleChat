@@ -1,10 +1,9 @@
-package client;
+package readers;
 
 import messageSystem.Message;
 
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,7 +17,7 @@ public class SocketReader implements Runnable, Subject {
     private final ObjectInput in;
     private final List<Observer> observers;
     private Message message;
-    SocketReader(final ObjectInput in) {
+    public SocketReader(final ObjectInput in) {
         this.in = in;
         observers = new ArrayList<>();
     }
@@ -28,13 +27,19 @@ public class SocketReader implements Runnable, Subject {
         try {
             //Не уверен в условии чтения.
             while (true) {
-                message = (Message) in.readObject();
+                read();
                 notifyObservers(message);
             }
 
         }catch (IOException | ClassNotFoundException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
+    }
+
+    public Message read() throws IOException, ClassNotFoundException {
+        message = (Message) in.readObject();
+        return  message;
+
     }
 
     @Override
