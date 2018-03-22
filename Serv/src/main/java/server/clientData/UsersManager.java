@@ -18,7 +18,6 @@ import static server.Server.logger;
 @Service("userManager")
 public class UsersManager {
 
-    private static UsersManager usersManager;
     private final UserDAO userDAO;
     private final UserSessionManager userSessionManager;
 
@@ -26,10 +25,6 @@ public class UsersManager {
     public UsersManager(final UserDAO userDAO, final UserSessionManager userSessionManager) {
         this.userDAO = userDAO;
         this.userSessionManager = userSessionManager;
-    }
-
-    public static UsersManager getInstance() {
-        return usersManager;
     }
 
     String registerUser(final User user) {

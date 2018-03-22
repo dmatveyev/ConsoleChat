@@ -10,17 +10,11 @@ import server.databaseConnect.SessionDAO;
  */
 @Service("sessionManager")
 public class UserSessionManager {
-    private final SessionDAO sessionDAO;
-    private static UserSessionManager instance;
+    public final SessionDAO sessionDAO;
 
     @Autowired
     private UserSessionManager(final SessionDAO sessionDAO) {
         this.sessionDAO = sessionDAO;
-    }
-
-    public static UserSessionManager getInstance() {
-
-        return instance;
     }
 
     static Session createUserSession(final User user) {
@@ -50,7 +44,6 @@ public class UserSessionManager {
 
     /**
      * Удаляет сессию для поользователя
-     *
      * @param user Пользователь, для которого необходимо удалить сессию
      */
     public void Unactivated(final User user) {
@@ -59,4 +52,7 @@ public class UserSessionManager {
         sessionDAO.update(session);
     }
 
+    public void unactivatedAll() {
+        sessionDAO.clearAllSessions();
+    }
 }

@@ -10,4 +10,5 @@
     <entry key="getUserSession">select * from user_session where id = ?</entry>
     <entry key="updateSession">update user_session set session = ? where id = ?</entry>
     <entry key="deleteUserSession">delete from user_session where id = ?</entry>
+    <entry key="unactivateAll">update user_session set session = null</entry>
 </properties>

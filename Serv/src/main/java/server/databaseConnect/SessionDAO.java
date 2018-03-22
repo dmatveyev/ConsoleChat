@@ -75,6 +75,16 @@ public class SessionDAO implements DAO<Session> {
         }
     }
 
+    public void clearAllSessions() {
+        try (Connection conn = connectDB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("unactivatedAll"))) {
+            st.execute();
+        }catch (final SQLException e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+        }
+    }
+
+
     @Override
     public void delete(final String userId) {
         try (Connection conn = connectDB.getConnection();

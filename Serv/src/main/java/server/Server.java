@@ -33,6 +33,7 @@ public class Server {
     private final int port;
     private ClientHandler clientHandler;
     public Socket clientSocket;
+    private UserSessionManager sessionManager;
 
 
     public Server(@Value("8190") final int port) {
@@ -58,7 +59,7 @@ public class Server {
             final MessagePool messagePool = (MessagePool) ctx.getBean("messagePool");
             final MessageManager messageManager = (MessageManager) ctx.getBean("messageManager");
             final UsersManager usersManager = (UsersManager) ctx.getBean("userManager");
-            final UserSessionManager sessionManager = (UserSessionManager) ctx.getBean("sessionManager");
+            sessionManager = (UserSessionManager) ctx.getBean("sessionManager");
             final UserDAO userDAO = (UserDAO) ctx.getBean("userDao");
             final SessionDAO sessionDAO = (SessionDAO) ctx.getBean("sessionDao");
             messagePool.registerManager(messageManager);
@@ -82,6 +83,7 @@ public class Server {
 
     private void stop() {
         try {
+            sessionManager.unactivatedAll();
             serverSocket.close();
         } catch (final IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e);

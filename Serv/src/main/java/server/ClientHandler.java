@@ -40,6 +40,7 @@ public class ClientHandler implements Runnable {
 
     @Autowired
     ClientHandler(final MessagePool messagePool) {
+
         this.messagePool = messagePool;
     }
 
