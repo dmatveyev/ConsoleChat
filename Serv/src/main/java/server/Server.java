@@ -5,6 +5,10 @@ import messageSystem.MessageManager;
 import messageSystem.MessagePool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import server.clientData.UserSessionManager;
+import server.clientData.UsersManager;
+import server.databaseConnect.SessionDAO;
+import server.databaseConnect.UserDAO;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -50,8 +54,12 @@ public class Server {
             serverSocket = new ServerSocket(port);
             logger.log(Level.INFO, "{0}: Server started on port {1}",
                     new String[]{this.getClass().getSimpleName(), String.valueOf(port)});
-            final MessagePool messagePool = MessagePool.getInstance();
-            final MessageManager messageManager = new MessageManager();
+            final MessagePool messagePool = (MessagePool) ctx.getBean("messagePool");
+            final MessageManager messageManager = (MessageManager) ctx.getBean("messageManager");
+            final UsersManager usersManager = (UsersManager) ctx.getBean("userManager");
+            final UserSessionManager sessionManager = (UserSessionManager) ctx.getBean("sessionManager");
+            final UserDAO userDAO = (UserDAO) ctx.getBean("userDao");
+            final SessionDAO sessionDAO= (SessionDAO) ctx.getBean("sessionDao");
             messagePool.registerManager(messageManager);
 
             while (true) {

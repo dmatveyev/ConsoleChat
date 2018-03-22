@@ -1,5 +1,7 @@
 package messageSystem;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import server.ClientHandler;
 import server.clientData.Session;
 import server.clientData.User;
@@ -17,16 +19,18 @@ import java.util.logging.Logger;
  * Управляет пользовательскими сообщениями
  * Created by Денис on 15.03.2018.
  */
+@Service("messageManager")
 public class MessageManager {
     private Logger logger = Logger.getLogger("Server");
     private final Map<Integer, ClientHandler> handlers;
     private final UsersManager usersManager;
     private final UserSessionManager sessionManager;
 
-    public MessageManager() {
+    @Autowired
+    public MessageManager( final UsersManager usersManager, final UserSessionManager sessionManager) {
         handlers = new ConcurrentHashMap<>();
-        usersManager = UsersManager.getInstance();
-        sessionManager = UserSessionManager.getInstance();
+        this.usersManager = usersManager;
+        this.sessionManager = sessionManager;
     }
 
     /**

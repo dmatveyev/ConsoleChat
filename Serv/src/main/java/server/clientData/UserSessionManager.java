@@ -1,23 +1,25 @@
 package server.clientData;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import server.databaseConnect.SessionDAO;
 
 /**
  * Управляет сессиями пользователей
  * Created by Денис on 08.03.2018.
  */
+@Service("sessionManager")
 public class UserSessionManager {
     private final SessionDAO sessionDAO;
     private static UserSessionManager instance;
 
-
-    private UserSessionManager() {
-        sessionDAO = new SessionDAO();
+    @Autowired
+    private UserSessionManager(final SessionDAO sessionDAO) {
+        this.sessionDAO =sessionDAO;
     }
 
     public static UserSessionManager getInstance() {
-        if (instance == null)
-            instance = new UserSessionManager();
+
         return instance;
     }
 

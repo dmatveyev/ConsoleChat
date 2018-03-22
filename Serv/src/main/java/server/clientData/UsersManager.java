@@ -1,6 +1,8 @@
 package server.clientData;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import server.databaseConnect.UserDAO;
 
 import java.io.IOException;
@@ -13,22 +15,20 @@ import static server.Server.logger;
  * Управляет пользователями
  * Синглтон
  */
+@Service("userManager")
 public class UsersManager {
 
     private static UsersManager usersManager;
     private final UserDAO userDAO;
     private final UserSessionManager userSessionManager;
 
-
-    private UsersManager() {
-        userDAO = new UserDAO();
-        userSessionManager = UserSessionManager.getInstance();
+    @Autowired
+    public UsersManager(final UserDAO userDAO, final UserSessionManager userSessionManager) {
+        this.userDAO = userDAO;
+        this.userSessionManager = userSessionManager;
     }
 
     public static UsersManager getInstance() {
-        if (usersManager == null) {
-            usersManager = new UsersManager();
-        }
         return usersManager;
     }
 
@@ -67,9 +67,9 @@ public class UsersManager {
      */
     public synchronized User authorize(final String login, final String password) throws IOException {
         final User user;
-        final String userId = usersManager.isRegistered(login, password);
+        final String userId = isRegistered(login, password);
         if (userId != null) {
-            user = usersManager.getRegisteredUser(userId);
+            user = getRegisteredUser(userId);
             Session ss = userSessionManager.getSession(user);
             if (ss.getName() == null) {
                 ss = UserSessionManager.createUserSession(user);

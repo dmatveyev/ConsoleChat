@@ -1,5 +1,6 @@
 package server.databaseConnect;
 
+import org.springframework.stereotype.Service;
 import server.clientData.Session;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
 
 import static server.Server.logger;
 
-
+@Service("sessionDao")
 public class SessionDAO implements DAO<Session> {
 
     private final ConnectDB connectDB;

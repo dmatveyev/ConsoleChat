@@ -26,7 +26,7 @@ public class MessagePoolTest {
         final MessagePool pool = MessagePool.getInstance();
         final List<SimpleManager> managers = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            managers.add(new SimpleManager());
+            managers.add(new SimpleManager(null, null));
         }
         for (SimpleManager manager : managers) {
             pool.registerManager(manager);

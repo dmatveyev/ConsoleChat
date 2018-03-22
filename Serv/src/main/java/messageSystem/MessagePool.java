@@ -1,5 +1,7 @@
 package messageSystem;
 
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import java.util.List;
  * Оповещает Менеджера сообщений о новом поступившем ссообщении.
  * Created by Денис on 15.03.2018.
  */
+@Service("messagePool")
 public class MessagePool {
     private static MessagePool instance;
     private final List<MessageManager> messageManagers;
@@ -18,8 +21,7 @@ public class MessagePool {
     }
 
     public static MessagePool getInstance() {
-        if (instance == null)
-            instance = new MessagePool();
+
         return instance;
     }
 

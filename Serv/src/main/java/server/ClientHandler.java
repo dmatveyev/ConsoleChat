@@ -3,6 +3,7 @@ package server;
 import messageSystem.MessageFactory;
 import messageSystem.MessagePair;
 import messageSystem.MessagePool;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Scope;
@@ -30,16 +31,16 @@ import static server.Server.logger;
 @Scope("prototype")
 public class ClientHandler implements Runnable {
     @Value("#{server.clientId}")
-    public int handlerId;
+    private int handlerId;
     @Value("#{server.clientSocket}")
-    public Socket clientSocket;
+    private Socket clientSocket;
     private ObjectOutputStream out;
     private final MessagePool messagePool;
     private User user;
 
-    ClientHandler(/*final int handlerId, final Socket clientSocket*/) {
-        messagePool = MessagePool.getInstance();
-
+    @Autowired
+    ClientHandler(final MessagePool messagePool) {
+        this.messagePool = messagePool;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package server.databaseConnect;
 
+import org.springframework.stereotype.Service;
 import server.clientData.Session;
 import server.clientData.User;
 
@@ -11,7 +12,7 @@ import java.util.logging.Level;
 
 import static server.Server.logger;
 
-
+@Service("userDao")
 public class UserDAO implements DAO<User> {
     private final ConnectDB connectDB;
     private final Properties sqlQueries;
