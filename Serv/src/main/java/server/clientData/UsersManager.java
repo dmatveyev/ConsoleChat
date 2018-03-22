@@ -67,7 +67,6 @@ public class UsersManager {
             user = getRegisteredUser(userId);
             Session ss = userSessionManager.getSession(user);
             if (ss.getName() == null) {
-                ss = UserSessionManager.createUserSession(user);
                 userSessionManager.doActive(user);
                 return user;
             } else {
