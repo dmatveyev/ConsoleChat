@@ -20,7 +20,7 @@ import static server.Main.ctx;
 /**Класс сервера
  * Created by Денис on 06.03.2018.
  */
-
+@Service("server")
 public class Server {
     public static final Logger logger = Logger.getLogger("Server");
     private ServerSocket serverSocket;
@@ -30,7 +30,7 @@ public class Server {
     public Socket clientSocket;
 
 
-    public Server(final int port) {
+    public Server(@Value("8190") final int port) {
         FileHandler fileHandler = null;
         try {
             fileHandler = new FileHandler("system.log", 1000000, 5, true);
