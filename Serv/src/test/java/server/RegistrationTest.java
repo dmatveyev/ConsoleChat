@@ -104,7 +104,7 @@ public class RegistrationTest {
         assertNull(auth.getUserId());
     }
 
-    
+
     @Test
     public void sendingBroadcastMessage() throws IOException {
         System.out.println("Run test sendingBroadcastMessage");

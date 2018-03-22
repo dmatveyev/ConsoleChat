@@ -15,6 +15,7 @@ import java.util.logging.Logger;
  */
 public class Main {
     public static ApplicationContext ctx = null;
+
     public static void main(final String[] args) {
         final Logger logger = Logger.getLogger("Server");
         ClassLoader.getSystemResource("general.properties");

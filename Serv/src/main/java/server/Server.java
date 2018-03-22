@@ -9,9 +9,6 @@ import server.clientData.UserSessionManager;
 import server.clientData.UsersManager;
 import server.databaseConnect.SessionDAO;
 import server.databaseConnect.UserDAO;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -52,8 +49,6 @@ public class Server {
         fileHandler.setLevel(Level.INFO);
         this.port = port;
     }
-
-
 
     void start() {
         try {

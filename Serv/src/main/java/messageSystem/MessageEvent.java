@@ -24,6 +24,6 @@ public class MessageEvent extends ApplicationEvent {
     }
 
     int getHandlerId() {
-        return handler.getHandlerId() ;
+        return handler.getHandlerId();
     }
 }

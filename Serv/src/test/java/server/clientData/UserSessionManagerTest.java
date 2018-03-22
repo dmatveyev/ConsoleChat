@@ -49,9 +49,10 @@ public class UserSessionManagerTest {
     public void deleteTestData() {
 
     }
+
     @AfterClass
     public static void stop() {
-        
+
     }
 
 

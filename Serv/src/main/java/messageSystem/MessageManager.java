@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * Created by Денис on 15.03.2018.
  */
 @Service("messageManager")
-public class MessageManager implements ApplicationListener<MessageEvent>{
+public class MessageManager implements ApplicationListener<MessageEvent> {
     private Logger logger = Logger.getLogger("Server");
     private final Map<Integer, ClientHandler> handlers;
     private final UsersManager usersManager;
@@ -98,6 +98,7 @@ public class MessageManager implements ApplicationListener<MessageEvent>{
             }
         }
     }
+
     public synchronized void addHandler(final int id, final ClientHandler clientHandler) {
         handlers.put(id, clientHandler);
     }

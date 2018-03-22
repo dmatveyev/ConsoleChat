@@ -20,13 +20,14 @@ class Client {
     Socket socket;
     private ObjectInputStream in = null;
     private ObjectOutputStream out = null;
-    Client(final int port)  {
+
+    Client(final int port) {
         try {
             socket = new Socket("localhost", port);
             in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
         } catch (final UnknownHostException e) {
-             logger.warning(e.toString());
+            logger.warning(e.toString());
         } catch (final IOException e) {
             logger.warning(e.getCause().toString());
         }
@@ -48,13 +49,13 @@ class Client {
         this.pass = pass;
     }
 
-    Message read(){
+    Message read() {
         try {
             return (Message) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             logger.warning(e.toString());
         }
-        return null ;
+        return null;
     }
 
     void write(final Message msg) {

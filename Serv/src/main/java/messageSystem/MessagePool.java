@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Денис on 15.03.2018.
  */
 @Service("messagePool")
-public class MessagePool implements ApplicationContextAware{
+public class MessagePool implements ApplicationContextAware {
 
     private final List<MessageManager> messageManagers;
     private ApplicationContext applicationContext;
