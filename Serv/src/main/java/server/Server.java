@@ -10,6 +10,8 @@ import server.clientData.UsersManager;
 import server.databaseConnect.SessionDAO;
 import server.databaseConnect.UserDAO;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -51,6 +53,7 @@ public class Server {
         this.port = port;
     }
 
+    @PostConstruct
     void start() {
         try {
             logger.info("Starting server");
@@ -81,6 +84,7 @@ public class Server {
         }
     }
 
+    @PreDestroy
     private void stop() {
         try {
             sessionManager.unactivatedAll();

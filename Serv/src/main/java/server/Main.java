@@ -26,6 +26,5 @@ public class Main {
         ctx.load("classpath:META-INF/app-context-annotation.xml");
         ctx.refresh();
         final Server srv = (Server) ctx.getBean("server");
-        srv.start();
     }
 }

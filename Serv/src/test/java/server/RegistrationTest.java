@@ -29,8 +29,6 @@ public class RegistrationTest {
             ctx.load("classpath:META-INF/app-context-annotation.xml");
             ctx.refresh();
             srv = (Server) ctx.getBean("server");
-            srv.start();
-
         });
         serverThread.start();
     }
@@ -136,7 +134,7 @@ public class RegistrationTest {
         System.out.println("simpleLoad");
         clients = new ArrayList<>(100);
         for (int i = 1; i < 10; i++) {
-            final Client c = new Client(8190);
+            Client c = new Client(8190);
             final String str = String.valueOf(Math.random());
             c.setUsername(str);
             c.setPass(str);
