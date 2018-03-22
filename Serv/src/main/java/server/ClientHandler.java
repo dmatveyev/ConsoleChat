@@ -63,7 +63,8 @@ public class ClientHandler implements Runnable {
         } catch (final EOFException e) {
             //logger.log(Level.WARNING, handlerId +e.getMessage(), e);
         } catch (final SocketException e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
+
+            logger.log(Level.WARNING, e.getMessage(), e.getMessage());
         } catch (final ClassNotFoundException | IOException e) {
             logger.log(Level.WARNING, e.getMessage(), e.getCause());
         } finally {
