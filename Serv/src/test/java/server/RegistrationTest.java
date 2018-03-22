@@ -4,6 +4,7 @@ import messageSystem.AuthMessage;
 import messageSystem.BroadcastMessage;
 import messageSystem.Message;
 import org.junit.*;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import server.clientData.UsersManager;
 
 import java.io.*;
@@ -12,20 +13,24 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static server.Main.ctx;
+import static server.Main.main;
 
 /**
  * Created by Денис on 08.03.2018.
  */
 public class RegistrationTest {
-
     private static Server srv;
     private List<Client> clients;
 
     @BeforeClass
     public static void runServer() {
         final Thread serverThread = new Thread(() -> {
-            srv = ctx.getBean("server", Server.class);
+            ctx = new GenericXmlApplicationContext();
+            ctx.load("classpath:META-INF/app-context-annotation.xml");
+            ctx.refresh();
+            srv = (Server) ctx.getBean("server");
             srv.start();
+
         });
         serverThread.start();
     }
