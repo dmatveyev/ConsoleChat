@@ -12,10 +12,9 @@ import java.util.logging.Logger;
 @Component
 public class SendMessageAspect {
 
-   
-
     @Pointcut("execution(* *onApplicationEvent(..))")
-    private void countSending(){}
+    private void countSending() {
+    }
 
     @Before("countSending()")
     public void sendingBefore() {

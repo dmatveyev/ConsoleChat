@@ -56,7 +56,7 @@ public class UserDAO implements DAO<User> {
     }
 
 
-    public String getById(final String login, final String password) {
+    public String getId(final String login, final String password) {
         String userId = null;
         try (Connection conn = connectDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("getUserId"))) {
@@ -75,7 +75,7 @@ public class UserDAO implements DAO<User> {
 
     @Override
     public void clearAllSessions() {
-        
+
     }
 
 
@@ -83,13 +83,13 @@ public class UserDAO implements DAO<User> {
     public void insert(final User t) {
         try (Connection conn = connectDB.getConnection();
              PreparedStatement statement = conn.prepareStatement(sqlQueries.getProperty("insertUser"))
-             ) {
+        ) {
             statement.setString(1, t.getUserId());
             statement.setString(2, t.getLogin());
             statement.setString(3, t.getPassword());
             statement.executeUpdate();
 
-            sessionDAO.insert(new Session(t.getUserId(),null));
+            sessionDAO.insert(new Session(t.getUserId(), null));
         } catch (final SQLException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }

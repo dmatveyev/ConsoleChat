@@ -4,7 +4,6 @@ package application.server.clientData;
 import application.server.databaseConnect.DAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import application.server.databaseConnect.UserDAO;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -42,7 +41,7 @@ public class UsersManager {
      * null если пользователь не найден
      */
     public String isRegistered(final String login, final String password) {
-        return userDAO.getById(login, password);
+        return userDAO.getId(login, password);
     }
 
     User getRegisteredUser(final String id) {

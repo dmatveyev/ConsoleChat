@@ -33,6 +33,7 @@ public class SessionDAO implements DAO<Session> {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
+
     @Autowired
     public void setConnectDB(final ConnectDB connectDB) {
         this.connectDB = connectDB;
@@ -44,7 +45,7 @@ public class SessionDAO implements DAO<Session> {
         try (Connection conn = connectDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("getUserSession"))) {
             st.setString(1, id);
-            try(ResultSet result = st.executeQuery()) {
+            try (ResultSet result = st.executeQuery()) {
                 if (result.next())
                     session = new Session(result.getString(1),
                             result.getString(2));
@@ -83,7 +84,7 @@ public class SessionDAO implements DAO<Session> {
         try (Connection conn = connectDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("unactivatedAll"))) {
             st.execute();
-        }catch (final SQLException e) {
+        } catch (final SQLException e) {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
@@ -101,7 +102,7 @@ public class SessionDAO implements DAO<Session> {
     }
 
     @Override
-    public String getById(final String login, final String password) {
+    public String getId(final String login, final String password) {
         return null;
     }
 }

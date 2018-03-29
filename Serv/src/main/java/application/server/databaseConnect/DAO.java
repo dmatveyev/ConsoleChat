@@ -1,12 +1,15 @@
 package application.server.databaseConnect;
 
-public interface DAO <T> {
+public interface DAO<T> {
     T get(String id);
+
     void insert(T t);
+
     void update(T t);
+
     void delete(String userId);
 
-    String getById(String login, String password);
+    String getId(String login, String password);
 
     void clearAllSessions();
 }
