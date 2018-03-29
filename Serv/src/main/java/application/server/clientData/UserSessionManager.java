@@ -1,7 +1,7 @@
 package application.server.clientData;
 
+import application.server.databaseConnect.DAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import application.server.databaseConnect.SessionDAO;
 
@@ -9,12 +9,12 @@ import application.server.databaseConnect.SessionDAO;
  * Управляет сессиями пользователей
  * Created by Денис on 08.03.2018.
  */
-@Component
+@Service("sessionManager")
 public class UserSessionManager {
-    public final SessionDAO sessionDAO;
+    public final DAO sessionDAO;
 
     @Autowired
-    private UserSessionManager(final SessionDAO sessionDAO) {
+    private UserSessionManager(final DAO sessionDAO) {
         this.sessionDAO = sessionDAO;
     }
 
@@ -30,7 +30,7 @@ public class UserSessionManager {
      * @return Объект сессии пользователя, если есть активный пользователь. Null, если нет активного пользователя.
      */
     public Session getSession(final User user) {
-        return sessionDAO.get(user.getUserId());
+        return (Session) sessionDAO.get(user.getUserId());
     }
 
     /**

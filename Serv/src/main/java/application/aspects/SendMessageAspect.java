@@ -19,7 +19,6 @@ public class SendMessageAspect {
 
     @Before("countSending()")
     public void sendingBefore() {
-        Logger.getLogger("as").info("Aspect was created");
         System.out.println("sending message");
     }
 }

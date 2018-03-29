@@ -99,4 +99,9 @@ public class SessionDAO implements DAO<Session> {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
     }
+
+    @Override
+    public String getById(final String login, final String password) {
+        return null;
+    }
 }

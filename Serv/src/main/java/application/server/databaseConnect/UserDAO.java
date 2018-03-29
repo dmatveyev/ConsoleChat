@@ -20,7 +20,7 @@ public class UserDAO implements DAO<User> {
     private ConnectDB connectDB;
     private final Properties sqlQueries;
     @Autowired
-    private SessionDAO sessionDAO;
+    private DAO sessionDAO;
 
     public UserDAO() {
         sqlQueries = new Properties();
@@ -56,7 +56,7 @@ public class UserDAO implements DAO<User> {
     }
 
 
-    public String getUserId(final String login, final String password) {
+    public String getById(final String login, final String password) {
         String userId = null;
         try (Connection conn = connectDB.getConnection();
              PreparedStatement st = conn.prepareStatement(sqlQueries.getProperty("getUserId"))) {
@@ -71,6 +71,11 @@ public class UserDAO implements DAO<User> {
             logger.log(Level.WARNING, e.getMessage(), e);
         }
         return userId;
+    }
+
+    @Override
+    public void clearAllSessions() {
+        
     }
 
 

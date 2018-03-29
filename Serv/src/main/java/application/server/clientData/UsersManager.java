@@ -1,9 +1,9 @@
 package application.server.clientData;
 
 
+import application.server.databaseConnect.DAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import application.server.databaseConnect.UserDAO;
 
 import java.io.IOException;
@@ -19,11 +19,11 @@ import static application.server.Server.logger;
 @Component
 public class UsersManager {
 
-    private final UserDAO userDAO;
+    private final DAO userDAO;
     private final UserSessionManager userSessionManager;
 
     @Autowired
-    public UsersManager(final UserDAO userDAO, final UserSessionManager userSessionManager) {
+    public UsersManager(final DAO userDAO, final UserSessionManager userSessionManager) {
         this.userDAO = userDAO;
         this.userSessionManager = userSessionManager;
     }
@@ -42,11 +42,11 @@ public class UsersManager {
      * null если пользователь не найден
      */
     public String isRegistered(final String login, final String password) {
-        return userDAO.getUserId(login, password);
+        return userDAO.getById(login, password);
     }
 
     User getRegisteredUser(final String id) {
-        return userDAO.get(id);
+        return (User) userDAO.get(id);
     }
 
     public void deleteUser(final String id) {
