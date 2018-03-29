@@ -24,7 +24,7 @@ import static application.server.Server.logger;
  * Перехватывает сообщения от подключившегося клиента и помещает их в пул для дальнейшей обработки
  * Created by Денис on 06.03.2018.
  */
-@Component("clientHandler")
+@Component
 @DependsOn("server")
 @Scope("prototype")
 public class ClientHandler implements Runnable {

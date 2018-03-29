@@ -4,6 +4,7 @@ import application.messageSystem.AuthMessage;
 import application.messageSystem.BroadcastMessage;
 import application.messageSystem.Message;
 import org.junit.*;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import application.server.clientData.UsersManager;
 
@@ -12,13 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static application.server.Main.ctx;
+
 
 /**
  * Created by Денис on 08.03.2018.
  */
 public class RegistrationTest {
     private static Server srv;
+    private static ConfigurableApplicationContext ctx;
     private List<Client> clients;
 
     @BeforeClass

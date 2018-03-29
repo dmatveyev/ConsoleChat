@@ -2,6 +2,7 @@ package application.messageSystem;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import application.server.ClientHandler;
 import application.server.clientData.Session;
@@ -9,6 +10,7 @@ import application.server.clientData.User;
 import application.server.clientData.UserSessionManager;
 import application.server.clientData.UsersManager;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +22,7 @@ import java.util.logging.Logger;
  * Управляет пользовательскими сообщениями
  * Created by Денис on 15.03.2018.
  */
-@Service("messageManager")
+@Component
 public class MessageManager implements ApplicationListener<MessageEvent>, Manager {
     private Logger logger = Logger.getLogger("Server");
     private final Map<Integer, ClientHandler> handlers;
@@ -88,7 +90,7 @@ public class MessageManager implements ApplicationListener<MessageEvent>, Manage
         }
     }
 
-    public synchronized void sendMessageToAll(final Message msg) {
+    public void sendMessageToAll(final Message msg) {
         if (!handlers.isEmpty()) {
             for (final Map.Entry<Integer, ClientHandler> handler : handlers.entrySet()) {
                 logger.log(Level.FINE, "{0} sending message to {1}",

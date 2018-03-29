@@ -2,17 +2,15 @@ package application.server;
 
 
 import application.messageSystem.Manager;
-import application.messageSystem.MessageManager;
 import application.messageSystem.MessagePool;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import application.server.clientData.UserSessionManager;
-import application.server.clientData.UsersManager;
-import application.server.databaseConnect.SessionDAO;
-import application.server.databaseConnect.UserDAO;
-
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,15 +19,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import static application.server.Main.ctx;
-
 
 /**
  * Класс сервера
  * Created by Денис on 06.03.2018.
  */
-@Service("server")
-public class Server {
+@Component
+public class Server implements ApplicationContextAware {
     public static final Logger logger = Logger.getLogger("Server");
     private ServerSocket serverSocket;
     public int clientId = 1;
@@ -39,6 +35,7 @@ public class Server {
     private UserSessionManager sessionManager;
     private MessagePool messagePool;
     private Manager messageManager;
+    private ApplicationContext applicationContext;
 
     public Server(@Value("8190") final int port) {
         FileHandler fileHandler = null;
@@ -66,7 +63,7 @@ public class Server {
             while (true) {
                 clientSocket = serverSocket.accept();
                 logger.log(Level.INFO, "Spawning " + clientId);
-                clientHandler = ctx.getBean("clientHandler", ClientHandler.class);
+                clientHandler = applicationContext.getBean("clientHandler", ClientHandler.class);
                 messageManager.addHandler(clientId, clientHandler);
                 final Thread t = new Thread(clientHandler);
                 t.start();
@@ -99,5 +96,10 @@ public class Server {
     @Autowired
     public void setMessageManager(final Manager messageManager) {
         this.messageManager = messageManager;
+    }
+
+    @Override
+    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

@@ -3,6 +3,7 @@ package application.messageSystem;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
  * Оповещает Менеджера сообщений о новом поступившем ссообщении.
  * Created by Денис on 15.03.2018.
  */
-@Service("messagePool")
+@Component
 public class MessagePool implements ApplicationContextAware {
 
     private final List<Manager> messageManagers;
@@ -28,7 +29,7 @@ public class MessagePool implements ApplicationContextAware {
         applicationContext.publishEvent(message);
     }
 
-    public void registerManager(final Manager messageManager) {
+    public void registerManager(Manager messageManager) {
         messageManagers.add(messageManager);
     }
 

@@ -2,6 +2,7 @@ package application.server.clientData;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import application.server.databaseConnect.UserDAO;
 
@@ -15,7 +16,7 @@ import static application.server.Server.logger;
  * Управляет пользователями
  * Синглтон
  */
-@Service("userManager")
+@Component
 public class UsersManager {
 
     private final UserDAO userDAO;

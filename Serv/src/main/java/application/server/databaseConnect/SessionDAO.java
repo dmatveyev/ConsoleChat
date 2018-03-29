@@ -1,6 +1,7 @@
 package application.server.databaseConnect;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import application.server.clientData.Session;
 
@@ -15,7 +16,7 @@ import java.util.logging.Level;
 
 import static application.server.Server.logger;
 
-@Service("sessionDao")
+@Component
 public class SessionDAO implements DAO<Session> {
 
     private ConnectDB connectDB;
