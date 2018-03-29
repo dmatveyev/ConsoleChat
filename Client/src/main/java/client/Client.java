@@ -1,7 +1,7 @@
 package client;
 
-import messageSystem.MessageManager;
-import messageSystem.User;
+import application.messageSystem.MessageManager;
+import application.messageSystem.User;
 import readers.SocketReader;
 import readers.SocketWriter;
 import readers.UserMessageReader;

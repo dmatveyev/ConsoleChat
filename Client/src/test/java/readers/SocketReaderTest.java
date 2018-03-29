@@ -1,7 +1,7 @@
 package readers;
 
-import messageSystem.Message;
-import messageSystem.MessageFactory;
+import application.messageSystem.Message;
+import application.messageSystem.MessageFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

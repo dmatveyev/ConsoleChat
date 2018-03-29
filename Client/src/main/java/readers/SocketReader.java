@@ -1,6 +1,6 @@
 package readers;
 
-import messageSystem.Message;
+import application.messageSystem.Message;
 
 import java.io.IOException;
 import java.io.ObjectInput;

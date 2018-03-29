@@ -1,6 +1,6 @@
 package readers;
 
-import messageSystem.Message;
+import application.messageSystem.Message;
 
 public interface Subject {
    void registerObserver(Observer observer);

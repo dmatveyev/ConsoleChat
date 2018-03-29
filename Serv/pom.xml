@@ -12,6 +12,11 @@
 
     <artifactId>Serv</artifactId>
     <packaging>jar</packaging>
+
+    <properties>
+        <spring.ver>4.3.5.RELEASE</spring.ver>
+        <aspectj.version>1.8.9</aspectj.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -37,17 +42,32 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>4.3.5.RELEASE</version>
+            <version>${spring.ver}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>4.3.5.RELEASE</version>
+            <version>${spring.ver}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>4.3.5.RELEASE</version>
+            <version>${spring.ver}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.ver}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -65,7 +85,7 @@
                     <!-- MainClass in manifest make a executable jar -->
                     <archive>
                         <manifest>
-                            <mainClass>server.Main</mainClass>
+                            <mainClass>application.server.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -88,8 +108,8 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>server.Main</mainClass>
-                            <packageName>server</packageName>
+                            <mainClass>application.server.Main</mainClass>
+                            <packageName>application.server</packageName>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>

@@ -1,8 +1,8 @@
 package readers;
 
-import messageSystem.Message;
-import messageSystem.MessageFactory;
-import messageSystem.User;
+import application.messageSystem.Message;
+import application.messageSystem.MessageFactory;
+import application.messageSystem.User;
 
 import java.util.ArrayList;
 import java.util.List;

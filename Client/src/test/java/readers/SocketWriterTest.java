@@ -1,13 +1,11 @@
 package readers;
 
-import messageSystem.Message;
-import messageSystem.MessageFactory;
+import application.messageSystem.Message;
+import application.messageSystem.MessageFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

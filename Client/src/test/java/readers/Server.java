@@ -1,9 +1,8 @@
 package readers;
 
-import messageSystem.Message;
+import application.messageSystem.Message;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 

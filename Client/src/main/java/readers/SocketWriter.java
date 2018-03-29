@@ -1,6 +1,6 @@
 package readers;
 
-import messageSystem.Message;
+import application.messageSystem.Message;
 
 import java.io.*;
 import java.util.logging.Level;
